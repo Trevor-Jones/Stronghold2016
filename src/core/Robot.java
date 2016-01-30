@@ -14,7 +14,7 @@ public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
 	Drive drive = new Drive(robotCore); 
 	Teleop teleop = new Teleop(robotCore, drive);
-	Interpreter interp = new Interpreter(drive);
+	Interpreter interp = new Interpreter(drive, robotCore);
 	Auto auto = new Auto(robotCore, drive, interp);
 	
 	

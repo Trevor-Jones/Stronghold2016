@@ -2,7 +2,6 @@
 package core;
 
 import edu.wpi.first.wpilibj.Timer;
-import util.*;
 
 public class Auto {
 	RobotCore robotcore;
@@ -25,6 +24,15 @@ public class Auto {
 	public void run(){
 		interpreter.dispatch();
 	}
+	
+	/**
+	 * Drives forward until at a predetermined distance
+	 */
+	private void move(double distance, double velocity, double angle){
+		drive.move(velocity, angle);
+			
+	}
+	
 }
 
 

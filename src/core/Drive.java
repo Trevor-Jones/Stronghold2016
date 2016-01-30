@@ -42,4 +42,9 @@ public class Drive {
         leftCimGroup.set(left);
         rightCimGroup.set(right);
 	}
+	
+	public void set(double left, double right) {
+		leftCimGroup.set(left);
+		rightCimGroup.set(right);
+	}
 }
