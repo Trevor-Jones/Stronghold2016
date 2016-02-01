@@ -69,8 +69,7 @@ public class MyJoystick extends Joystick {
 	 * @return button value
 	 */
 	public boolean getButton(int button) {
-		return buttonState[button
-		                   - 1];
+		return buttonState[button- 1];
 	}
 
 	/**

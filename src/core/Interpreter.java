@@ -32,7 +32,7 @@ public class Interpreter
 //		turnAng*=-1;
 		double currAng = robotCore.navX.getAngle();
 		double error = turnAng+angChange;
-		double kP = 0.02;
+		double kP = 0.015;
 		double angVelocity = kP*error;
 		
 		if(angVelocity > 1) 

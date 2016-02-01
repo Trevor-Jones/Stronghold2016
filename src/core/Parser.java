@@ -10,7 +10,7 @@ public class Parser{
 	}
 	
 	public static double[][] parse() {
-		String fileLocation = "src/source.txt"; //TODO make this better
+		String fileLocation = "/home/lvuser/source.txt"; //TODO make this better
 		double data[][] = new double[10][3];  //TODO make this smart and not hard coded
 		
 		for (int i = 0; i < data.length; i++) {
