@@ -7,15 +7,17 @@ public class Interpreter
 	private int autoStep = 0;
 	private double[][] commands;
 	private Drive drive;
+	private Intake intake;
 	private Timer timer = new Timer();
 	private RobotCore robotCore;
 	private boolean isFirst = true;
 	private double prevAng = 0;
 	private double angChange = 0;
 	
-	public Interpreter(Drive drive, RobotCore robotCore){
+	public Interpreter(Drive drive, RobotCore robotCore, Intake intake){
 		this.drive = drive;
 		this.robotCore = robotCore;
+		this.intake = intake;
 	}
 	
 	public void interpInit() {
@@ -119,6 +121,7 @@ public class Interpreter
 		else if (ang < 0 && angChange < ang || ang < 0 && (angChange-360) > ang) {
 			next();
 		}
+		
 		System.out.println("angChange: " + angChange + "\tcurrAng: " + currAng + "\tprevAng: " + prevAng + "\tisFirst: " + isFirst  + "\tnavX: " + robotCore.navX.getAngle());
 		prevAng = currAng;
 	}
@@ -131,7 +134,6 @@ public class Interpreter
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.DRIVE)){	//Drive
 			drive.move(commands[autoStep][1],commands[autoStep][2]);
 			next();
-			return;
 		}
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_TIMER)) {	//Wait
 			waitTimer(commands[autoStep][1]);
@@ -142,6 +144,10 @@ public class Interpreter
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.TURN)) {	//Wait
 			turn(commands[autoStep][1],commands[autoStep][2]);
 		}
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.INTAKE)) {	//Wait
+			intake.pickupBall();
+		}
 		System.out.println("\tnavX: " + robotCore.navX.getAngle());
+		intake.update();
 	}
 }

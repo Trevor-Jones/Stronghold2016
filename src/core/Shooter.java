@@ -1,5 +1,5 @@
 package core;
 
-public class Shooter {
-
+public class Shooter { 
+	
 }

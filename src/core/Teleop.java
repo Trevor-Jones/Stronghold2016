@@ -51,6 +51,10 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(JoyConfig.intakeButton)) {
 			intake.pickupBall();
+			
+			if(robotCore.joy.getButton(JoyConfig.cancelButton)) {
+				intake.setStep(100);
+			}
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armUpButton)) {

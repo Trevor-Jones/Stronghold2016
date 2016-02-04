@@ -12,12 +12,13 @@ import util.Util;
 public class Intake {
 	IntakeArm arm;
 	IntakeRoller roller;
-	private int step = 100;
+	private int step;
 	private boolean isFirst = true;
 	
 	public Intake (IntakeArm arm, IntakeRoller roller) {
 		this.arm = arm;
 		this.roller = roller;
+		step = 100;
 	}
 	
 	/**
@@ -63,5 +64,9 @@ public class Intake {
 					step++;
 				break;
 		}
+	}
+	
+	public void setStep(int step) {
+		this.step = step;
 	}
 }

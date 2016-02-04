@@ -21,6 +21,7 @@ public class JoyConfig {
 	// Buttons
 	public static final int intakeButton = 1;
 	public static final int armUpButton = 2;
+	public static final int cancelButton = 8;
 	public static final int armDownButton = 3;
 	public static final int rollerInButton = 4;
 	public static final int rollerOutButton = 5;

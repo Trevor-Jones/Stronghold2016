@@ -19,6 +19,9 @@ public class Steps {
 		case TURN:
 			i=3;
 			break;
+		case INTAKE:
+			i=4;
+			break;
 		default:
 			i = -1; 
 			break;
