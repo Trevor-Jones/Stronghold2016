@@ -1,6 +1,7 @@
 
 package core;
 
+import sensors.SharpIR;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -12,9 +13,11 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
+	
 	Drive drive = new Drive(robotCore); 
-	IntakeArm arm = new IntakeArm();
-	IntakeRoller roller = new IntakeRoller(arm);
+	IntakeArm arm = new IntakeArm(robotCore);
+	 
+	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Teleop teleop = new Teleop(robotCore, drive, intake);
 	Interpreter interp = new Interpreter(drive, robotCore, intake);

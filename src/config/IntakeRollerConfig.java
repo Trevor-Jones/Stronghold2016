@@ -7,7 +7,7 @@ public class IntakeRollerConfig {
 	public static final boolean intakeCimFlip = false;
 	
 	public static final int sharpIRPort = 0;
-	public static final double sharpIRVoltThreshold = 1.5;
+	public static final double sharpIRDistance = 1.5; // TODO Change
 	
 	public static final double posThresholdDrop = 12;
 	

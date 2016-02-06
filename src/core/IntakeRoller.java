@@ -1,19 +1,20 @@
 package core;
 
+import sensors.SharpIR;
 import util.*;
 import components.Cim;
 import config.IntakeRollerConfig;
-import edu.wpi.first.wpilibj.AnalogInput;;
 
 public class IntakeRoller {
 	private Cim intakeCim = new Cim(IntakeRollerConfig.intakeMotorChn, IntakeRollerConfig.intakeCimFlip);
-	private AnalogInput sharpIR = new AnalogInput(IntakeRollerConfig.sharpIRPort);
 	private double speed;
 	private IntakeArm arm;
-	
-	public IntakeRoller(IntakeArm arm) {
+	public SharpIR sharp;
+
+	public IntakeRoller(IntakeArm arm, SharpIR sharp) {
 		this.arm = arm;
 		speed = IntakeRollerConfig.intakeSpeed;
+		this.sharp = sharp;
 	}
 	
 	public void runIntakeRoller() { 
@@ -31,11 +32,11 @@ public class IntakeRoller {
 	public void update() {
 		intakeCim.set(speed);
 		
-		if(sharpIR.getVoltage() > IntakeRollerConfig.sharpIRVoltThreshold && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
+		if( sharp.isBallInIntake() && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
 			speed = 0;
 		}
 		
-		else if(sharpIR.getVoltage() < IntakeRollerConfig.sharpIRVoltThreshold && arm.getPos() > IntakeRollerConfig.posThresholdDrop) {
+		else if(sharp.isBallInIntake() && arm.getPos() > IntakeRollerConfig.posThresholdDrop) {
 			speed = 0;
 		}
 	}

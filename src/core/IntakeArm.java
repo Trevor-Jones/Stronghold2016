@@ -7,7 +7,7 @@ import config.IntakeArmConfig;
 
 public class IntakeArm {
 	private PID pid = new PID(IntakeArmConfig.kP, IntakeArmConfig.kI, IntakeArmConfig.kD);
-	private Encoder armEnc = new Encoder(IntakeArmConfig.armEncChnA, IntakeArmConfig.armEncChnB);
+	private Encoder armEnc; 
 	private Cim armMotor = new Cim(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
 	private double wantPos = 0;
 	private double currPos = 0;
@@ -18,7 +18,9 @@ public class IntakeArm {
 		IntakeArmConfig.homePosition
 	};
 	
-	public IntakeArm() {
+	public IntakeArm( RobotCore core) {
+		
+		armEnc = core.armEnc;
 		armEnc.setDistancePerPulse(IntakeArmConfig.armEncDistPulse);
 		armEnc.reset();
 		currPos = armEnc.getDistance();

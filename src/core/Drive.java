@@ -25,7 +25,7 @@ public class Drive {
 	 * Moves the robot in a specified direction at a specified velocity
 	 * 
 	 * @param r velocity between -1 and 1
-	 * @param theta angle of joystick in degrees
+	 * @param theta angle of joystick in radians
 	 * TODO talk about change to radians
 	 */
 	public void move(double r, double theta) {
