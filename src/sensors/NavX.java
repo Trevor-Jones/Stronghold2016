@@ -14,9 +14,14 @@ public class NavX extends IMUAdvanced
 		super(serial, NavXConfig.updateRateHz);
 	}
 
+	/**
+	 * 	@return angle in radians
+	 */
 	public double getAngle()
 	{
-		return super.getYaw() +  offsetAngle;
+		float angle = super.getYaw() * ((float) Math.PI/180);
+		
+		return angle;
 	}
 	
 	public void setOffsetAngle(double ang)

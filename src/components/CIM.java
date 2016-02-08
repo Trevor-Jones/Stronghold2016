@@ -8,14 +8,14 @@ import config.CimConfig;
  * @author Trevor
  *
  */
-public class Cim extends Talon {
+public class CIM extends Talon {
 	boolean isFlipped;
 	
 	/**
 	 * 
 	 * @param channel
 	 */
-	public Cim (int channel, boolean isFlipped) {
+	public CIM (int channel, boolean isFlipped) {
 		super(channel);
 		this.isFlipped = isFlipped;
 	}

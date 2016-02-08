@@ -2,13 +2,13 @@ package core;
 
 import util.*;
 import edu.wpi.first.wpilibj.Encoder;
-import components.Cim;
+import components.CIM;
 import config.IntakeArmConfig;
 
 public class IntakeArm {
 	private PID pid = new PID(IntakeArmConfig.kP, IntakeArmConfig.kI, IntakeArmConfig.kD);
 	private Encoder armEnc; 
-	private Cim armMotor = new Cim(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
+	private CIM armMotor = new CIM(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
 	private double wantPos = 0;
 	private double currPos = 0;
 	

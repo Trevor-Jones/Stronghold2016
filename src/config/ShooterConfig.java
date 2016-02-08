@@ -12,5 +12,8 @@ public class ShooterConfig
 	public static final int ChnSol = 0;
 	public static final double motorWantSpeed = 0;
 	public static final double distancePerPulse = 0;
+	public static final int ChnMotorOne = 0; // TODO fix
+	public static final int ChnMotorTwo = 0; //TODO fix
+	public static final double waitTime = 0;
 
 }

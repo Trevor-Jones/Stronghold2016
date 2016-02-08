@@ -2,11 +2,11 @@ package core;
 
 import sensors.SharpIR;
 import util.*;
-import components.Cim;
+import components.CIM;
 import config.IntakeRollerConfig;
 
 public class IntakeRoller {
-	private Cim intakeCim = new Cim(IntakeRollerConfig.intakeMotorChn, IntakeRollerConfig.intakeCimFlip);
+	private CIM intakeCim = new CIM(IntakeRollerConfig.intakeMotorChn, IntakeRollerConfig.intakeCimFlip);
 	private double speed;
 	private IntakeArm arm;
 	public SharpIR sharp;

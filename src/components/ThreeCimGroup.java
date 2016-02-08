@@ -7,9 +7,9 @@ package components;
  */
 public class ThreeCimGroup {
 
-	public Cim c1;
-	public Cim c2;
-	public Cim c3;
+	public CIM c1;
+	public CIM c2;
+	public CIM c3;
 	boolean m1IsReverse;
 	boolean m2IsReverse;
 	boolean m3IsReverse;
@@ -21,9 +21,9 @@ public class ThreeCimGroup {
 	 * @param m3Chn
 	 */
 	public ThreeCimGroup(int m1Chn, int m2Chn, int m3Chn, boolean m1IsFlipped, boolean m2IsFlipped ,boolean m3IsFlipped){
-		c1 = new Cim(m1Chn, m1IsFlipped);
-		c2 = new Cim(m2Chn, m2IsFlipped);
-		c3 = new Cim(m3Chn, m3IsFlipped);
+		c1 = new CIM(m1Chn, m1IsFlipped);
+		c2 = new CIM(m2Chn, m2IsFlipped);
+		c3 = new CIM(m3Chn, m3IsFlipped);
 	}
 	
 	/**

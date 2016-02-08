@@ -27,5 +27,6 @@ public class IntakeArmConfig {
 	// Distance array values
 	public static final int pickupPosArray = 0;
 	public static final int homePosArray = 1;
+	public static final double getVoltageThreshold = 0;
 	
 }
