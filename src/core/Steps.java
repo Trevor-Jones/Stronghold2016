@@ -22,6 +22,9 @@ public class Steps {
 		case INTAKE:
 			i=4;
 			break;
+		case WAIT_ENCODER:
+			i=5;
+			break;
 		default:
 			i = -1; 
 			break;

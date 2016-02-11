@@ -11,6 +11,7 @@ public class Interpreter
 	private Timer timer = new Timer();
 	private RobotCore robotCore;
 	private boolean isFirst = true;
+	private boolean isFirstTimer = true;
 	private double prevAng = 0;
 	private double angChange = 0;
 	
@@ -28,6 +29,21 @@ public class Interpreter
 		isFirst = true;
 		System.out.println("Advancing to next step");
 		autoStep++;
+		isFirstTimer = true;
+	}
+	
+	private void waitEncoder(double leftWant, double rightWant) {
+		if(isFirst) {
+			robotCore.encLeft.reset();
+			robotCore.encRight.reset();
+			isFirst = false;
+		}
+		
+		System.out.println("right: " + robotCore.encRight.getDistance() + "\tleft: " + robotCore.encLeft.getDistance());
+		
+		if(robotCore.encLeft.getDistance() > leftWant && robotCore.encRight.getDistance() > rightWant)  {
+			next();
+		}
 	}
 	
 	private void turn(double velocity, double turnAng) {
@@ -52,14 +68,6 @@ public class Interpreter
 			angChange = 0;
 		}
 		
-		if((turnAng > 0 && angChange > turnAng) || turnAng > 0 && (angChange+360) < turnAng) {
-		
-		}
-		
-		else if (turnAng < 0 && angChange < turnAng || turnAng < 0 && (angChange-360) > turnAng) {
-			
-		}
-		
 		if (Math.abs(prevAng - currAng) > InterpConfig.angChangeThreshold){
 			if(prevAng > 0)
 				angChange += ((currAng - prevAng) + 360);	
@@ -72,7 +80,22 @@ public class Interpreter
 			System.out.println("Added in else");
 		}
 		
-		System.out.print("angChange: " + angChange + "\tcurrAng: " + currAng + "\tprevAng: " + prevAng + "\tisFirst: " + isFirst + "\terror: " + error + "\tvelocity: " + angVelocity);
+		if(Math.abs(angVelocity) < InterpConfig.notMovingThreshold) {
+			if(isFirstTimer) {
+				timer.start();
+				isFirstTimer = false;
+			}
+			
+			if(timer.get() > InterpConfig.turnNextTime) {
+				if(Math.abs(angVelocity) < InterpConfig.notMovingThreshold){
+					next();
+				}
+				timer.reset();
+				timer.stop();
+			}
+		}
+		
+		System.out.print("timer: " + timer.get() + "\tangChange: " + angChange + "\tcurrAng: " + currAng + "\twantAng: " + turnAng + "\tprevAng: " + prevAng + "\tisFirst: " + isFirst + "\terror: " + error + "\tvelocity: " + angVelocity);
 		prevAng = currAng;
 	}
 	
@@ -132,22 +155,26 @@ public class Interpreter
 			System.out.println("Dead line at " + autoStep);
 		}	
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.DRIVE)){	//Drive
-			drive.move(commands[autoStep][1],commands[autoStep][2]);
+			drive.moveNoRamp(commands[autoStep][1],Math.toRadians(commands[autoStep][2]));
+			System.out.println("Setting left to: " + drive.leftCimGroup.c1.get() + "Setting right to: " + drive.rightCimGroup.c1.get());
 			next();
 		}
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_TIMER)) {	//Wait
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_TIMER)) {	//Wait for timer
 			waitTimer(commands[autoStep][1]);
 		}
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_GYRO)) {	//Wait
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_GYRO)) {	//Wait for gyro
 			waitGyro(commands[autoStep][1]);
 		}
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.TURN)) {	//Wait
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.TURN)) {	//Turn
 			turn(commands[autoStep][1],commands[autoStep][2]);
 		}
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.INTAKE)) {	//Wait
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.INTAKE)) {	//Intake
 			intake.pickupBall();
 		}
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_ENCODER)) {	//Wait for encoder
+			waitEncoder(commands[autoStep][1],commands[autoStep][2]);
+		}
 		System.out.println("\tnavX: " + robotCore.navX.getAngle());
-		intake.update();
+//		intake.update();
 	}
 }

@@ -19,8 +19,7 @@ public class NavX extends IMUAdvanced
 	 */
 	public double getAngle()
 	{
-		float angle = super.getYaw() * ((float) Math.PI/180);
-		
+		float angle = super.getYaw()/* * ((float) Math.PI/180)*/;
 		return angle;
 	}
 	

@@ -27,7 +27,7 @@ public class ThreeCimGroup {
 	}
 	
 	/**
-	 * Sets all motors to given speed
+	 * Sets all motors to given speed with ramping
 	 * @param velocity between -1 to 1
 	 */
 	public void set(double velocity) {
@@ -35,4 +35,15 @@ public class ThreeCimGroup {
 		c2.ramp(velocity);
 		c3.ramp(velocity);
 	}
+	
+	/**
+	 * Sets all motors to given speed without ramping
+	 * @param velocity
+	 */
+	public void setNoRamp(double velocity) {
+		c1.set(velocity);
+		c2.set(velocity);
+		c3.set(velocity);
+	}
+	
 }

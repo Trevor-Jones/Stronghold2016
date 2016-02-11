@@ -8,7 +8,7 @@ import config.SharpConfig;
 public class SharpIR
 {
 
-	private AnalogInput sharpIR = new AnalogInput(IntakeRollerConfig.sharpIRPort);
+	private AnalogInput sharpIR = new AnalogInput(SharpConfig.sharpIRPort);
 
 	public double getDistance(){		
 	return (sharpIR.getValue() * SharpConfig.scalingFactor);

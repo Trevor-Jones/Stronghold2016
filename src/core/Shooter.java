@@ -24,7 +24,7 @@ public class Shooter
 		solOne = core.solOne;
 
 		motorOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
-		motorOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
+		motorTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 
 		motorOneEnc.reset();
 		motorTwoEnc.reset();
