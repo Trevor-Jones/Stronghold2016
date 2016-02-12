@@ -1,6 +1,8 @@
 package core;
 import edu.wpi.first.wpilibj.Timer;
 import config.*;
+import util.ChooserType;
+import util.Dashboard;
 
 public class Interpreter
 {
@@ -14,15 +16,19 @@ public class Interpreter
 	private boolean isFirstTimer = true;
 	private double prevAng = 0;
 	private double angChange = 0;
+	private String fileName;
+	private Dashboard dashboard;
 	
-	public Interpreter(Drive drive, RobotCore robotCore, Intake intake){
+	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard){
 		this.drive = drive;
 		this.robotCore = robotCore;
 		this.intake = intake;
+		this.dashboard = dashboard;
 	}
 	
 	public void interpInit() {
-		commands = Parser.parse();
+		fileName = dashboard.getFileName();
+		commands = Parser.parse(fileName);
 	}
 	
 	public void next(){

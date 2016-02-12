@@ -9,8 +9,8 @@ public class Parser{
 		return i;
 	}
 	
-	public static double[][] parse() {
-		String fileLocation = "/home/lvuser/source.txt"; //TODO make this better
+	public static double[][] parse(String fileName) {
+		String fileLocation = "/home/lvuser/" + fileName + ".txt"; //TODO make this better
 		double data[][] = new double[10][3];  //TODO make this smart and not hard coded
 		
 		for (int i = 0; i < data.length; i++) {

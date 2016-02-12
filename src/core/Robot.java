@@ -2,6 +2,7 @@
 package core;
 
 import sensors.SharpIR;
+import util.Dashboard;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -20,7 +21,8 @@ public class Robot extends IterativeRobot {
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Teleop teleop = new Teleop(robotCore, drive, intake);
-	Interpreter interp = new Interpreter(drive, robotCore, intake);
+	Dashboard dashboard = new Dashboard();
+	Interpreter interp = new Interpreter(drive, robotCore, intake, dashboard);
 	Auto auto = new Auto(robotCore, drive, interp, intake);
 	
 	
