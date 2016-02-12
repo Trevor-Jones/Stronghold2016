@@ -16,6 +16,10 @@ public class Shooter
 	public Solenoid solOne;
 	public CIM motorOne = new CIM(ShooterConfig.ChnMotorOne, false);
 	public CIM motorTwo = new CIM(ShooterConfig.ChnMotorTwo, false);
+	private boolean isShooting;
+	private double shootSpeed;
+	double currentPos;
+	double waitDistance;
 
 	public Shooter(RobotCore core)
 	{
@@ -29,36 +33,48 @@ public class Shooter
 		motorOneEnc.reset();
 		motorTwoEnc.reset();
 
+		solOne.set(false);
+		motorOne.set(0);
+		motorTwo.set(0);
+		isShooting = false;
 	}
 
-	public void shoot()
+	public void update()
 	{
 
-		motorOne.set(1.0);
-		motorTwo.set(1.0);
-
-		if (isMotorsFastEnough())
+		if (isMotorsFastEnough(shootSpeed) && isShooting)
+		{
 			solOne.set(true);
 
-		double currentPos = motorOneEnc.getDistance();
-		double waitDistance = ShooterConfig.waitTime * motorOneEnc.getRate();
-		if ((motorOneEnc.getDistance() - currentPos) < waitDistance
-				&& isMotorsFastEnough())
-		{
-			solOne.set(false);
-			motorOne.set(0);
-			motorTwo.set(0);
+			currentPos = motorOneEnc.getDistance();
+
+			if ((motorOneEnc.getDistance() - currentPos) < waitDistance
+					&& isMotorsFastEnough(shootSpeed))
+			{
+				solOne.set(false);
+				motorOne.set(0);
+				motorTwo.set(0);
+				isShooting = false;
+
+			}
+
 		}
+
 
 	}
 
-	public boolean isMotorsFastEnough()
+	public void shoot(double shootSpeed)
 	{
-		boolean answer = false;
-		if (motorOneEnc.getRate() > ShooterConfig.motorWantSpeed
-				&& motorTwoEnc.getRate() > ShooterConfig.motorWantSpeed)
-			answer = true;
-		return answer;
+		isShooting = true;
+		this.shootSpeed = shootSpeed;
+		waitDistance = ShooterConfig.waitTime * motorOneEnc.getRate();
+		motorOne.set(shootSpeed);
+		motorTwo.set(shootSpeed);
+	}
+
+	public boolean isMotorsFastEnough(double motorSpeed)
+	{
+		return (motorOneEnc.getRate() > motorSpeed && motorTwoEnc.getRate() > motorSpeed);
 	}
 
 }

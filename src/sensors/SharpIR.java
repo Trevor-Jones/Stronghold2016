@@ -24,11 +24,7 @@ public class SharpIR
 //		return isBallInIntake;
 //	}
 	
-public boolean isBallInIntake(){
-		
-	boolean isBallIntake = false;
-		if(sharpIR.getVoltage() > IntakeArmConfig.getVoltageThreshold) isBallIntake = false;
-		
-		return isBallIntake;
+public boolean isBallInIntake(){	
+		return (sharpIR.getVoltage() > IntakeArmConfig.getVoltageThreshold);
 	}
 }
