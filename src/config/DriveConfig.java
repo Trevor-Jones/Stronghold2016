@@ -23,4 +23,6 @@ public class DriveConfig {
 	public static final boolean rightC1IsFlipped = true;
 	public static final boolean rightC2IsFlipped = true;
 	public static final boolean rightC3IsFlipped = true;
+	
+	public static final int shiftSolPort = 6;
 }

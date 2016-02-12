@@ -80,5 +80,13 @@ public class Teleop {
 		if(robotCore.joy.getButton(JoyConfig.rollerIntakeButton)) {
 			intake.roller.runIntakeRoller();
 		}
+		
+		if(robotCore.joy.getButton(JoyConfig.fastGearButton)) {
+			drive.toFastGear();
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.slowGearButton)) {
+			drive.toSlowGear();
+		}
 	}
 }

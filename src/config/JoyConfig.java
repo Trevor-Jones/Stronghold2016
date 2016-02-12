@@ -27,6 +27,8 @@ public class JoyConfig {
 	public static final int rollerOutButton = 5;
 	public static final int rollerStopButton = 6;
 	public static final int rollerIntakeButton = 7;
+	public static final int slowGearButton = 8;
+	public static final int fastGearButton = 9;
 	
 	
 }
