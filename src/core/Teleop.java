@@ -12,6 +12,7 @@ public class Teleop {
 	private RobotCore robotCore;
 	private Drive drive;
 	private Intake intake;
+	private Shooter shooter;
 	
 	/**
 	 * Creates standard teleop object
@@ -19,11 +20,12 @@ public class Teleop {
 	 * @param robotCorxe
 	 * @param drive
 	 */
-	public Teleop (RobotCore robotCore, Drive drive, Intake intake)
+	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter)
 	{
 		this.robotCore = robotCore;
 		this.drive = drive;
 		this.intake = intake;
+		this.shooter = shooter;
 	}
 		
 	/**
@@ -87,6 +89,14 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(JoyConfig.slowGearButton)) {
 			drive.toSlowGear();
+		}
+	}
+	
+	private void joyShooter() {
+		shooter.update();
+		
+		if(robotCore.joy.getButton(JoyConfig.shootButton)) {
+			shooter.shoot(1); //TODO add vision capability
 		}
 	}
 }

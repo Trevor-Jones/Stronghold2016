@@ -20,9 +20,10 @@ public class Robot extends IterativeRobot {
 	 
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
-	Teleop teleop = new Teleop(robotCore, drive, intake);
+	Shooter shooter = new Shooter(robotCore);
+	Teleop teleop = new Teleop(robotCore, drive, intake, shooter);
 	Dashboard dashboard = new Dashboard();
-	Interpreter interp = new Interpreter(drive, robotCore, intake, dashboard);
+	Interpreter interp = new Interpreter(drive, robotCore, intake, dashboard, shooter);
 	Auto auto = new Auto(robotCore, drive, interp, intake);
 	
 	

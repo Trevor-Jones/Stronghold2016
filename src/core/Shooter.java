@@ -57,10 +57,7 @@ public class Shooter
 				isShooting = false;
 
 			}
-
 		}
-
-
 	}
 
 	public void shoot(double shootSpeed)

@@ -18,12 +18,14 @@ public class Interpreter
 	private double angChange = 0;
 	private String fileName;
 	private Dashboard dashboard;
+	private Shooter shooter;
 	
-	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard){
+	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter){
 		this.drive = drive;
 		this.robotCore = robotCore;
 		this.intake = intake;
 		this.dashboard = dashboard;
+		this.shooter = shooter;
 	}
 	
 	public void interpInit() {
@@ -182,5 +184,6 @@ public class Interpreter
 		}
 		System.out.println("\tnavX: " + robotCore.navX.getAngle());
 //		intake.update();
+//		shooter.update();
 	}
 }
