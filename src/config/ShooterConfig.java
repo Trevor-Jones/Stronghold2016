@@ -1,6 +1,5 @@
 package config;
 
-import edu.wpi.first.wpilibj.DigitalSource;
 
 public class ShooterConfig
 {
@@ -15,5 +14,6 @@ public class ShooterConfig
 	public static final int ChnMotorOne = 4; // TODO fix
 	public static final int ChnMotorTwo = 5; //TODO fix
 	public static final double waitTime = 0;
+
 
 }

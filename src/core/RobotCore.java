@@ -2,6 +2,7 @@ package core;
 
 import config.*;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import sensors.*;
 
@@ -22,4 +23,7 @@ public class RobotCore {
 	public Encoder motorOneEnc = new Encoder(ShooterConfig.ChnAMotorOneEnc, ShooterConfig.ChnBMotorOneEnc);
 	public Encoder motorTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
 	public Solenoid solOne = new Solenoid(ShooterConfig.ChnSol);
+	PowerDistributionPanel pdp = new PowerDistributionPanel();
+	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
+
 }
