@@ -10,8 +10,9 @@ public class ClimberConfig
 	public static final int ChnBEnc = 0;
 	public static final int ChnAEnc = 0;
 	public static final double maxRPM = 0;
-	public static final double down = 0;
-	public static final double up = 0;
+	public static final double upSpeed = 0;
+	public static final double downSpeed = 0;
+	public static final double distance = 0;
 	
 	
 

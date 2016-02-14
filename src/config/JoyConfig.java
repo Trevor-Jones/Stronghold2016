@@ -30,6 +30,7 @@ public class JoyConfig {
 	public static final int slowGearButton = 8;
 	public static final int fastGearButton = 9;
 	public static final int shootButton = 10;
+	public static final int climbButton = 11;
 	
 	
 	

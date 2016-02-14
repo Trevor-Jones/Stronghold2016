@@ -7,71 +7,74 @@ import components.CIM;
 import config.ShooterConfig;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import util.PID;
 
-public class Shooter
-{
+public class Shooter{
 
-	public Encoder motorOneEnc;
-	public Encoder motorTwoEnc;
+	public Encoder leftMotorEnc;
+	public Encoder rightMotorEnc;
 	public Solenoid solOne;
-	public CIM motorOne = new CIM(ShooterConfig.ChnMotorOne, false);
-	public CIM motorTwo = new CIM(ShooterConfig.ChnMotorTwo, false);
+	public CIM leftMotor = new CIM(ShooterConfig.ChnMotorOne, false);
+	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, false);
+	private PID leftPID;
+	private PID rightPID;
 	private boolean isShooting;
 	private double shootSpeed;
 	double currentPos;
 	double waitDistance;
+	boolean isFirst;
 
-	public Shooter(RobotCore core)
-	{
-		motorOneEnc = core.motorOneEnc;
-		motorTwoEnc = core.motorTwoEnc;
+	public Shooter(RobotCore core){
+		leftMotorEnc = core.motorOneEnc;
+		rightMotorEnc = core.motorTwoEnc;
 		solOne = core.solOne;
 
-		motorOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
-		motorTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
+		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
+		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 
-		motorOneEnc.reset();
-		motorTwoEnc.reset();
+		leftMotorEnc.reset();
+		rightMotorEnc.reset();
 
 		solOne.set(false);
-		motorOne.set(0);
-		motorTwo.set(0);
+		leftMotor.set(0);
+		rightMotor.set(0);
 		isShooting = false;
+		
+		leftPID = new PID(ShooterConfig.kPLeft, ShooterConfig.kILeft, ShooterConfig.kDLeft);
+		rightPID = new PID(ShooterConfig.kPRight, ShooterConfig.kIRight, ShooterConfig.kDRight);
+		isFirst = true;
 	}
 
-	public void update()
-	{
-
-		if (isMotorsFastEnough(shootSpeed) && isShooting)
-		{
+	public void update(){
+		leftPID.update(leftMotorEnc.getRate(), shootSpeed);
+		rightPID.update(rightMotorEnc.getRate(), shootSpeed);
+		leftMotor.set(leftPID.getOutput());
+		rightMotor.set(rightPID.getOutput());
+		
+		if (isMotorsFastEnough(shootSpeed) && isShooting){
 			solOne.set(true);
+			
+			if(isFirst) {
+				currentPos = leftMotorEnc.getDistance();
+				isFirst =  false;
+			}
 
-			currentPos = motorOneEnc.getDistance();
-
-			if ((motorOneEnc.getDistance() - currentPos) < waitDistance
-					&& isMotorsFastEnough(shootSpeed))
-			{
+			if (Math.abs(leftMotorEnc.getDistance() - currentPos) < waitDistance){
 				solOne.set(false);
-				motorOne.set(0);
-				motorTwo.set(0);
+				shootSpeed = 0;
 				isShooting = false;
-
 			}
 		}
 	}
 
-	public void shoot(double shootSpeed)
-	{
+	public void shoot(double shootSpeed){
 		isShooting = true;
 		this.shootSpeed = shootSpeed;
-		waitDistance = ShooterConfig.waitTime * motorOneEnc.getRate();
-		motorOne.set(shootSpeed);
-		motorTwo.set(shootSpeed);
+		waitDistance = ShooterConfig.waitTime * leftMotorEnc.getRate();
 	}
 
-	public boolean isMotorsFastEnough(double motorSpeed)
-	{
-		return (motorOneEnc.getRate() > motorSpeed && motorTwoEnc.getRate() > motorSpeed);
+	public boolean isMotorsFastEnough(double motorSpeed){
+		return (leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed);
 	}
 
 }

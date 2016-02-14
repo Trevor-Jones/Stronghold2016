@@ -183,7 +183,7 @@ public class Interpreter
 			waitEncoder(commands[autoStep][1],commands[autoStep][2]);
 		}
 		System.out.println("\tnavX: " + robotCore.navX.getAngle());
-//		intake.update();
-//		shooter.update();
+		intake.update();
+		shooter.update();
 	}
 }

@@ -2,22 +2,13 @@
 package core;
 
 import edu.wpi.first.wpilibj.Timer;
+import util.Dashboard;
 
 public class Auto {
-	RobotCore robotcore;
-	Drive drive;
-	Intake intake;
-	Interpreter interpreter;
-	Timer tm = new Timer();
+	public Interpreter interpreter;
 	
-	private boolean isRunning = false;	//Whether the timer is running or not
-	private int counter = 0;
-	
-	public Auto(RobotCore robotCore, Drive drive, Interpreter interpreter, Intake intake){
-		this.robotcore = robotCore;
-		this.drive = drive;
-		this.intake = intake;
-		this.interpreter = interpreter;
+	public Auto(RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Dashboard dashboard){
+		interpreter = new Interpreter(drive, robotCore, intake, dashboard, shooter);
 	}
 	
 	/**

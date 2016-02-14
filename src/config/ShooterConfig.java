@@ -14,6 +14,13 @@ public class ShooterConfig
 	public static final int ChnMotorOne = 4; // TODO fix
 	public static final int ChnMotorTwo = 5; //TODO fix
 	public static final double waitTime = 0;
-
-
+	
+	public static final double kPLeft = 0;
+	public static final double kILeft = 0;
+	public static final double kDLeft = 0;
+	
+	public static final double kPRight = 0;
+	public static final double kIRight = 0;
+	public static final double kDRight = 0;
+	
 }

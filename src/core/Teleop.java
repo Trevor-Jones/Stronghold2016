@@ -13,6 +13,7 @@ public class Teleop {
 	private Drive drive;
 	private Intake intake;
 	private Shooter shooter;
+	private Climber climber;
 	
 	/**
 	 * Creates standard teleop object
@@ -20,12 +21,13 @@ public class Teleop {
 	 * @param robotCorxe
 	 * @param drive
 	 */
-	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter)
+	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Climber climber)
 	{
 		this.robotCore = robotCore;
 		this.drive = drive;
 		this.intake = intake;
 		this.shooter = shooter;
+		this.climber = climber;
 	}
 		
 	/**
@@ -35,6 +37,8 @@ public class Teleop {
 		robotCore.joy.update();
 		joyDrive();
 		joyIntake();
+		joyShooter();
+		joyClimber();
 	}
 	
 	/**
@@ -53,10 +57,10 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(JoyConfig.intakeButton)) {
 			intake.pickupBall();
-			
-			if(robotCore.joy.getButton(JoyConfig.cancelButton)) {
-				intake.setStep(100);
-			}
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.cancelButton)) {
+			intake.setStep(100);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armUpButton)) {
@@ -97,6 +101,14 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(JoyConfig.shootButton)) {
 			shooter.shoot(1); //TODO add vision capability
+		}
+	}
+	
+	private void joyClimber() {
+		climber.update();
+		
+		if(robotCore.joy.getButton(JoyConfig.climbButton))  {
+			climber.climb();
 		}
 	}
 }

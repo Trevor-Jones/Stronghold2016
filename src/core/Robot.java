@@ -21,10 +21,10 @@ public class Robot extends IterativeRobot {
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Shooter shooter = new Shooter(robotCore);
-	Teleop teleop = new Teleop(robotCore, drive, intake, shooter);
+	Climber climber = new Climber(robotCore);
+	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber);
 	Dashboard dashboard = new Dashboard();
-	Interpreter interp = new Interpreter(drive, robotCore, intake, dashboard, shooter);
-	Auto auto = new Auto(robotCore, drive, interp, intake);
+	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard);
 	
 	
     /**
@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
     }
 
     public void autonomousInit() {
-    	interp.interpInit();
+    	auto.interpreter.interpInit();
     }
     /**
      * This function is called periodically during autonomous

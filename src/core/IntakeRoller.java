@@ -32,7 +32,7 @@ public class IntakeRoller {
 	public void update() {
 		intakeCim.set(speed);
 		
-		if( sharp.isBallInIntake() && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
+		if(sharp.isBallInIntake() && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
 			speed = 0;
 		}
 		
