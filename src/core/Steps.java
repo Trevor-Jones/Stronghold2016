@@ -25,6 +25,9 @@ public class Steps {
 		case WAIT_ENCODER:
 			i=5;
 			break;
+		case SHOOT:
+			i=6;
+			break;
 		default:
 			i = -1; 
 			break;

@@ -182,6 +182,9 @@ public class Interpreter
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_ENCODER)) {	//Wait for encoder
 			waitEncoder(commands[autoStep][1],commands[autoStep][2]);
 		}
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Wait for encoder
+			shooter.shoot();
+		}
 		System.out.println("\tnavX: " + robotCore.navX.getAngle());
 		intake.update();
 		shooter.update();

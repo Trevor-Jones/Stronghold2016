@@ -100,7 +100,7 @@ public class Teleop {
 		shooter.update();
 		
 		if(robotCore.joy.getButton(JoyConfig.shootButton)) {
-			shooter.shoot(1); //TODO add vision capability
+			shooter.shoot(); //TODO add vision capability
 		}
 	}
 	

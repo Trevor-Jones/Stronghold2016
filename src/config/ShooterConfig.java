@@ -22,5 +22,13 @@ public class ShooterConfig
 	public static final double kPRight = 0;
 	public static final double kIRight = 0;
 	public static final double kDRight = 0;
+
+	public static final double kPDrive = 0;
+	public static final double kIDrive= 0;
+	public static final double kDDrive = 0;
+	
+	public static final double angTolerance = 0;
+	public static final double turnTime = 0;
+	public static final double distanceSpeedConstant = 1;;
 	
 }

@@ -17,10 +17,10 @@ public class Robot extends IterativeRobot {
 	
 	Drive drive = new Drive(robotCore); 
 	IntakeArm arm = new IntakeArm(robotCore);
-	 
+	Vision vision = new Vision();
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
-	Shooter shooter = new Shooter(robotCore);
+	Shooter shooter = new Shooter(robotCore, drive, vision);
 	Climber climber = new Climber(robotCore);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber);
 	Dashboard dashboard = new Dashboard();
