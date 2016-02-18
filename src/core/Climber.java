@@ -7,6 +7,11 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
+/**
+ * Components that control the climber mechanism
+ * @author Trevor
+ *
+ */
 public class Climber {
 	CIM climberMotor = new CIM(ClimberConfig.chnClimberMotor, false);
 	Solenoid climberSol = new Solenoid(ClimberConfig.chnSol);
@@ -17,11 +22,18 @@ public class Climber {
 	int step = 0;
 	double wantSpeed = 0;
 
+	/**
+	 * 
+	 * @param core
+	 */
 	public Climber(RobotCore core) {
 		this.climberEnc = core.climberEnc;
 		this.climberEnc.setDistancePerPulse(ClimberConfig.maxRPM);
 	}
 
+	/**
+	 * Run periodically to run through actions for climbing
+	 */
 	public void update() {
 		switch (step) {
 			case 0:
@@ -55,6 +67,9 @@ public class Climber {
 		}
 	}
 
+	/**
+	 * Starts the climbing sequence
+	 */
 	public void climb() {
 		isClimb = true;
 		climberEnc.reset();

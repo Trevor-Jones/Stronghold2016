@@ -15,6 +15,11 @@ public class Intake {
 	private int step;
 	private boolean isFirst = true;
 	
+	/**
+	 * 
+	 * @param arm
+	 * @param roller
+	 */
 	public Intake (IntakeArm arm, IntakeRoller roller) {
 		this.arm = arm;
 		this.roller = roller;
@@ -22,14 +27,14 @@ public class Intake {
 	}
 	
 	/**
-	 * Resets pickup process
+	 * Resets and starts pickup process
 	 */
 	public void pickupBall() {
 		step = 0;
 	}
 	
 	/**
-	 * Run periodically to update arm and roller
+	 * Run periodically to update arm, roller, and pickup process
 	 */
 	public void update() {
 		arm.update();
@@ -66,6 +71,10 @@ public class Intake {
 		}
 	}
 	
+	/**
+	 * Sets the pickup process to a specific step
+	 * @param step
+	 */
 	public void setStep(int step) {
 		this.step = step;
 	}

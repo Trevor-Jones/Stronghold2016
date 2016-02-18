@@ -99,6 +99,9 @@ public class Teleop {
 		}
 	}
 	
+	/**
+	 * Runs shooter code
+	 */
 	private void joyShooter() {
 		shooter.update();
 		
@@ -127,6 +130,9 @@ public class Teleop {
 		}
 	}
 	
+	/**
+	 * Runs climber code
+	 */
 	private void joyClimber() {
 		climber.update();
 		

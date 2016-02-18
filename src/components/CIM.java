@@ -14,12 +14,17 @@ public class CIM extends Talon {
 	/**
 	 * 
 	 * @param channel
+	 * @param isFlipped
 	 */
 	public CIM (int channel, boolean isFlipped) {
 		super(channel);
 		this.isFlipped = isFlipped;
 	}
 	
+	/**
+	 * Sets the CIM to a specified speed, using isFlipped boolean
+	 * @param speed
+	 */
 	public void set(double speed){
 		if(isFlipped)
 			super.set(-speed);
@@ -29,8 +34,10 @@ public class CIM extends Talon {
 			
 	}
 	
-	public double get(){
-		
+	/**
+	 * Returns the value the talon was set to
+	 */
+	public double get(){	
 		if(isFlipped){
 			return (-super.get());
 		}
@@ -38,6 +45,10 @@ public class CIM extends Talon {
 		return super.get();
 	}
 	
+	/**
+	 * Ramps the motors to the specified speed
+	 * @param wantSpeed
+	 */
 	public void ramp(double wantSpeed){
 		if(Math.abs(wantSpeed - get()) > CimConfig.rampRate){
 			

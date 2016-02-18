@@ -1,7 +1,5 @@
 package core;
 
-
-
 import components.CIM;
 
 import config.ShooterConfig;
@@ -11,8 +9,12 @@ import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
 
+/**
+ * Controls the shooter mechanism
+ * @author Trevor
+ *
+ */
 public class Shooter{
-
 	public Encoder leftMotorEnc;
 	public Encoder rightMotorEnc;
 	public Solenoid solOne;
@@ -30,6 +32,12 @@ public class Shooter{
 	Drive drive;
 	Timer timer = new Timer();
 
+	/**
+	 * 
+	 * @param core
+	 * @param drive
+	 * @param vision
+	 */
 	public Shooter(RobotCore core, Drive drive, Vision vision){
 		leftMotorEnc = core.motorOneEnc;
 		rightMotorEnc = core.motorTwoEnc;
@@ -55,6 +63,9 @@ public class Shooter{
 		isFirst = true;
 	}
 
+	/**
+	 * Run periodically to control shooting process
+	 */
 	public void update(){
 		leftPID.update(leftMotorEnc.getRate(), shootSpeed);
 		rightPID.update(rightMotorEnc.getRate(), shootSpeed);
@@ -62,15 +73,15 @@ public class Shooter{
 		rightMotor.set(rightPID.getOutput());
 		
 		if(isShooting) {
-			turnPID.update(vision.getAng(), 0); // TODO add vision angle here
+			turnPID.update(vision.getAng(), 0); 
 			drive.set(turnPID.getOutput(), -turnPID.getOutput());
 		}
 		
-		if(Util.withinThreshold(vision.getAng(), (double)0, ShooterConfig.angTolerance)){
+		if(Util.withinThreshold(vision.getAng(), 0, ShooterConfig.angTolerance)){
 			timer.start();
 			
 			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
-				solOne.set(true);
+				launchBall();
 				
 				if(isFirst) {
 					currentPos = leftMotorEnc.getDistance();
@@ -88,34 +99,59 @@ public class Shooter{
 		
 	}
 
+	/**
+	 * Starts the shooting process at a given speed
+	 * @param shootSpeed
+	 */
 	public void shoot(double shootSpeed){
 		isShooting = true;
 		this.shootSpeed = shootSpeed;
 		waitDistance = ShooterConfig.waitTime * leftMotorEnc.getRate();
 	}
 	
+	/**
+	 * Starts the shooting process at a speed from vision
+	 */
 	public void shoot() {
 		isShooting = true;
 		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 	
+	/**
+	 * Stops the shooting process
+	 */
 	public void cancelShot() {
 		isShooting = false;
 		shootSpeed = 0;
 	}
 	
+	/**
+	 * Sets the speed of the shooting motors
+	 * @param speed
+	 */
 	public void setSpeed(double speed) {
 		shootSpeed = speed;
 	}
 	
+	/**
+	 * Starts the motors at a speed determined from vision
+	 */
 	public void setSpeed() {
 		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 
+	/**
+	 * Actuates a solenoid to launch the ball
+	 */
 	public void launchBall() {
 		solOne.set(true);
 	}
 	
+	/**
+	 * Checks if the motors are at a specific speed
+	 * @param motorSpeed
+	 * @return
+	 */
 	public boolean isMotorsFastEnough(double motorSpeed){
 		return (leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed);
 	}

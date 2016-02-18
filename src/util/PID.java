@@ -5,10 +5,9 @@ import edu.wpi.first.wpilibj.Timer;
 /**
  * PID controller
  * 
- * @author Merfoo
+ * @author Trevor
  */
-public class PID
-{
+public class PID {
 	// Constants P, I, D
     private double kP = 0;
     private double kI = 0;
@@ -45,26 +44,35 @@ public class PID
      * @param newI
      * @param newD 
      */
-    public PID(double newP, double newI, double newD)
-    {
+    public PID(double newP, double newI, double newD){
         kP = newP;
         kI = newI;
         kD = newD;
     }
     
-    public void setErrLimits(double min, double max)
-    {
+    /**
+     * Sets the error limits
+     * @param min
+     * @param max
+     */
+    public void setErrLimits(double min, double max){
     	minErr = min;
     	maxErr = max;
     }
     
-    public void setErrLimitMode(boolean mode)
-    {
+    /**
+     * Sets the error limit mode
+     * @param mode
+     */
+    public void setErrLimitMode(boolean mode){
     	limitErr = mode;
     }
     
-    public boolean getErrLimitMode()
-    {
+    /**
+     * Returns the error limit mode
+     * @return
+     */
+    public boolean getErrLimitMode(){
     	return limitErr;
     }
     
@@ -74,8 +82,7 @@ public class PID
      * @param curr
      * @param want 
      */
-    public void update(double curr, double want)
-    {
+    public void update(double curr, double want){
         deltaT = timer.get() - prevTime;     // time diff since last update call
         prevTime = timer.get();                     // update prevTime value
         double errP = want - curr;                  // err = diff in pos aka proportional
@@ -104,16 +111,14 @@ public class PID
      * 
      * @return 
      */
-    public double getOutput()
-    {
+    public double getOutput(){
         return output;
     }
     
     /**
      * Resets the pid loop by setting output, totalErr, prevErr to 0, and resetting timer
      */
-    public void reset()
-    {
+    public void reset(){
     	needReset = false;
         output = 0;
         errSum = 0;
@@ -125,8 +130,7 @@ public class PID
     /**
      * Starts local Timer
      */
-    public void start()
-    {
+    public void start(){
     	timer.start();
     	isRunning = true;
     }
@@ -134,8 +138,7 @@ public class PID
     /**
      * Stops local Timer
      */
-    public void stop()
-    {
+    public void stop(){
     	timer.stop();
     	isRunning = false;
     }
@@ -143,8 +146,7 @@ public class PID
     /**
      * @return Returns true if the pid is running
      */
-    public boolean isRunning()
-    {
+    public boolean isRunning(){
     	return isRunning;
     }
 
@@ -153,16 +155,14 @@ public class PID
      * 
      * @return The total accumulation of error, also called the 'I' term
      */
-    public double getErrSum()
-    {
+    public double getErrSum(){
     	return errSum;
     }
     /**
      * 
      * @return The 'D' term - the rate of change of error
      */
-    public double getErrD()
-    {
+    public double getErrD(){
     	return errD;
     }
 
@@ -171,8 +171,7 @@ public class PID
      * @return The difference in time between the previous sample and current sample in seconds
      */
     
-    public double getDeltaT()
-    {
+    public double getDeltaT(){
     	return deltaT;
     }
     
@@ -180,8 +179,7 @@ public class PID
      * 
      * @return The difference in time based on the system clock (not the WPI Timer class) in milliseconds
      */
-    public double getDeltaSysT()
-    {
+    public double getDeltaSysT(){
     	return deltaSysT;
     }
 }

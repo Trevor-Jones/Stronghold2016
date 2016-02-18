@@ -4,8 +4,12 @@ import config.*;
 import util.ChooserType;
 import util.Dashboard;
 
-public class Interpreter
-{
+/**
+ * Interprets and runs scripts parsed for auto
+ * @author Trevor
+ *
+ */
+public class Interpreter {
 	private int autoStep = 0;
 	private double[][] commands;
 	private Drive drive;
@@ -20,6 +24,14 @@ public class Interpreter
 	private Dashboard dashboard;
 	private Shooter shooter;
 	
+	/**
+	 * 
+	 * @param drive
+	 * @param robotCore
+	 * @param intake
+	 * @param dashboard
+	 * @param shooter
+	 */
 	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter){
 		this.drive = drive;
 		this.robotCore = robotCore;
@@ -28,11 +40,17 @@ public class Interpreter
 		this.shooter = shooter;
 	}
 	
+	/**
+	 * Run at auto init to get and parse script file 
+	 */
 	public void interpInit() {
 		fileName = dashboard.getFileName();
 		commands = Parser.parse(fileName);
 	}
 	
+	/**
+	 * Advances to next step in script
+	 */
 	public void next(){
 		isFirst = true;
 		System.out.println("Advancing to next step");
@@ -40,6 +58,11 @@ public class Interpreter
 		isFirstTimer = true;
 	}
 	
+	/**
+	 * Waits for encoder to reach a certain value before advancing
+	 * @param leftWant
+	 * @param rightWant
+	 */
 	private void waitEncoder(double leftWant, double rightWant) {
 		if(isFirst) {
 			robotCore.encLeft.reset();
@@ -54,6 +77,11 @@ public class Interpreter
 		}
 	}
 	
+	/**
+	 * Turns the robot to a specific angle before advancing to the next step
+	 * @param velocity
+	 * @param turnAng
+	 */
 	private void turn(double velocity, double turnAng) {
 //		turnAng*=-1;
 		double currAng = robotCore.navX.getAngle();
@@ -107,6 +135,10 @@ public class Interpreter
 		prevAng = currAng;
 	}
 	
+	/**
+	 * Waits for a specified amount of time
+	 * @param wantValue time to wait in seconds
+	 */
 	private void waitTimer(double wantValue){
 		if(isFirst){
 			timer.start();
@@ -122,6 +154,10 @@ public class Interpreter
 		System.out.println("navX: " + robotCore.navX.getAngle());
 	}
 	
+	/**
+	 * Waits until the robot is at a specified angle
+	 * @param ang
+	 */
 	private void waitGyro(double ang){
 
 		double currAng = robotCore.navX.getAngle();
@@ -157,6 +193,9 @@ public class Interpreter
 		prevAng = currAng;
 	}
 	
+	/**
+	 * Run periodically to read through and execute the script
+	 */
 	public void dispatch(){
 		if((commands[autoStep][0]) == -1) {	//Dead line
 			drive.move(0, 0);

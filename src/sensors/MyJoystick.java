@@ -64,8 +64,7 @@ public class MyJoystick extends Joystick {
 	/**
 	 * Gives button value
 	 * 
-	 * @param button
-	 *            the button number on the controller
+	 * @param button the button number on the controller
 	 * @return button value
 	 */
 	public boolean getButton(int button) {

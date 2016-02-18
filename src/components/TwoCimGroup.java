@@ -1,7 +1,7 @@
 package components;
 
 /**
- * Wraps set of three motors that make up one side of the robot
+ * Wraps set of two motors that make up one side of the robot
  * @author Trevor
  *
  */
@@ -13,10 +13,11 @@ public class TwoCimGroup {
 	boolean m2IsReverse;
 	
 	/**
-	 * Creates grouping given three motors
+	 * Creates grouping given 2 motors
 	 * @param m1Chn
 	 * @param m2Chn
-	 * @param m3Chn
+	 * @param m1IsFlipped
+	 * @param m2IsFlipped
 	 */
 	public TwoCimGroup(int m1Chn, int m2Chn, boolean m1IsFlipped, boolean m2IsFlipped){
 		c1 = new CIM(m1Chn, m1IsFlipped);

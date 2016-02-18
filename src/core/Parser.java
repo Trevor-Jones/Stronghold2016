@@ -3,12 +3,18 @@ package core;
 import java.io.*;
 import util.*;
 
+/**
+ * Parses the script file into commands
+ * @author Trevor
+ *
+ */
 public class Parser{	
-	public static double[][] getData() {
-		double i[][] = {{0,0,1},{1,10,0},{0,0,1}};
-		return i;
-	}
 	
+	/**
+	 * Parses the script into a double array to be interpreted by interpreter
+	 * @param fileName name of file at location /home/lvuser/
+	 * @return
+	 */
 	public static double[][] parse(String fileName) {
 		String fileLocation = "/home/lvuser/" + fileName + ".txt"; //TODO make this better
 		double data[][] = new double[10][3];  //TODO make this smart and not hard coded
@@ -52,11 +58,12 @@ public class Parser{
 			}
 			while(input != null);
 				
-			
-//			System.out.println(bis.readLine());
 	
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.out.println("File not found");
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			System.out.println("File is empty");
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

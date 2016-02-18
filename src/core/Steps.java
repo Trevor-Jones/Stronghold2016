@@ -1,7 +1,17 @@
 package core;
 
+/**
+ * Collection of ids for auto steps
+ * @author Trevor
+ *
+ */
 public class Steps {
 
+	/**
+	 * Gives the id of auto type 
+	 * @param type
+	 * @return
+	 */
 	public static int getStep(Type type) {
 		
 		int i;
