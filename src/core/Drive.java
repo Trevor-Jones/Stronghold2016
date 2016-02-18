@@ -1,6 +1,6 @@
 package core;
 
-import components.ThreeCimGroup;
+import components.TwoCimGroup;
 import config.DriveConfig;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -15,8 +15,8 @@ import java.lang.Math;
 public class Drive {
 	
 	private RobotCore robotCore;
-	public ThreeCimGroup leftCimGroup = new ThreeCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC3Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped, DriveConfig.leftC3IsFlipped);
-	public ThreeCimGroup rightCimGroup = new ThreeCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC3Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped, DriveConfig.rightC3IsFlipped);
+	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
+	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
 	public Solenoid shiftingSol = new Solenoid(DriveConfig.shiftSolPort);
 	
 	public Drive (RobotCore core) {

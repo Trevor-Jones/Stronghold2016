@@ -5,14 +5,12 @@ package components;
  * @author Trevor
  *
  */
-public class ThreeCimGroup {
+public class TwoCimGroup {
 
 	public CIM c1;
 	public CIM c2;
-	public CIM c3;
 	boolean m1IsReverse;
 	boolean m2IsReverse;
-	boolean m3IsReverse;
 	
 	/**
 	 * Creates grouping given three motors
@@ -20,10 +18,9 @@ public class ThreeCimGroup {
 	 * @param m2Chn
 	 * @param m3Chn
 	 */
-	public ThreeCimGroup(int m1Chn, int m2Chn, int m3Chn, boolean m1IsFlipped, boolean m2IsFlipped ,boolean m3IsFlipped){
+	public TwoCimGroup(int m1Chn, int m2Chn, boolean m1IsFlipped, boolean m2IsFlipped){
 		c1 = new CIM(m1Chn, m1IsFlipped);
 		c2 = new CIM(m2Chn, m2IsFlipped);
-		c3 = new CIM(m3Chn, m3IsFlipped);
 	}
 	
 	/**
@@ -33,7 +30,6 @@ public class ThreeCimGroup {
 	public void set(double velocity) {
 		c1.ramp(velocity);
 		c2.ramp(velocity);
-		c3.ramp(velocity);
 	}
 	
 	/**
@@ -43,7 +39,6 @@ public class ThreeCimGroup {
 	public void setNoRamp(double velocity) {
 		c1.set(velocity);
 		c2.set(velocity);
-		c3.set(velocity);
 	}
 	
 }

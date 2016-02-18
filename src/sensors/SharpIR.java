@@ -11,7 +11,7 @@ public class SharpIR
 	private AnalogInput sharpIR = new AnalogInput(SharpConfig.sharpIRPort);
 
 	public double getDistance(){		
-	return (sharpIR.getValue() * SharpConfig.scalingFactor);
+		return (sharpIR.getValue() * SharpConfig.scalingFactor);
 	}
 	
 //	public boolean isBallInIntake(){
@@ -24,7 +24,7 @@ public class SharpIR
 //		return isBallInIntake;
 //	}
 	
-public boolean isBallInIntake(){	
+	public boolean isBallInIntake(){	
 		return (sharpIR.getVoltage() > IntakeArmConfig.getVoltageThreshold);
 	}
 }
