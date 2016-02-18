@@ -31,4 +31,6 @@ public class ShooterConfig
 	public static final double turnTime = 0;
 	public static final double distanceSpeedConstant = 1;;
 	
+	public static final double constantSpeed = 1;
+	
 }

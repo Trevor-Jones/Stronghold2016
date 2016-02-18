@@ -98,7 +98,24 @@ public class Shooter{
 		isShooting = true;
 		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
+	
+	public void cancelShot() {
+		isShooting = false;
+		shootSpeed = 0;
+	}
+	
+	public void setSpeed(double speed) {
+		shootSpeed = speed;
+	}
+	
+	public void setSpeed() {
+		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+	}
 
+	public void launchBall() {
+		solOne.set(true);
+	}
+	
 	public boolean isMotorsFastEnough(double motorSpeed){
 		return (leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed);
 	}

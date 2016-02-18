@@ -107,4 +107,32 @@ public class MyJoystick extends Joystick {
 	public double getRawRightY() {
 		return super.getRawAxis(JoyConfig.chnRightY);
 	}
+	
+	public boolean getDpadUp() {
+    	return super.getPOV(0) == 0;
+    }
+    
+    /**
+     * Checks if the dpad is pressed in the right direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadRight() {
+    	return super.getPOV(0) == 90;
+    }
+
+    /**
+     * Checks if the dpad is pressed in the down direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadDown(){
+    	return super.getPOV(0) == 180;
+    }
+    
+    /**
+     * Checks if the dpad is pressed in the left direction 
+     * @return is the dpad is pressed
+     */
+    public boolean getDpadLeft(){
+    	return super.getPOV(0) == 270;
+    }
 }

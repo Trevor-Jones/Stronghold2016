@@ -1,7 +1,6 @@
 package core;
 
-import config.IntakeArmConfig;
-import config.JoyConfig;
+import config.*;
 
 /**
  * Joins user input with core components
@@ -46,7 +45,15 @@ public class Teleop {
 	 */
 	private void joyDrive() {
 		double[] rTheta = robotCore.joy.getRTheta();
-		drive.move(rTheta[0], rTheta[1]);		
+		drive.move(rTheta[0], rTheta[1]);	
+
+		if(robotCore.joy.getDpadUp()) {
+			drive.toFastGear();
+		}
+		
+		if(robotCore.joy.getDpadDown()) {
+			drive.toSlowGear();
+		}
 	}
 	
 	/**
@@ -55,59 +62,75 @@ public class Teleop {
 	private void joyIntake() {
 		intake.update();
 		
-		if(robotCore.joy.getButton(JoyConfig.intakeButton)) {
+		if(robotCore.joy.getButton(JoyConfig.intakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.pickupBall();
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.cancelButton)) {
+		if(robotCore.joy.getButton(JoyConfig.cancelIntakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.setStep(100);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.armUpButton)) {
+		if(robotCore.joy.getButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.arm.setPos(IntakeArmConfig.homePosArray);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.armDownButton)) {
+		if(robotCore.joy.getButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.arm.setPos(IntakeArmConfig.pickupPosArray);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.rollerInButton)) {
+		if(robotCore.joy.getButton(JoyConfig.rollerInButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.roller.setRawSpeed(-1);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.rollerOutButton)) {
+		if(robotCore.joy.getButton(JoyConfig.rollerOutButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.roller.setRawSpeed(1);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.rollerStopButton)) {
+		if(robotCore.joy.getButton(JoyConfig.rollerStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.roller.setRawSpeed(0);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.rollerIntakeButton)) {
+		if(robotCore.joy.getButton(JoyConfig.rollerIntakeButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.roller.runIntakeRoller();
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.fastGearButton)) {
-			drive.toFastGear();
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.slowGearButton)) {
-			drive.toSlowGear();
+		if(robotCore.joy.getButton(JoyConfig.toggleArmPosButton)) {
+			intake.arm.togglePos();
 		}
 	}
 	
 	private void joyShooter() {
 		shooter.update();
 		
-		if(robotCore.joy.getButton(JoyConfig.shootButton)) {
+		if(robotCore.joy.getButton(JoyConfig.shootButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			shooter.shoot(); //TODO add vision capability
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.cancelShotButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.cancelShot();
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.shooterConstantSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.setSpeed(ShooterConfig.constantSpeed);
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.setShooterSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.setSpeed();
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.shooterStopButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.setSpeed(0);
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.shooterLaunchButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.launchBall();
 		}
 	}
 	
 	private void joyClimber() {
 		climber.update();
 		
-		if(robotCore.joy.getButton(JoyConfig.climbButton))  {
+		if(robotCore.joy.getButton(JoyConfig.climbButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton))  {
 			climber.climb();
 		}
 	}

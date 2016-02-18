@@ -9,6 +9,7 @@ public class IntakeRollerConfig {
 	public static final double sharpIRDistance = 1.5; // TODO Change
 	
 	public static final double posThresholdDrop = 12;
+	public static final double posThresholdPickup = 12;
 	
 	public static final double intakeSpeed = 1;
 }

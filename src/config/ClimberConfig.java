@@ -3,7 +3,7 @@ package config;
 public class ClimberConfig
 {
 
-	public static final int chnAClimber = 0; // TODO
+	public static final int chnClimberMotor = 0; // TODO
 	public static final int chnSol = 0; // TODO
 	public static final double kP = 0; //TODO
 	public static final long waitTime = 0; //TODO

@@ -19,19 +19,25 @@ public class JoyConfig {
 	public static final int chnRightY = 4; 
 	
 	// Buttons
-	public static final int intakeButton = 1;
-	public static final int armUpButton = 2;
-	public static final int cancelButton = 8;
-	public static final int armDownButton = 3;
-	public static final int rollerInButton = 4;
-	public static final int rollerOutButton = 5;
-	public static final int rollerStopButton = 6;
-	public static final int rollerIntakeButton = 7;
-	public static final int slowGearButton = 8;
-	public static final int fastGearButton = 9;
-	public static final int shootButton = 10;
-	public static final int climbButton = 11;
-	
+	public static final int intakeButton = 8;
+	public static final int armUpButton = 4;
+	public static final int cancelIntakeButton = 12;
+	public static final int armDownButton = 2;
+	public static final int rollerInButton = 1;
+	public static final int rollerOutButton = 3;
+	public static final int rollerStopButton = 12;
+	public static final int rollerIntakeButton = 8;
+//	public static final int slowGearButton = 8;
+//	public static final int fastGearButton = 9;
+	public static final int shootButton = 7;
+	public static final int climbButton = 9;
+	public static final int cancelShotButton = 11;
+	public static final int shooterConstantSpeedButton = 1;
+	public static final int toggleArmPosButton = 6;
+	public static final int manualModeButton = 5;
+	public static final int setShooterSpeedButton = 4;
+	public static final int shooterStopButton = 2;
+	public static final int shooterLaunchButton = 3;
 	
 	
 }

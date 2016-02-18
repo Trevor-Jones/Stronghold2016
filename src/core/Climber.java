@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Climber {
-	CIM climberMotor = new CIM(ClimberConfig.chnAClimber, false);
+	CIM climberMotor = new CIM(ClimberConfig.chnClimberMotor, false);
 	Solenoid climberSol = new Solenoid(ClimberConfig.chnSol);
 
 	Encoder climberEnc;
@@ -59,5 +59,4 @@ public class Climber {
 		isClimb = true;
 		climberEnc.reset();
 	}
-
 }

@@ -11,6 +11,7 @@ public class IntakeArm {
 	private CIM armMotor = new CIM(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
 	private double wantPos = 0;
 	private double currPos = 0;
+	private int pos = 0;
 	
 	private double position [] = 
 	{
@@ -28,6 +29,7 @@ public class IntakeArm {
 	
 	public void setPos(int pos) {
 		wantPos = position[pos];
+		this.pos = pos;
 	}
 	
 	public void setRawPos(double pos) {
@@ -50,5 +52,16 @@ public class IntakeArm {
 	
 	public double getWantPos() {
 		return wantPos;
+	}
+	
+	public void togglePos() {
+		if(pos == 0) {
+			pos = 1;
+		}
+		else if(pos == 1) {
+			pos = 0;
+		}
+		
+		wantPos = position[pos];
 	}
 }
