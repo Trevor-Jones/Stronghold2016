@@ -3,7 +3,7 @@ package config;
 public class IntakeArmConfig {
 	
 	// PID constants
-	public static final double kP = 0;
+	public static final double kP = 1;
 	public static final double  kI = 0;
 	public static final double kD = 0;
 	
@@ -12,11 +12,11 @@ public class IntakeArmConfig {
 	public static final int armEncChnB = 13;
 	
 	// Encoder config
-	public static final double armEncDistPulse = 1;
+	public static final double armEncDistPulse = 0.015;
 	
 	// Motor config
 	public static final boolean armMotorFlipped = false;
-	public static final int armMotorChn = 11;
+	public static final int armMotorChn = 14;
 	public static final double minArmSpeed = -1;
 	public static final double maxArmSpeed = 1;
 	

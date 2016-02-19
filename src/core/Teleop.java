@@ -37,7 +37,7 @@ public class Teleop {
 		joyDrive();
 		joyIntake();
 		joyShooter();
-		joyClimber();
+		//joyClimber();
 	}
 	
 	/**
@@ -71,11 +71,15 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setPos(IntakeArmConfig.homePosArray);
+			intake.arm.setArmSpeed(1);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setPos(IntakeArmConfig.pickupPosArray);
+			intake.arm.setArmSpeed(-1);
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.armStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			intake.arm.setArmSpeed(0);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.rollerInButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {

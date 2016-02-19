@@ -31,6 +31,7 @@ public class TwoCimGroup {
 	public void set(double velocity) {
 		c1.ramp(velocity);
 		c2.ramp(velocity);
+		
 	}
 	
 	/**

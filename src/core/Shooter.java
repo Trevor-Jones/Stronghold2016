@@ -97,6 +97,7 @@ public class Shooter{
 			}
 		}
 		
+		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
 	}
 
 	/**

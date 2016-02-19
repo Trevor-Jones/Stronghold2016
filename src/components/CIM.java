@@ -1,5 +1,6 @@
 package components;
 
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Talon;
 import config.CimConfig;
 
@@ -8,7 +9,7 @@ import config.CimConfig;
  * @author Trevor
  *
  */
-public class CIM extends Talon {
+public class CIM extends CANTalon {
 	boolean isFlipped;
 	
 	/**

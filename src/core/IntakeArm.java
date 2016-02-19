@@ -60,6 +60,7 @@ public class IntakeArm {
 		currPos = armEnc.getDistance();
 		pid.update(currPos, wantPos);
 		setArmSpeed(Util.limit(pid.getOutput(), IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
+		System.out.println("Arm Encoder Distance: " + armEnc.getDistance());
 	}
 	
 	/**
@@ -99,4 +100,6 @@ public class IntakeArm {
 		
 		wantPos = position[posIndex];
 	}
+	
+	
 }

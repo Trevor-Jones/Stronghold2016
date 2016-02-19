@@ -14,9 +14,8 @@ import sensors.*;
  */
 public class RobotCore {
 	public MyJoystick joy = new MyJoystick(JoyConfig.drivePort);
-	public MyJoystick intakeJoy = new MyJoystick(JoyConfig.intakePort);
-	public Enc encRight = new Enc(EncConfig.chnAEncRight,EncConfig.chnBEncRight,EncConfig.encRightDisPerPulse);
-	public Enc encLeft = new Enc(EncConfig.chnAEncLeft,EncConfig.chnBEncLeft,EncConfig.encLeftDisPerPulse);
+	public Enc encRight = new Enc(DriveConfig.chnAEncRight,DriveConfig.chnBEncRight,DriveConfig.encRightDisPerPulse);
+	public Enc encLeft = new Enc(DriveConfig.chnAEncLeft,DriveConfig.chnBEncLeft,DriveConfig.encLeftDisPerPulse);
 	public NavX navX = new NavX();
 	public Encoder armEnc = new Encoder(IntakeArmConfig.armEncChnA, IntakeArmConfig.armEncChnB);
 	public SharpIR sharp = new SharpIR();

@@ -4,6 +4,7 @@ import sensors.SharpIR;
 import util.*;
 import components.CIM;
 import config.IntakeRollerConfig;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Controlls the roller portion of the intake
@@ -15,6 +16,8 @@ public class IntakeRoller {
 	private double speed;
 	private IntakeArm arm;
 	public SharpIR sharp;
+	boolean isFirst = true;
+	Timer timer = new Timer();
 
 	/**
 	 * 
@@ -54,14 +57,24 @@ public class IntakeRoller {
 	 * Run periodically to control roller intake process
 	 */
 	public void update() {
-		intakeCim.set(speed);
-		
-		if(!sharp.isBallInIntake() && arm.getPos() > IntakeRollerConfig.posThresholdDrop) {
-			speed = 0;
+		if(isFirst && speed != 0) {
+			timer.start();
 		}
 		
-		else if(sharp.isBallInIntake() && arm.getPos() < IntakeRollerConfig.posThresholdPickup) {
+		intakeCim.set(speed);
+		
+		if(timer.get() > 1/*!sharp.isBallInIntake()*/ && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
 			speed = 0;
+			isFirst = false;
+			timer.stop();
+			timer.reset();
+		}
+		
+		else if(timer.get() > 1/*sharp.isBallInIntake()*/  && arm.getPos() > IntakeRollerConfig.posThresholdPickup) {
+			speed = 0;
+			isFirst = false;
+			timer.stop();
+			timer.reset();
 		}
 	}
 	

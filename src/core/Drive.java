@@ -2,6 +2,7 @@ package core;
 
 import components.TwoCimGroup;
 import config.DriveConfig;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 
 import java.lang.Math;
@@ -15,12 +16,16 @@ import java.lang.Math;
 public class Drive {
 	
 	private RobotCore robotCore;
+	private Encoder encLeft;
+	private Encoder encRight;
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
 	public Solenoid shiftingSol = new Solenoid(DriveConfig.shiftSolPort);
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
+		encLeft = core.encLeft;
+		encRight = core.encRight;
 	}
 	
 	/**
@@ -43,6 +48,8 @@ public class Drive {
         
         leftCimGroup.set(left);
         rightCimGroup.set(right);
+        
+        System.out.println("Drive Encoder Left: " + encLeft.getDistance() + "\tDrive Encoder Right: " + encRight.getDistance());
 	}
 	
 	public void moveNoRamp(double r, double theta) {
