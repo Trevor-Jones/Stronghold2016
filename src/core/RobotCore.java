@@ -25,5 +25,6 @@ public class RobotCore {
 	public Solenoid solOne = new Solenoid(ShooterConfig.ChnSol);
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
+	
 
 }

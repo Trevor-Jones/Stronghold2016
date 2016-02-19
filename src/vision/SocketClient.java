@@ -55,5 +55,7 @@
 
 		}
 		
+		
+		public boolean isConnected(){ return imgSocket.isConnected();}
 			}
 
