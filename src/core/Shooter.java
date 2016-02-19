@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
+import vision.VisionCore;
 
 /**
  * Controls the shooter mechanism
@@ -28,7 +29,7 @@ public class Shooter{
 	double currentPos;
 	double waitDistance;
 	boolean isFirst;
-	Vision vision;
+	VisionCore vs;
 	Drive drive;
 	Timer timer = new Timer();
 
@@ -38,13 +39,13 @@ public class Shooter{
 	 * @param drive
 	 * @param vision
 	 */
-	public Shooter(RobotCore core, Drive drive, Vision vision){
+	public Shooter(RobotCore core, Drive drive){
 		leftMotorEnc = core.motorOneEnc;
 		rightMotorEnc = core.motorTwoEnc;
 		solOne = core.solOne;
 	
 		this.drive = drive;
-		this.vision = vision;
+		vs = core.vs;
 
 		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
@@ -73,7 +74,7 @@ public class Shooter{
 		rightMotor.set(rightPID.getOutput());
 		
 		if(isShooting) {
-			turnPID.update(vision.getAng(), 0); 
+			turnPID.update(vs.getVisionData().goalOne[0], 0); 
 			drive.set(turnPID.getOutput(), -turnPID.getOutput());
 		}
 		
