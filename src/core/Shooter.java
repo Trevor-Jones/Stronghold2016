@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
-import vision.VisionCore;
 
 /**
  * Controls the shooter mechanism
@@ -29,7 +28,6 @@ public class Shooter{
 	double currentPos;
 	double waitDistance;
 	boolean isFirst;
-	VisionCore vs;
 	Drive drive;
 	Timer timer = new Timer();
 
@@ -45,8 +43,7 @@ public class Shooter{
 		solOne = core.solOne;
 	
 		this.drive = drive;
-		vs = core.vs;
-
+		
 		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 
@@ -68,38 +65,39 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-		leftPID.update(leftMotorEnc.getRate(), shootSpeed);
-		rightPID.update(rightMotorEnc.getRate(), shootSpeed);
-		leftMotor.set(leftPID.getOutput());
-		rightMotor.set(rightPID.getOutput());
-		
-		if(isShooting) {
-			turnPID.update(vs.getVisionData().goalOne[0], 0); 
-			drive.set(turnPID.getOutput(), -turnPID.getOutput());
+//		leftPID.update(leftMotorEnc.getRate(), shootSpeed);
+//		rightPID.update(rightMotorEnc.getRate(), shootSpeed);
+//		leftMotor.set(leftPID.getOutput());
+//		rightMotor.set(rightPID.getOutput());
+//		
+////		if(isShooting) {
+////			turnPID.update(vs.getVisionData().goalOne[0], 0); 
+////			drive.set(turnPID.getOutput(), -turnPID.getOutput());
+////		}
+////		
+//		if(Util.withinThreshold(vision.getAng(), 0, ShooterConfig.angTolerance)){
+//			timer.start();
+//			
+//			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
+//				launchBall();
+//				
+//				if(isFirst) {
+//					currentPos = leftMotorEnc.getDistance();
+//					isFirst =  false;
+//				}
+//
+//				if (Math.abs(leftMotorEnc.getDistance() - currentPos) < waitDistance){
+//					solOne.set(false);
+//					shootSpeed = 0;
+//					isShooting = false;
+//					isFirst = true;
+//				}
+//			}
+//		}
+//		
+//		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
+//	
 		}
-		
-		if(Util.withinThreshold(vision.getAng(), 0, ShooterConfig.angTolerance)){
-			timer.start();
-			
-			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
-				launchBall();
-				
-				if(isFirst) {
-					currentPos = leftMotorEnc.getDistance();
-					isFirst =  false;
-				}
-
-				if (Math.abs(leftMotorEnc.getDistance() - currentPos) < waitDistance){
-					solOne.set(false);
-					shootSpeed = 0;
-					isShooting = false;
-					isFirst = true;
-				}
-			}
-		}
-		
-		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
-	}
 
 	/**
 	 * Starts the shooting process at a given speed
@@ -116,7 +114,7 @@ public class Shooter{
 	 */
 	public void shoot() {
 		isShooting = true;
-		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		//shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 	
 	/**
@@ -139,7 +137,7 @@ public class Shooter{
 	 * Starts the motors at a speed determined from vision
 	 */
 	public void setSpeed() {
-		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = 1; //vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 
 	/**

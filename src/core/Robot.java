@@ -3,7 +3,7 @@ package core;
 
 import sensors.SharpIR;
 import util.Dashboard;
-import vision.VisionCore;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -18,7 +18,7 @@ public class Robot extends IterativeRobot {
 	
 	Drive drive = new Drive(robotCore); 
 	IntakeArm arm = new IntakeArm(robotCore);
-	VisionCore vs = new VisionCore();
+	
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Shooter shooter = new Shooter(robotCore, drive);
