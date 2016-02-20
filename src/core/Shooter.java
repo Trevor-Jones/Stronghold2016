@@ -39,13 +39,13 @@ public class Shooter{
 	 * @param drive
 	 * @param vision
 	 */
-	public Shooter(RobotCore core, Drive drive){
+	public Shooter(RobotCore core, Drive drive, VisionCore vs){
 		leftMotorEnc = core.motorOneEnc;
 		rightMotorEnc = core.motorTwoEnc;
 		solOne = core.solOne;
 	
 		this.drive = drive;
-		vs = core.vs;
+		this.vs = vs;
 
 		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
 		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
@@ -74,11 +74,11 @@ public class Shooter{
 		rightMotor.set(rightPID.getOutput());
 		
 		if(isShooting) {
-			turnPID.update(vs.getVisionData().goalOne[0], 0); 
+			turnPID.update(vs.getShootingGoal()[1], 0); 
 			drive.set(turnPID.getOutput(), -turnPID.getOutput());
 		}
 		
-		if(Util.withinThreshold(vision.getAng(), 0, ShooterConfig.angTolerance)){
+		if(Util.withinThreshold(vs.getShootingGoal()[1], 0, ShooterConfig.angTolerance)){
 			timer.start();
 			
 			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
@@ -116,7 +116,7 @@ public class Shooter{
 	 */
 	public void shoot() {
 		isShooting = true;
-		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = 1; //vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class Shooter{
 	 * Starts the motors at a speed determined from vision
 	 */
 	public void setSpeed() {
-		shootSpeed = vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = 1;//vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 
 	/**

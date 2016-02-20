@@ -24,7 +24,6 @@ public class RobotCore {
 	public Encoder motorTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
 	public Solenoid solOne = new Solenoid(ShooterConfig.ChnSol);
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
-	public VisionCore vs = new VisionCore();
 	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 	
 

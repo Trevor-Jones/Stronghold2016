@@ -39,13 +39,11 @@
 		}
 
 		public String updateVision(){
-			String inputText = null;
+			String inputText = "No Input";
 			
 			try {
-				inputText = stdIn.readLine();
-				if((inputText) == null){
-					System.out.println("Camera input null");
-				}
+				inputText = in.readLine();
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

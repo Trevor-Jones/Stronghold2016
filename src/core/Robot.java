@@ -15,16 +15,17 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
-	
+
+	Dashboard dashboard = new Dashboard();
 	Drive drive = new Drive(robotCore); 
+	VisionCore vs = new VisionCore(dashboard);
 	IntakeArm arm = new IntakeArm(robotCore);
-	VisionCore vs = new VisionCore();
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
-	Shooter shooter = new Shooter(robotCore, drive);
+	Shooter shooter = new Shooter(robotCore, drive, vs);
 	Climber climber = new Climber(robotCore);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber);
-	Dashboard dashboard = new Dashboard();
+
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard);
 	
 	

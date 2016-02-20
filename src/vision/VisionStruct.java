@@ -1,12 +1,14 @@
 package vision;
 
+import vision.Goal;
+
 
 public class VisionStruct
 {
-	int[] goalOne = new int[2];
-	int[] goalTwo= new int[2];
-	int[] goalThree= new int[2];
-			
+	Goal goalOne;
+	Goal goalTwo;
+	Goal goalThree; 
+	int frameNumber = 0;	
 	
 	
 	//Boolean unspecifiedException;
