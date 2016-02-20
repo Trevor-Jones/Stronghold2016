@@ -40,6 +40,8 @@ public class Intake {
 		arm.update();
 		roller.update();
 		
+//		System.out.println("Step: " + step + "\tRoller speed: " + roller.getSpeed());
+		
 		switch(step) {
 			case 0:
 				arm.setPos(IntakeArmConfig.pickupPosArray);
@@ -53,8 +55,10 @@ public class Intake {
 					isFirst = false;
 				}
 				
-				if(roller.getSpeed() == 0)
+				if(roller.getSpeed() == 0){
 					step++;
+					isFirst = true;
+				}
 				break;
 				
 			case 2:
@@ -64,9 +68,18 @@ public class Intake {
 				break;
 			
 			case 3:
-				roller.runIntakeRoller();
-				if(roller.getSpeed() == 0)
+				if(isFirst) {
+					roller.runIntakeRoller();
+					isFirst = false;
+				}
+				if(roller.getSpeed() == 0){
 					step++;
+					isFirst = true;
+				}
+				break;
+			
+			case 4:
+				roller.setSpeed(0);
 				break;
 		}
 	}

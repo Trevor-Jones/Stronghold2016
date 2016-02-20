@@ -4,15 +4,16 @@ package config;
 public class ShooterConfig
 {
 
-	public static final int ChnAMotorOneEnc = 7;//TODO Fix
-	public static final int ChnBMotorOneEnc = 8; //TODO fix
-	public static final int ChnBMotorTwoEnc = 9;
-	public static final int ChnAMotorTwoEnc = 10;
-	public static final int ChnSol = 0;
-	public static final double motorWantSpeed = 0.5;
-	public static final double distancePerPulse = 0.15;
-	public static final int ChnMotorOne = 12;
-	public static final int ChnMotorTwo = 13;
+	public static final int ChnAMotorOneEnc = 2;
+	public static final int ChnBMotorOneEnc = 3;
+	public static final int ChnBMotorTwoEnc = 7;
+	public static final int ChnAMotorTwoEnc = 6;
+	public static final int ChnSolA = 0;
+	public static final int ChnSolB = 1;
+	public static final double distancePerPulseRight = -0.0000547;
+	public static final double distancePerPulseLeft = 0.0000547;
+	public static final int ChnMotorOne = 9;
+	public static final int ChnMotorTwo = 8;
 	public static final double waitTime = 0.5;
 	
 	public static final double kPLeft = 1;
@@ -31,6 +32,6 @@ public class ShooterConfig
 	public static final double turnTime = 0.5;
 	public static final double distanceSpeedConstant = 1;
 	
-	public static final double constantSpeed = 0.5;
+	public static final double constantSpeed = 1;
 	
 }

@@ -65,4 +65,20 @@ public class CIM extends CANTalon {
 			set(wantSpeed);
 		}
 	}
+	
+	public void ramp(double wantSpeed, double rampRate){
+		if(Math.abs(wantSpeed - get()) > rampRate){
+			
+			if(wantSpeed > get())
+				set(get() +  rampRate);
+			
+			else
+				set(get() - rampRate);
+			
+		}
+		
+		else {
+			set(wantSpeed);
+		}
+	}
 }

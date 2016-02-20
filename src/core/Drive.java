@@ -2,6 +2,7 @@ package core;
 
 import components.TwoCimGroup;
 import config.DriveConfig;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 
@@ -20,7 +21,7 @@ public class Drive {
 	private Encoder encRight;
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
-	public Solenoid shiftingSol = new Solenoid(DriveConfig.shiftSolPort);
+	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
@@ -49,7 +50,7 @@ public class Drive {
         leftCimGroup.set(left);
         rightCimGroup.set(right);
         
-        System.out.println("Drive Encoder Left: " + encLeft.getDistance() + "\tDrive Encoder Right: " + encRight.getDistance());
+//        System.out.println("Drive Encoder Left: " + encLeft.getDistance() + "\tDrive Encoder Right: " + encRight.getDistance());
 	}
 	
 	public void moveNoRamp(double r, double theta) {
@@ -62,8 +63,6 @@ public class Drive {
 		
         double left = y + x;
         double right = y - x;
-        
-        System.out.println("left in move: " + left + "\tright in drive: " + right);
         
         leftCimGroup.setNoRamp(left);
         rightCimGroup.setNoRamp(right);
@@ -78,10 +77,12 @@ public class Drive {
 	}
 	
 	public void toFastGear() {
-		shiftingSol.set(true);
+		shiftingSol.set(DoubleSolenoid.Value.kReverse);
+		System.out.println("fast");
 	}
 	
 	public void toSlowGear() {
-		shiftingSol.set(false);
+		shiftingSol.set(DoubleSolenoid.Value.kForward);
+		System.out.println("slow");
 	}
 }
