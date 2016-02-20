@@ -26,7 +26,7 @@ public class Teleop {
 		this.drive = drive;
 		this.intake = intake;
 		this.shooter = shooter;
-		this.climber = climber;
+//		this.climber = climber;
 	}
 		
 	/**

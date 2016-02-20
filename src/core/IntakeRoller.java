@@ -44,6 +44,7 @@ public class IntakeRoller {
 	 */
 	public void setRawSpeed(double speed) {
 		intakeCim.set(speed);
+		this.speed = speed;
 	}
 	
 	/**

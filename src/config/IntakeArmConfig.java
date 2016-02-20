@@ -16,7 +16,7 @@ public class IntakeArmConfig {
 	public static final int armEncChnB = 9;
 	
 	// Encoder config
-	public static final double armEncDistPulse = 0.03369;
+	public static final double armEncDistPulse = -0.000104;
 	
 	// Motor config
 	public static final boolean armMotorFlipped = true;
