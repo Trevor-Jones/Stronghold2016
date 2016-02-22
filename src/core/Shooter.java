@@ -3,12 +3,12 @@ package core;
 import components.CIM;
 
 import config.ShooterConfig;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
-import vision.VisionCore;
 
 /**
  * Controls the shooter mechanism
@@ -18,18 +18,23 @@ import vision.VisionCore;
 public class Shooter{
 	public Encoder leftMotorEnc;
 	public Encoder rightMotorEnc;
-	public Solenoid solOne;
+	public DoubleSolenoid solOne;
 	public CIM leftMotor = new CIM(ShooterConfig.ChnMotorOne, false);
-	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, false);
+	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, true);
 	private PID leftPID;
 	private PID rightPID;
 	private PID turnPID;
 	private boolean isShooting;
 	private double shootSpeed;
 	double currentPos;
-	double waitDistance;
+	double waitDistance = 0.5;
+	double speed;
 	boolean isFirst;
-	VisionCore vs;
+	boolean stopping;
+	boolean isFirstTimer;
+	boolean usingVision;
+	int wantGoal;
+	Vision vision;
 	Drive drive;
 	Timer timer = new Timer();
 
@@ -39,21 +44,23 @@ public class Shooter{
 	 * @param drive
 	 * @param vision
 	 */
-	public Shooter(RobotCore core, Drive drive, VisionCore vs){
+	public Shooter(RobotCore core, Drive drive, Vision vision){
 		leftMotorEnc = core.motorOneEnc;
 		rightMotorEnc = core.motorTwoEnc;
 		solOne = core.solOne;
+		speed = 0;
+		usingVision = false;
+		this.vision = vision;
 	
 		this.drive = drive;
-		this.vs = vs;
-
-		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
-		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulse);
+		
+		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
+		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
 
 		leftMotorEnc.reset();
 		rightMotorEnc.reset();
 
-		solOne.set(false);
+		solOne.set(DoubleSolenoid.Value.kForward);
 		leftMotor.set(0);
 		rightMotor.set(0);
 		isShooting = false;
@@ -68,37 +75,53 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-		leftPID.update(leftMotorEnc.getRate(), shootSpeed);
-		rightPID.update(rightMotorEnc.getRate(), shootSpeed);
-		leftMotor.set(leftPID.getOutput());
-		rightMotor.set(rightPID.getOutput());
+		wantGoal = vision.getHighestArea();
 		
-		if(isShooting) {
-			turnPID.update(vs.getShootingGoal()[1], 0); 
+		System.out.println("left shooter enc: " + leftMotorEnc.getRate() + "\tright shooter enc: " + rightMotorEnc.getRate());
+		if(!stopping) {
+			leftPID.update(leftMotorEnc.getRate(), shootSpeed);
+			rightPID.update(rightMotorEnc.getRate(), shootSpeed);
+			speed+=leftPID.getOutput();
+			leftMotor.ramp(speed,0.05);
+			rightMotor.ramp(speed,0.05);
+		}
+		else {
+			leftMotor.ramp(0,0.05);
+			rightMotor.ramp(0,0.05);
+		}
+		
+		if(isShooting && usingVision) {
+			turnPID.update(vision.getRotation(wantGoal), 0); 
 			drive.set(turnPID.getOutput(), -turnPID.getOutput());
 		}
 		
-		if(Util.withinThreshold(vs.getShootingGoal()[1], 0, ShooterConfig.angTolerance)){
-			timer.start();
+		if(isShooting && Util.withinThreshold(vision.getRotation(wantGoal), 0, ShooterConfig.angTolerance)){
+			if(isFirstTimer){
+				timer.start();
+				isFirstTimer = false;
+			}
 			
-			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
-				launchBall();
+			System.out.print("timer: " + timer.get() + "\t");
+			if (/*isMotorsFastEnough(shootSpeed) && isShooting &&*/ timer.get() > ShooterConfig.turnTime){
+				solOne.set(DoubleSolenoid.Value.kForward);
 				
 				if(isFirst) {
-					currentPos = leftMotorEnc.getDistance();
+					currentPos = rightMotorEnc.getDistance();
 					isFirst =  false;
 				}
 
-				if (Math.abs(leftMotorEnc.getDistance() - currentPos) < waitDistance){
-					solOne.set(false);
+				if (Math.abs(rightMotorEnc.getDistance() - currentPos) > waitDistance){
+					solOne.set(DoubleSolenoid.Value.kReverse);
+					System.out.println("Done Fam");
 					shootSpeed = 0;
 					isShooting = false;
 					isFirst = true;
+					stopping = true;
+					isFirstTimer = true;
 				}
 			}
 		}
-		
-		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
+//		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
 	}
 
 	/**
@@ -109,6 +132,8 @@ public class Shooter{
 		isShooting = true;
 		this.shootSpeed = shootSpeed;
 		waitDistance = ShooterConfig.waitTime * leftMotorEnc.getRate();
+		isFirstTimer = true;
+		stopping = false;
 	}
 	
 	/**
@@ -116,7 +141,14 @@ public class Shooter{
 	 */
 	public void shoot() {
 		isShooting = true;
-		shootSpeed = 1; //vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		isFirstTimer = true;
+		stopping = false;
+		if(usingVision) {
+			shootSpeed = vision.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
+		}
+		else {
+			shootSpeed = ShooterConfig.constantSpeed;
+		}
 	}
 	
 	/**
@@ -125,6 +157,15 @@ public class Shooter{
 	public void cancelShot() {
 		isShooting = false;
 		shootSpeed = 0;
+		stopping = true;
+	}
+	
+	/**
+	 * Enables or disable vision use withing shooter
+	 * @param visionUse
+	 */
+	public void setVisionUse(boolean visionUse) {
+		usingVision = visionUse;
 	}
 	
 	/**
@@ -133,20 +174,32 @@ public class Shooter{
 	 */
 	public void setSpeed(double speed) {
 		shootSpeed = speed;
+		stopping = false;
+	}
+	
+	public void setRawSpeed(double speed) {
+		leftMotor.set(speed);
+		rightMotor.set(speed);
+		shootSpeed = speed;
 	}
 	
 	/**
 	 * Starts the motors at a speed determined from vision
 	 */
 	public void setSpeed() {
-		shootSpeed = 1;//vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = 1;
+		stopping = false;
+		//vision.getDistance()*ShooterConfig.distanceSpeedConstant;
 	}
 
 	/**
 	 * Actuates a solenoid to launch the ball
 	 */
 	public void launchBall() {
-		solOne.set(true);
+		if(solOne.get() == DoubleSolenoid.Value.kReverse)
+			solOne.set(DoubleSolenoid.Value.kForward);
+		else if(solOne.get() == DoubleSolenoid.Value.kForward)
+			solOne.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -155,7 +208,7 @@ public class Shooter{
 	 * @return
 	 */
 	public boolean isMotorsFastEnough(double motorSpeed){
-		return (leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed);
+		return (/*leftMotorEnc.getRate() > (motorSpeed-0.2) && */rightMotorEnc.getRate() > (motorSpeed-0.2));
 	}
 
 }

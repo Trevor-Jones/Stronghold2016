@@ -11,18 +11,20 @@ import config.IntakeArmConfig;
  *
  */
 public class IntakeArm {
-	private PID pid = new PID(IntakeArmConfig.kP, IntakeArmConfig.kI, IntakeArmConfig.kD);
+	private PID pidUp = new PID(IntakeArmConfig.kPUp, IntakeArmConfig.kIUp, IntakeArmConfig.kDUp);
+	private PID pidDown = new PID(IntakeArmConfig.kPDown, IntakeArmConfig.kIDown, IntakeArmConfig.kDDown);
 	private Encoder armEnc; 
-	private CIM armMotor = new CIM(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
-	private double wantPos = 0;
-	private double currPos = 0;
-	private int posIndex = 0;
-	
 	private double position [] = 
 	{
 		IntakeArmConfig.pickupPosition,
 		IntakeArmConfig.homePosition
 	};
+	private CIM armMotor = new CIM(IntakeArmConfig.armMotorChn, IntakeArmConfig.armMotorFlipped);
+	private int posIndex = 1;
+	private double wantPos = position[posIndex];
+	private double currPos = 0;
+	private double pidOutput = 0;
+	
 	
 	/**
 	 * 
@@ -58,9 +60,20 @@ public class IntakeArm {
 	 */
 	public void update() {
 		currPos = armEnc.getDistance();
-		pid.update(currPos, wantPos);
-		setArmSpeed(Util.limit(pid.getOutput(), IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
-		System.out.println("Arm Encoder Distance: " + armEnc.getDistance());
+		
+		if(wantPos - currPos <= 0) {
+			pidUp.update(currPos, wantPos);
+			pidOutput = pidUp.getOutput();
+		}
+		else if(wantPos - currPos > 0) {
+			pidDown.update(currPos, wantPos);
+			pidOutput = pidDown.getOutput();
+		}
+
+		setArmSpeed(Util.limit(pidOutput, IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
+		
+//		System.out.print("Arm Encoder Distance: " + armEnc.getDistance());
+//		System.out.println("\tcurrPos: " + currPos + "\twantPos: " + wantPos + "\tPID Output: " + pidDown.getOutput());
 	}
 	
 	/**

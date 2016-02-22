@@ -3,7 +3,7 @@ package core;
 
 import sensors.SharpIR;
 import util.Dashboard;
-import vision.VisionCore;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -15,18 +15,18 @@ import edu.wpi.first.wpilibj.IterativeRobot;
  */
 public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
-
-	Dashboard dashboard = new Dashboard();
+	
 	Drive drive = new Drive(robotCore); 
-	VisionCore vs = new VisionCore(dashboard);
 	IntakeArm arm = new IntakeArm(robotCore);
+	
+	Vision vision = new Vision();
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
-	Shooter shooter = new Shooter(robotCore, drive, vs);
+	Shooter shooter = new Shooter(robotCore, drive, vision);
 	Climber climber = new Climber(robotCore);
-	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber);
-
-	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard);
+	Dashboard dashboard = new Dashboard(vision);
+	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
+	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
 	
 	
     /**
@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-
+    	vision.socket.initSockets();
     }
 
     public void autonomousInit() {
@@ -55,7 +55,7 @@ public class Robot extends IterativeRobot {
     }
     
     /**
-     * This function is called periodically during test mode
+     * This function is call/ed periodically during test mode
      */
     public void testPeriodic() {
     

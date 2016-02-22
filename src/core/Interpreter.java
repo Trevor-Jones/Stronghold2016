@@ -23,6 +23,7 @@ public class Interpreter {
 	private String fileName;
 	private Dashboard dashboard;
 	private Shooter shooter;
+	private Vision vision;
 	
 	/**
 	 * 
@@ -32,12 +33,13 @@ public class Interpreter {
 	 * @param dashboard
 	 * @param shooter
 	 */
-	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter){
+	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter, Vision vision){
 		this.drive = drive;
 		this.robotCore = robotCore;
 		this.intake = intake;
 		this.dashboard = dashboard;
 		this.shooter = shooter;
+		this.vision = vision;
 	}
 	
 	/**

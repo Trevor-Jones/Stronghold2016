@@ -26,7 +26,7 @@ public class IntakeRoller {
 	 */
 	public IntakeRoller(IntakeArm arm, SharpIR sharp) {
 		this.arm = arm;
-		speed = IntakeRollerConfig.intakeSpeed;
+		speed = 0;
 		this.sharp = sharp;
 	}
 	
@@ -35,6 +35,7 @@ public class IntakeRoller {
 	 */
 	public void runIntakeRoller() { 
 		speed = IntakeRollerConfig.intakeSpeed;
+		isFirst = false;
 	}
 	
 	/**
@@ -43,6 +44,7 @@ public class IntakeRoller {
 	 */
 	public void setRawSpeed(double speed) {
 		intakeCim.set(speed);
+		this.speed = speed;
 	}
 	
 	/**
@@ -51,31 +53,28 @@ public class IntakeRoller {
 	 */
 	public void setSpeed (double speed) {
 		this.speed = speed;
+		isFirst = false;
 	}
 	
 	/**
 	 * Run periodically to control roller intake process
 	 */
 	public void update() {
-		if(isFirst && speed != 0) {
+		if(isFirst) {
+			timer.reset();
 			timer.start();
 		}
 		
 		intakeCim.set(speed);
 		
-		if(timer.get() > 1/*!sharp.isBallInIntake()*/ && arm.getPos() < IntakeRollerConfig.posThresholdDrop) {
+		if(getSpeed() == 0) {
 			speed = 0;
-			isFirst = false;
+			isFirst = true;
 			timer.stop();
 			timer.reset();
 		}
 		
-		else if(timer.get() > 1/*sharp.isBallInIntake()*/  && arm.getPos() > IntakeRollerConfig.posThresholdPickup) {
-			speed = 0;
-			isFirst = false;
-			timer.stop();
-			timer.reset();
-		}
+//		System.out.print("Timer: " + timer.get() + "\t");
 	}
 	
 	/**

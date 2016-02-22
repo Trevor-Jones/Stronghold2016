@@ -1,11 +1,11 @@
 package core;
 
 import config.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Solenoid;
 import sensors.*;
-import vision.VisionCore;
 
 /**
  * Contains various sensors such as joysticks and accelerometers
@@ -22,9 +22,9 @@ public class RobotCore {
 	public SharpIR sharp = new SharpIR();
 	public Encoder motorOneEnc = new Encoder(ShooterConfig.ChnAMotorOneEnc, ShooterConfig.ChnBMotorOneEnc);
 	public Encoder motorTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
-	public Solenoid solOne = new Solenoid(ShooterConfig.ChnSol);
+	public DoubleSolenoid solOne = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
-	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
+//	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 	
 
 }

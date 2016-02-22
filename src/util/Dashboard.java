@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.ChooserType;
 import config.DashboardConfig;
+import core.Vision;
 
 /**
  * Controlls the smartDashboard
@@ -12,21 +13,25 @@ import config.DashboardConfig;
  */
 public class Dashboard {
 
+	Vision vision;
 	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser autoGoalChooser = new SendableChooser();
 	
 	/**
 	 * Creates sections of dashboard
 	 */
-	public Dashboard() {
+	public Dashboard(Vision vision) {
+		this.vision = vision;
+		
 		autoChooser.addDefault("Do Nothing", new ChooserType(DashboardConfig.idDoNothing));
 		autoChooser.addObject("To Auto Zone", new ChooserType(DashboardConfig.idDriveForward));
-		SmartDashboard.putData("AutoMode", autoChooser);
+		SmartDashboard.putData("Auto Mode", autoChooser);
 		
 		autoGoalChooser.addDefault("Don't Shoot", new ChooserType(DashboardConfig.idNoShoot));
 		autoGoalChooser.addObject("Left Goal", new ChooserType(DashboardConfig.idLeftGoal));
 		autoGoalChooser.addObject("Middle Goal", new ChooserType(DashboardConfig.idMiddleGoal));
 		autoGoalChooser.addObject("Right Goal", new ChooserType(DashboardConfig.idRightGoal));
+		SmartDashboard.putData("Auto Goal Chooser", autoGoalChooser);
 	}
 	
 	/**
@@ -35,6 +40,10 @@ public class Dashboard {
 	 */
 	public int getAutoType() {
 		return ((ChooserType) autoChooser.getSelected()).getId();
+	}
+	
+	public void update() {
+		SmartDashboard.putBoolean("Connected to Jetson", vision.socket.getSocketStatus());
 	}
 	
 	/**

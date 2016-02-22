@@ -2,6 +2,7 @@ package core;
 
 import config.IntakeArmConfig;
 import config.IntakeConfig;
+import edu.wpi.first.wpilibj.Timer;
 import util.Util;
 
 /**
@@ -12,6 +13,7 @@ import util.Util;
 public class Intake {
 	IntakeArm arm;
 	IntakeRoller roller;
+	Timer timer = new Timer();
 	private int step;
 	private boolean isFirst = true;
 	
@@ -40,6 +42,8 @@ public class Intake {
 		arm.update();
 		roller.update();
 		
+//		System.out.println("Step: " + step + "\tRoller speed: " + roller.getSpeed());
+		
 		switch(step) {
 			case 0:
 				arm.setPos(IntakeArmConfig.pickupPosArray);
@@ -53,20 +57,48 @@ public class Intake {
 					isFirst = false;
 				}
 				
-				if(roller.getSpeed() == 0)
+				if(roller.getSpeed() == 0){
 					step++;
+					isFirst = true;
+				}
 				break;
 				
 			case 2:
+				if(isFirst) {
+					timer.reset();
+					timer.start();
+					roller.setRawSpeed(-1);
+					isFirst = false;
+				}
+				
+				if(timer.get() > 0.01) {
+					roller.setRawSpeed(0);
+					timer.stop();
+					timer.reset();
+					isFirst = true;
+					step++;
+				}
+				
+				
+			case 3:
 				arm.setPos(IntakeArmConfig.homePosArray);
 				if(Util.withinThreshold(arm.getPos(), arm.getWantPos(), IntakeConfig.armPosThreshold)) 
 					step++;
 				break;
 			
-			case 3:
-				roller.runIntakeRoller();
-				if(roller.getSpeed() == 0)
+			case 4:
+				if(isFirst) {
+					roller.runIntakeRoller();
+					isFirst = false;
+				}
+				if(roller.getSpeed() == 0){
 					step++;
+					isFirst = true;
+				}
+				break;
+			
+			case 5:
+				roller.setSpeed(0);
 				break;
 		}
 	}
