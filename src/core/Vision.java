@@ -25,6 +25,10 @@ public class Vision {
 	Goal[] goals;
 	public SocketClient socket = new SocketClient();
 	
+	public Vision() {
+		socket.initSockets();
+	}
+	
 	public double getDistance(int goalNumber) {
 		return goals[goalNumber].distance;
 	}

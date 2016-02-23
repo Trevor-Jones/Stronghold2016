@@ -1,6 +1,5 @@
 package config;
 
-
 public class ShooterConfig
 {
 
@@ -33,5 +32,9 @@ public class ShooterConfig
 	public static final double distanceSpeedConstant = 1;
 	
 	public static final double constantSpeed = 0.3;
+	public static final double motorSpeedTolerance = 0.1;
+	
+	public static final double[] distanceToVelocity = {};
+	public static final int maxDistanceVision = 100;
 	
 }

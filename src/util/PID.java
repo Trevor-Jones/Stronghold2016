@@ -100,7 +100,7 @@ public class PID {
         
         errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
         prevErr = errP;
-        output = (errP * kP) /*+ (errSum * kI) + (errD * kD)*/;
+        output = (errP * kP) + (errSum * kI) + (errD * kD);
 //        System.out.println(errP + "\t" + output);
         deltaSysT = (System.currentTimeMillis() - prevSysTime) / 1000;
         prevSysTime = (deltaSysT * 1000) + prevSysTime;

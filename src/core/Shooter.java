@@ -1,5 +1,8 @@
 package core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import components.CIM;
 
 import config.ShooterConfig;
@@ -37,6 +40,7 @@ public class Shooter{
 	Vision vision;
 	Drive drive;
 	Timer timer = new Timer();
+	Map<Integer, Double> map = new HashMap<Integer, Double>();
 
 	/**
 	 * 
@@ -52,6 +56,8 @@ public class Shooter{
 		usingVision = false;
 		this.vision = vision;
 	
+		initShooterTable();
+		
 		this.drive = drive;
 		
 		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
@@ -102,7 +108,7 @@ public class Shooter{
 			}
 			
 			System.out.print("timer: " + timer.get() + "\t");
-			if (/*isMotorsFastEnough(shootSpeed) && isShooting &&*/ timer.get() > ShooterConfig.turnTime){
+			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
 				solOne.set(DoubleSolenoid.Value.kForward);
 				
 				if(isFirst) {
@@ -187,9 +193,8 @@ public class Shooter{
 	 * Starts the motors at a speed determined from vision
 	 */
 	public void setSpeed() {
-		shootSpeed = 1;
 		stopping = false;
-		//vision.getDistance()*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = vision.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
 	}
 
 	/**
@@ -208,7 +213,26 @@ public class Shooter{
 	 * @return
 	 */
 	public boolean isMotorsFastEnough(double motorSpeed){
-		return (/*leftMotorEnc.getRate() > (motorSpeed-0.2) && */rightMotorEnc.getRate() > (motorSpeed-0.2));
+		return (Util.withinThreshold(leftMotorEnc.getRate(), motorSpeed, ShooterConfig.motorSpeedTolerance) && Util.withinThreshold(rightMotorEnc.getRate(), motorSpeed, ShooterConfig.motorSpeedTolerance));
+	}
+	
+	/**
+	 * returns velocity based off of distance from vision
+	 * @param distance distance from 1-100
+	 */
+	public double getVelocityDistance(double distance){
+		return map.get(distance);
+	}
+	
+	/**
+	 * initializes the hashmap for distance to velocity
+	 */
+	public void initShooterTable() {
+		for(int i = 0; i < ShooterConfig.distanceToVelocity.length; i++) {
+			for(int q = 0; q <= ShooterConfig.maxDistanceVision/ShooterConfig.distanceToVelocity.length; q++){				
+				map.put((i*(ShooterConfig.maxDistanceVision/ShooterConfig.distanceToVelocity.length))+q, ShooterConfig.distanceToVelocity[i]);
+			}
+		}
 	}
 
 }
