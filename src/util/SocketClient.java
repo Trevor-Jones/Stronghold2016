@@ -13,11 +13,12 @@ public class SocketClient {
 	Socket visionSocket;
 	PrintWriter out;
 	BufferedReader in;
+	boolean lostConnection = false;
 	
 	String xml;
 	
 	public boolean getSocketStatus() {
-		return visionSocket.isConnected();
+		return lostConnection ? lostConnection : visionSocket.isConnected();
 	}
 	
 	public void initSockets() {
@@ -29,16 +30,23 @@ public class SocketClient {
 			
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
-		}
-		catch(IOException e) {
+		} catch(IOException e) {
+			e.printStackTrace();
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void update() {
 		try{
-			xml = in.readLine();			
+			if(in.readLine() != null)
+				xml = in.readLine();	
+			else 
+				lostConnection = true;
 		} catch (IOException e) {
+			lostConnection = true;
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

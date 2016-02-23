@@ -221,7 +221,7 @@ public class Shooter{
 	 * @param distance distance from 1-100
 	 */
 	public double getVelocityDistance(double distance){
-		return map.get(distance);
+		return map.get(Math.round(distance));
 	}
 	
 	/**

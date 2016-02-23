@@ -22,7 +22,8 @@ import config.VisionConfig;
 import util.SocketClient;
 
 public class Vision {
-	Goal[] goals;
+	private Goal[] goals;
+	private int frameNumber;
 	public SocketClient socket = new SocketClient();
 	
 	public Vision() {
@@ -60,20 +61,22 @@ public class Vision {
 			Document doc = stringToDoc(xml);
 			doc.getDocumentElement().normalize();
 					
-			NodeList nList = doc.getElementsByTagName("goal");
-			goals = new Goal[nList.getLength()];
+			NodeList goalList = doc.getElementsByTagName("goal");
+			goals = new Goal[goalList.getLength()];
 			
-			for (int i = 0; i < nList.getLength(); i++) {	
-				Node nNode = nList.item(i);
+			for (int i = 0; i < goalList.getLength(); i++) {	
+				Node goalNode = goalList.item(i);
 	
-				Element eElement = (Element) nNode;
+				Element goalElement = (Element) goalNode;
 				
-				goals[i].translation = Integer.parseInt(eElement.getAttribute("translation"));
-				goals[i].rotation = Integer.parseInt(eElement.getAttribute("rotation"));
-				goals[i].distance = Integer.parseInt(eElement.getAttribute("distance"));
-				goals[i].area = Integer.parseInt(eElement.getAttribute("area"));
+				goals[i].translation = Integer.parseInt(goalElement.getAttribute("translation"));
+				goals[i].rotation = Integer.parseInt(goalElement.getAttribute("rotation"));
+				goals[i].distance = Integer.parseInt(goalElement.getAttribute("distance"));
+				goals[i].area = Integer.parseInt(goalElement.getAttribute("area"));
 			
-		    }
+		    }	
+			frameNumber = Integer.parseInt(((Element)doc.getElementsByTagName("vision").item(0)).getAttribute("frameNumber"));
+			
 		} catch (Exception e) {
 		e.printStackTrace();
 	    }
