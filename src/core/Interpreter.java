@@ -3,6 +3,7 @@ import edu.wpi.first.wpilibj.Timer;
 import config.*;
 import util.ChooserType;
 import util.Dashboard;
+import vision.Vision;
 
 /**
  * Interprets and runs scripts parsed for auto

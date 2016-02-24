@@ -3,8 +3,8 @@ package util;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.ChooserType;
+import vision.Vision;
 import config.DashboardConfig;
-import core.Vision;
 
 /**
  * Controlls the smartDashboard

@@ -3,6 +3,7 @@ package core;
 
 import edu.wpi.first.wpilibj.Timer;
 import util.Dashboard;
+import vision.Vision;
 
 /**
  * Contains all code required for auto

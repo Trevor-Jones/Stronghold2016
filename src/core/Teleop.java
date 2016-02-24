@@ -2,6 +2,7 @@ package core;
 
 import config.*;
 import util.Dashboard;
+import vision.Vision;
 
 /**
  * Joins user input with core components

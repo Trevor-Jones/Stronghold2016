@@ -1,4 +1,4 @@
-package core;
+package vision;
 
 public class Goal {
 	public double rotation;

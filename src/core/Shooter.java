@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
+import vision.Vision;
 
 /**
  * Controls the shooter mechanism
