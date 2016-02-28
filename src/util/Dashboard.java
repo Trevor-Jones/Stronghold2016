@@ -3,7 +3,7 @@ package util;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.ChooserType;
-import vision.Vision;
+import vision.VisionCore;
 import config.DashboardConfig;
 
 /**
@@ -13,14 +13,14 @@ import config.DashboardConfig;
  */
 public class Dashboard {
 
-	Vision vision;
+	VisionCore vision;
 	private SendableChooser autoChooser = new SendableChooser();
 	private SendableChooser autoGoalChooser = new SendableChooser();
 	
 	/**
 	 * Creates sections of dashboard
 	 */
-	public Dashboard(Vision vision) {
+	public Dashboard(VisionCore vision) {
 		this.vision = vision;
 		
 		autoChooser.addDefault("Do Nothing", new ChooserType(DashboardConfig.idDoNothing));

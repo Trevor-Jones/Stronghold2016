@@ -26,5 +26,14 @@ public class RobotCore {
 	PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 	
+	public RobotCore(){
+		
+		motorOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
+		motorTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
+
+		motorOneEnc.reset();
+		motorTwoEnc.reset();
+
+	}
 
 }

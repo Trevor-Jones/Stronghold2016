@@ -18,42 +18,39 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import config.ShooterConfig;
 import config.VisionConfig;
+import core.RobotCore;
+import util.PID;
 import util.SocketClient;
+import util.XMLParser;
 
-public class Vision {
+public class VisionCore {
 	private XMLParser xmlParser = new XMLParser();
-	private VisionStruct vs;
+	public VisionStruct vs;
 	public SocketClient socket = new SocketClient();
 	
-	public Vision() {
+	PID turnPID = new PID(ShooterConfig.kPDrive, ShooterConfig.kIDrive, ShooterConfig.kDDrive);
+
+		public VisionCore(RobotCore core) {
 		socket.initSockets();
-	}
-	
-	public double getDistance(int goalNumber) {
-		return vs.goals[goalNumber].distance;
-	}
-	
-	public double getRotation(int goalNumber) {
-		return vs.goals[goalNumber].rotation;
-	}
-	
-	public double getTranslation(int goalNumber) {
-		return vs.goals[goalNumber].translation;
-	}
-	
-	public double getArea(int goalNumber) {
-		return vs.goals[goalNumber].area;
-	}
-	
-	public int getHighestArea() {
-		int goalNumber = 0;
-		for(int i = 1; i < vs.goals.length; i++) {
-			if(vs.goals[i].area > vs.goals[i-1].area){
-				goalNumber = i;
-			}
+		
+		
 		}
-		return goalNumber;
+	
+	
+	
+	public void updatePID(int wantGoal){
+		turnPID.update(this.vs.getRotation(wantGoal), 0);
+	}
+	
+	public double[]  getTurnPID(){
+		double[] d = new double[2];
+		
+		d[0] = turnPID.getOutput();
+		d[1] = -1 * turnPID.getOutput();
+	
+		return d;
 	}
 	
 	public void update() {

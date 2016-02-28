@@ -3,7 +3,7 @@ package core;
 
 import edu.wpi.first.wpilibj.Timer;
 import util.Dashboard;
-import vision.Vision;
+import vision.VisionCore;
 
 /**
  * Contains all code required for auto
@@ -21,7 +21,7 @@ public class Auto {
 	 * @param shooter
 	 * @param dashboard
 	 */
-	public Auto(RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Dashboard dashboard, Vision vision){
+	public Auto(RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Dashboard dashboard, VisionCore vision){
 		interpreter = new Interpreter(drive, robotCore, intake, dashboard, shooter, vision);
 	}
 	

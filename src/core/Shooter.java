@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.PID;
 import util.Util;
-import vision.Vision;
+import vision.VisionCore;
 
 /**
  * Controls the shooter mechanism
@@ -38,7 +38,7 @@ public class Shooter{
 	boolean isFirstTimer;
 	boolean usingVision;
 	int wantGoal;
-	Vision vision;
+	VisionCore vision;
 	Drive drive;
 	Timer timer = new Timer();
 	Map<Integer, Double> map = new HashMap<Integer, Double>();
@@ -49,7 +49,7 @@ public class Shooter{
 	 * @param drive
 	 * @param vision
 	 */
-	public Shooter(RobotCore core, Drive drive, Vision vision){
+	public Shooter(RobotCore core, Drive drive, VisionCore vision){
 		leftMotorEnc = core.motorOneEnc;
 		rightMotorEnc = core.motorTwoEnc;
 		solOne = core.solOne;
@@ -61,12 +61,7 @@ public class Shooter{
 		
 		this.drive = drive;
 		
-		leftMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
-		rightMotorEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
-
-		leftMotorEnc.reset();
-		rightMotorEnc.reset();
-
+		
 		solOne.set(DoubleSolenoid.Value.kForward);
 		leftMotor.set(0);
 		rightMotor.set(0);
@@ -74,7 +69,6 @@ public class Shooter{
 		
 		leftPID = new PID(ShooterConfig.kPLeft, ShooterConfig.kILeft, ShooterConfig.kDLeft);
 		rightPID = new PID(ShooterConfig.kPRight, ShooterConfig.kIRight, ShooterConfig.kDRight);
-		turnPID = new PID(ShooterConfig.kPDrive, ShooterConfig.kIDrive, ShooterConfig.kDDrive);
 		isFirst = true;
 	}
 
@@ -82,7 +76,7 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-		wantGoal = vision.getHighestArea();
+		wantGoal = vision.vs.getHighestArea();
 		
 		System.out.println("left shooter enc: " + leftMotorEnc.getRate() + "\tright shooter enc: " + rightMotorEnc.getRate());
 		if(!stopping) {
@@ -98,11 +92,11 @@ public class Shooter{
 		}
 		
 		if(isShooting && usingVision) {
-			turnPID.update(vision.getRotation(wantGoal), 0); 
-			drive.set(turnPID.getOutput(), -turnPID.getOutput());
+			vision.updatePID(wantGoal);
+			drive.set(vision.getTurnPID()[0], vision.getTurnPID()[1]);
 		}
 		
-		if(isShooting && Util.withinThreshold(vision.getRotation(wantGoal), 0, ShooterConfig.angTolerance)){
+		if(isShooting && Util.withinThreshold(vision.vs.getRotation(wantGoal), 0, ShooterConfig.angTolerance)){
 			if(isFirstTimer){
 				timer.start();
 				isFirstTimer = false;
@@ -151,7 +145,7 @@ public class Shooter{
 		isFirstTimer = true;
 		stopping = false;
 		if(usingVision) {
-			shootSpeed = vision.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
+			shootSpeed = vision.vs.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
 		}
 		else {
 			shootSpeed = ShooterConfig.constantSpeed;
@@ -195,7 +189,7 @@ public class Shooter{
 	 */
 	public void setSpeed() {
 		stopping = false;
-		shootSpeed = vision.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
+		shootSpeed = vision.vs.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
 	}
 
 	/**

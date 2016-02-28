@@ -3,7 +3,7 @@ import edu.wpi.first.wpilibj.Timer;
 import config.*;
 import util.ChooserType;
 import util.Dashboard;
-import vision.Vision;
+import vision.VisionCore;
 
 /**
  * Interprets and runs scripts parsed for auto
@@ -24,7 +24,7 @@ public class Interpreter {
 	private String fileName;
 	private Dashboard dashboard;
 	private Shooter shooter;
-	private Vision vision;
+	private VisionCore vision;
 	
 	/**
 	 * 
@@ -34,7 +34,7 @@ public class Interpreter {
 	 * @param dashboard
 	 * @param shooter
 	 */
-	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter, Vision vision){
+	public Interpreter(Drive drive, RobotCore robotCore, Intake intake, Dashboard dashboard, Shooter shooter, VisionCore vision){
 		this.drive = drive;
 		this.robotCore = robotCore;
 		this.intake = intake;

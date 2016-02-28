@@ -2,7 +2,7 @@ package core;
 
 import config.*;
 import util.Dashboard;
-import vision.Vision;
+import vision.VisionCore;
 
 /**
  * Joins user input with core components
@@ -16,7 +16,7 @@ public class Teleop {
 	private Shooter shooter;
 	private Climber climber;
 	private Dashboard dashboard;
-	private Vision vision;
+	private VisionCore vision;
 	
 	/**
 	 * Creates standard teleop object
@@ -24,7 +24,7 @@ public class Teleop {
 	 * @param robotCorxe
 	 * @param drive
 	 */
-	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Climber climber, Dashboard dashboard, Vision vision)
+	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Climber climber, Dashboard dashboard, VisionCore vision)
 	{
 		this.robotCore = robotCore;
 		this.drive = drive;
@@ -43,7 +43,7 @@ public class Teleop {
 		robotCore.joy.update();
         dashboard.update();
         vision.update();
-        System.out.println(vision.getDistance(0) + "\t" + vision.getArea(0));
+        System.out.println(vision.vs.getDistance(0) + "\t" + vision.vs.getArea(0));
 		joyDrive();
 		joyIntake();
 		joyShooter();
