@@ -15,24 +15,30 @@ import sensors.*;
  */
 public class RobotCore {
 	public MyJoystick joy = new MyJoystick(JoyConfig.drivePort);
-	public Enc encRight = new Enc(DriveConfig.chnAEncRight,DriveConfig.chnBEncRight,DriveConfig.encRightDisPerPulse);
-	public Enc encLeft = new Enc(DriveConfig.chnAEncLeft,DriveConfig.chnBEncLeft,DriveConfig.encLeftDisPerPulse);
+	public Enc driveEncRight = new Enc(DriveConfig.chnAEncRight,DriveConfig.chnBEncRight,DriveConfig.encRightDisPerPulse);
+	public Enc driveEncLeft = new Enc(DriveConfig.chnAEncLeft,DriveConfig.chnBEncLeft,DriveConfig.encLeftDisPerPulse);
 	public NavX navX = new NavX();
 	public Encoder armEnc = new Encoder(IntakeArmConfig.armEncChnA, IntakeArmConfig.armEncChnB);
 	public SharpIR sharp = new SharpIR();
-	public Encoder motorOneEnc = new Encoder(ShooterConfig.ChnAMotorOneEnc, ShooterConfig.ChnBMotorOneEnc);
-	public Encoder motorTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
-	public DoubleSolenoid solOne = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
-	PowerDistributionPanel pdp = new PowerDistributionPanel();
+	public Encoder shooterOneEnc = new Encoder(ShooterConfig.ChnAMotorOneEnc, ShooterConfig.ChnBMotorOneEnc);
+	public Encoder shooterTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
+	public DoubleSolenoid shooterSol = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
+	public PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 	
 	public RobotCore(){
 		
-		motorOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
-		motorTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
+		shooterOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
+		shooterTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
 
-		motorOneEnc.reset();
-		motorTwoEnc.reset();
+		shooterOneEnc.reset();
+		shooterTwoEnc.reset();
+		
+		driveEncRight.setDistancePerPulse(DriveConfig.encRightDisPerPulse);	
+		driveEncLeft.setDistancePerPulse(DriveConfig.encLeftDisPerPulse);
+		
+		driveEncRight.reset();
+		driveEncLeft.reset();
 
 	}
 

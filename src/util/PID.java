@@ -83,7 +83,7 @@ public class PID {
      * @param want 
      */
     public void update(double curr, double want){
-        deltaT = timer.get() - prevTime;     // time diff since last update call
+        deltaT = timer.get() - prevTime;     		// time diff since last update call
         prevTime = timer.get();                     // update prevTime value
         double errP = want - curr;                  // err = diff in pos aka proportional
         errSum += errP * deltaT;                    // integral of the err aka total err
@@ -97,8 +97,13 @@ public class PID {
 	        else if(errSum <= minErr)
 	        	errSum = minErr;
         }
+        if(deltaT != 0) {
+        	errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err        	
+        }
+        else {
+        	errD = 0;
+        }
         
-        errD = (errP - prevErr) / deltaT;   	    // derivative of err aka change in err
         prevErr = errP;
         output = (errP * kP) + (errSum * kI) + (errD * kD);
 //        System.out.println(errP + "\t" + output);

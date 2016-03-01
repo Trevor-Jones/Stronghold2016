@@ -5,34 +5,39 @@ import vision.Goal;
 
 
 public class VisionStruct {
-	 public Goal goals[] = new Goal[VisionConfig.numberOfGoals]; 
+	public Goal goals[] = new Goal[VisionConfig.numberOfGoals]; 
 	public int frameNumber = 0;	
 
+	public VisionStruct(){
+		for(int i = 0; i < goals.length; i++) {
+			goals[i] = new Goal();
+		}
+	}
 	
 	public Goal getGoal(int goalNumber){
 		return goals[goalNumber];
 	}
 	
 	public double getDistance(int goalNumber) {
-		return this.goals[goalNumber].distance;
+		return goals[goalNumber].distance;
 	}
 	
 	public double getRotation(int goalNumber) {
-		return this.goals[goalNumber].rotation;
+		return goals[goalNumber].rotation;
 	}
 	
 	public double getTranslation(int goalNumber) {
-		return this.goals[goalNumber].translation;
+		return goals[goalNumber].translation;
 	}
 	
 	public double getArea(int goalNumber) {
-		return this.goals[goalNumber].area;
+		return goals[goalNumber].area;
 	}
 	
 	public int getHighestArea() {
 		int goalNumber = 0;
-		for(int i = 1; i < this.goals.length; i++) {
-			if(this.goals[i].area > this.goals[i-1].area){
+		for(int i = 1; i < goals.length; i++) {
+			if(goals[i].area > goals[i-1].area){
 				goalNumber = i;
 			}
 		}

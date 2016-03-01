@@ -27,7 +27,6 @@ public class Shooter{
 	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, true);
 	private PID leftPID;
 	private PID rightPID;
-	private PID turnPID;
 	private boolean isShooting;
 	private double shootSpeed;
 	double currentPos;
@@ -50,9 +49,9 @@ public class Shooter{
 	 * @param vision
 	 */
 	public Shooter(RobotCore core, Drive drive, VisionCore vision){
-		leftMotorEnc = core.motorOneEnc;
-		rightMotorEnc = core.motorTwoEnc;
-		solOne = core.solOne;
+		leftMotorEnc = core.shooterOneEnc;
+		rightMotorEnc = core.shooterTwoEnc;
+		solOne = core.shooterSol;
 		speed = 0;
 		usingVision = false;
 		this.vision = vision;
@@ -93,7 +92,7 @@ public class Shooter{
 		
 		if(isShooting && usingVision) {
 			vision.updatePID(wantGoal);
-			drive.set(vision.getTurnPID()[0], vision.getTurnPID()[1]);
+			drive.set(vision.getTurnPID(), -vision.getTurnPID());
 		}
 		
 		if(isShooting && Util.withinThreshold(vision.vs.getRotation(wantGoal), 0, ShooterConfig.angTolerance)){

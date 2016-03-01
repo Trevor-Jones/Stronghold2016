@@ -25,8 +25,8 @@ public class Drive {
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
-		encLeft = core.encLeft;
-		encRight = core.encRight;
+		encLeft = core.driveEncLeft;
+		encRight = core.driveEncRight;
 	}
 	
 	/**

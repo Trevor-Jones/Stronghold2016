@@ -19,7 +19,7 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive(robotCore); 
 	IntakeArm arm = new IntakeArm(robotCore);
 	
-	VisionCore vision = new VisionCore();
+	VisionCore vision = new VisionCore(robotCore);
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Shooter shooter = new Shooter(robotCore, drive, vision);
@@ -34,6 +34,7 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+    	
     }
 
     public void autonomousInit() {

@@ -68,14 +68,14 @@ public class Interpreter {
 	 */
 	private void waitEncoder(double leftWant, double rightWant) {
 		if(isFirst) {
-			robotCore.encLeft.reset();
-			robotCore.encRight.reset();
+			robotCore.driveEncLeft.reset();
+			robotCore.driveEncRight.reset();
 			isFirst = false;
 		}
 		
-		System.out.println("right: " + robotCore.encRight.getDistance() + "\tleft: " + robotCore.encLeft.getDistance());
+		System.out.println("right: " + robotCore.driveEncRight.getDistance() + "\tleft: " + robotCore.driveEncLeft.getDistance());
 		
-		if(robotCore.encLeft.getDistance() > leftWant && robotCore.encRight.getDistance() > rightWant)  {
+		if(robotCore.driveEncLeft.getDistance() > leftWant && robotCore.driveEncRight.getDistance() > rightWant)  {
 			next();
 		}
 	}
