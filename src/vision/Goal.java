@@ -11,7 +11,7 @@ public class Goal {
 	public double distance = 0;
 	public double translation = 0;
 	public double area = 0;
-	private boolean noGoal = false;
+	private boolean isGoal = false;
 	private Timer timer = new Timer();
 	private boolean isFirst = true;
 	
@@ -31,17 +31,18 @@ public class Goal {
 	
 
 	public void update(Element n)	{
-		if(Integer.parseInt(n.getAttribute("goalPresent")) == 0) {
-			noGoal = true;
+		if(Integer.parseInt(n.getAttribute("distance")) != 0) {
+			isGoal = true;
 		}
+		
 		else {
-			noGoal = false;
+			isGoal = false;
 			isFirst = true;
 			timer.stop();
 			timer.reset();
 		}
 		
-		if(noGoal) {
+		if(isGoal) {
 			if(isFirst) {
 				timer.start();
 				isFirst = false;

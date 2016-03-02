@@ -43,7 +43,8 @@ public class Teleop {
 		robotCore.joy.update();
         dashboard.update();
         vision.update();
-        System.out.println(vision.vs.getDistance(0) + "\t" + vision.vs.getArea(0));
+        System.out.println(vision.socket.getXML());
+        System.out.println(vision.vs.goals[0].toString());
 		joyDrive();
 		joyIntake();
 		joyShooter();
