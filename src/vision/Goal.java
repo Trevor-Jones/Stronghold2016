@@ -31,6 +31,16 @@ public class Goal {
 	
 
 	public void update(Element n)	{
+		if(Integer.parseInt(n.getAttribute("goalPresent")) == 0) {
+			noGoal = true;
+		}
+		else {
+			noGoal = false;
+			isFirst = true;
+			timer.stop();
+			timer.reset();
+		}
+		
 		if(noGoal) {
 			if(isFirst) {
 				timer.start();
@@ -42,21 +52,15 @@ public class Goal {
 				timer.reset();
 			}
 		}
-		
-		try {
-			translation = Integer.parseInt(n.getAttribute("translation"));
-			rotation = Integer.parseInt(n.getAttribute("rotation"));
-			distance = Integer.parseInt(n.getAttribute("distance"));
-			area = Integer.parseInt(n.getAttribute("area"));
-			isFirst = true;
-			noGoal = false;
-			timer.stop();
-			timer.reset();
-		} catch(NumberFormatException e) {
-			noGoal = true;
-			//Parsing empty string
-		} catch(Exception e) {
-			//Do something here
+		else {
+			try {
+				translation = Integer.parseInt(n.getAttribute("translation"));
+				rotation = Integer.parseInt(n.getAttribute("rotation"));
+				distance = Integer.parseInt(n.getAttribute("distance"));
+				area = Integer.parseInt(n.getAttribute("area"));
+			} catch(Exception e) {
+				//Do something here
+			}
 		}
 	}
 	

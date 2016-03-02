@@ -17,8 +17,8 @@ public class VisionCore {
 		socket.initSockets();
 	}
 	
-	public void updatePID(int wantGoal){
-		turnPID.update(this.vs.getRotation(wantGoal), 0);
+	public void updateTurnPID(int wantGoal){
+		turnPID.update(vs.getRotation(wantGoal), 0);
 	}
 	
 	public double  getTurnPID(){
@@ -26,6 +26,7 @@ public class VisionCore {
 	}
 	
 	public void update() {
+		socket.update();
 		vs = xmlParser.parseString(socket.getXML());
 	}
 }

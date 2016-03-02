@@ -17,7 +17,7 @@ import vision.VisionStruct;
 public class XMLParser {
 	VisionStruct vs = new VisionStruct();
 	
-	public VisionStruct parseString(String xml) throws NumberFormatException {
+	public VisionStruct parseString(String xml) {
 		
 		try {
 			Document doc = stringToDoc(xml);

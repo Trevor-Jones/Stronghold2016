@@ -14,6 +14,7 @@ public class ShooterConfig
 	public static final int ChnMotorOne = 9;
 	public static final int ChnMotorTwo = 8;
 	public static final double waitTime = 0.5;
+	public static final double waitTimeStop = 0.5;
 	
 	public static final double kPLeft = 1;
 	public static final double kILeft = 0;
@@ -28,7 +29,7 @@ public class ShooterConfig
 	public static final double kDDrive = 0;
 	
 	public static final double angTolerance = 20;
-	public static final double turnTime = 0.5;
+	public static final double turnTime = 0.2;
 	public static final double distanceSpeedConstant = .008;
 	
 	public static final double constantSpeed = 0.3;

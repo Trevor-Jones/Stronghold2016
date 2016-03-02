@@ -30,7 +30,6 @@ public class Shooter{
 	private boolean isShooting;
 	private double shootSpeed;
 	double currentPos;
-	double waitDistance = 0.5;
 	double speed;
 	boolean isFirst;
 	boolean stopping;
@@ -77,7 +76,8 @@ public class Shooter{
 	public void update(){
 		wantGoal = vision.vs.getHighestArea();
 		
-		System.out.println("left shooter enc: " + leftMotorEnc.getRate() + "\tright shooter enc: " + rightMotorEnc.getRate());
+//		System.out.println("left shooter enc: " + leftMotorEnc.getRate() + "\tright shooter enc: " + rightMotorEnc.getRate());
+		
 		if(!stopping) {
 			leftPID.update(leftMotorEnc.getRate(), shootSpeed);
 			rightPID.update(rightMotorEnc.getRate(), shootSpeed);
@@ -91,7 +91,7 @@ public class Shooter{
 		}
 		
 		if(isShooting && usingVision) {
-			vision.updatePID(wantGoal);
+			vision.updateTurnPID(wantGoal);
 			drive.set(vision.getTurnPID(), -vision.getTurnPID());
 		}
 		
@@ -101,23 +101,24 @@ public class Shooter{
 				isFirstTimer = false;
 			}
 			
-			System.out.print("timer: " + timer.get() + "\t");
-			if (isMotorsFastEnough(shootSpeed) && isShooting && timer.get() > ShooterConfig.turnTime){
+//			System.out.print("timer: " + timer.get() + "\t");
+			
+			if (isMotorsFastEnough(shootSpeed) && timer.get() > ShooterConfig.turnTime){
 				solOne.set(DoubleSolenoid.Value.kForward);
 				
 				if(isFirst) {
-					currentPos = rightMotorEnc.getDistance();
+					timer.reset();
+					timer.start();
 					isFirst =  false;
 				}
 
-				if (Math.abs(rightMotorEnc.getDistance() - currentPos) > waitDistance){
+				if (timer.get() > ShooterConfig.waitTimeStop){
 					solOne.set(DoubleSolenoid.Value.kReverse);
-					System.out.println("Done Fam");
 					shootSpeed = 0;
 					isShooting = false;
 					isFirst = true;
-					stopping = true;
 					isFirstTimer = true;
+					stopping = true;
 				}
 			}
 		}
@@ -131,8 +132,8 @@ public class Shooter{
 	public void shoot(double shootSpeed){
 		isShooting = true;
 		this.shootSpeed = shootSpeed;
-		waitDistance = ShooterConfig.waitTime * leftMotorEnc.getRate();
 		isFirstTimer = true;
+		isFirst = true;
 		stopping = false;
 	}
 	
@@ -142,6 +143,7 @@ public class Shooter{
 	public void shoot() {
 		isShooting = true;
 		isFirstTimer = true;
+		isFirst = true;
 		stopping = false;
 		if(usingVision) {
 			shootSpeed = vision.vs.getDistance(wantGoal)*ShooterConfig.distanceSpeedConstant;
