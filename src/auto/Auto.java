@@ -1,6 +1,10 @@
 
-package core;
+package auto;
 
+import core.Drive;
+import core.Intake;
+import core.RobotCore;
+import core.Shooter;
 import edu.wpi.first.wpilibj.Timer;
 import util.Dashboard;
 import vision.VisionCore;
@@ -29,7 +33,7 @@ public class Auto {
 	 * Periodically runs through autonomous actions
 	 */
 	public void run(){
-		interpreter.dispatch();
+		interpreter.update();
 	}
 }
 

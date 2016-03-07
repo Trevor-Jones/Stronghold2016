@@ -1,8 +1,13 @@
-package core;
+package auto;
 import edu.wpi.first.wpilibj.Timer;
 import config.*;
+import core.Drive;
+import core.Intake;
+import core.RobotCore;
+import core.Shooter;
 import util.ChooserType;
 import util.Dashboard;
+import util.Util;
 import vision.VisionCore;
 
 /**
@@ -12,7 +17,8 @@ import vision.VisionCore;
  */
 public class Interpreter {
 	private int autoStep = 0;
-	private double[][] commands;
+	private double[][] commandsOne;
+	private double[][] commandsTwo;
 	private Drive drive;
 	private Intake intake;
 	private Timer timer = new Timer();
@@ -21,10 +27,13 @@ public class Interpreter {
 	private boolean isFirstTimer = true;
 	private double prevAng = 0;
 	private double angChange = 0;
-	private String fileName;
+	private String fileNameOne;
+	private String fileNameTwo;
 	private Dashboard dashboard;
 	private Shooter shooter;
 	private VisionCore vision;
+	private boolean firstFile = true;
+	private boolean secondFile = false;
 	
 	/**
 	 * 
@@ -47,8 +56,11 @@ public class Interpreter {
 	 * Run at auto init to get and parse script file 
 	 */
 	public void interpInit() {
-		fileName = dashboard.getFileName();
-		commands = Parser.parse(fileName);
+		fileNameOne = dashboard.getFileNameOne();
+		commandsOne = Parser.parse(fileNameOne);
+
+		fileNameTwo = dashboard.getFileNameTwo();
+		commandsTwo = Parser.parse(fileNameTwo);
 	}
 	
 	/**
@@ -157,6 +169,14 @@ public class Interpreter {
 		System.out.println("navX: " + robotCore.navX.getAngle());
 	}
 	
+	private void spinToGoal() {	
+		drive.set(InterpConfig.turnSpeed, -InterpConfig.turnSpeed);
+		if(Util.withinBounds(vision.vs.getDistance(0), -InterpConfig.visionAngThreshold, InterpConfig.visionAngThreshold)) {
+			//Goal found
+			drive.set(0, 0);
+			next();
+		}
+	}
 	/**
 	 * Waits until the robot is at a specified angle
 	 * @param ang
@@ -199,36 +219,68 @@ public class Interpreter {
 	/**
 	 * Run periodically to read through and execute the script
 	 */
-	public void dispatch(){
+	public void update(){
+		if(firstFile) {
+			dispatcher(commandsOne);
+		}
+	
+		else if(secondFile) {
+			dispatcher(commandsTwo);
+		}
+		
+		System.out.println("\tnavX: " + robotCore.navX.getAngle());
+        dashboard.update();
+		intake.update();
+		shooter.update();
+		vision.update();
+	}
+	
+	public void dispatcher(double[][] commands) {
 		if((commands[autoStep][0]) == -1) {	//Dead line
 			drive.move(0, 0);
 			System.out.println("Dead line at " + autoStep);
-		}	
+		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.DRIVE)){	//Drive
 			drive.moveNoRamp(commands[autoStep][1],Math.toRadians(commands[autoStep][2]));
 			System.out.println("Setting left to: " + drive.leftCimGroup.c1.get() + "Setting right to: " + drive.rightCimGroup.c1.get());
 			next();
 		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_TIMER)) {	//Wait for timer
 			waitTimer(commands[autoStep][1]);
 		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_GYRO)) {	//Wait for gyro
 			waitGyro(commands[autoStep][1]);
 		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.TURN)) {	//Turn
 			turn(commands[autoStep][1],commands[autoStep][2]);
 		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.INTAKE)) {	//Intake
-			intake.pickupBall();
+			if(isFirst) {
+				intake.pickupBall();
+				isFirst = false;
+			}
 		}
+		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_ENCODER)) {	//Wait for encoder
 			waitEncoder(commands[autoStep][1],commands[autoStep][2]);
 		}
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Wait for encoder
+		
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Shoot using vision
 			shooter.shoot();
 		}
-		System.out.println("\tnavX: " + robotCore.navX.getAngle());
-		intake.update();
-		shooter.update();
+		
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.SPIN_GOAL)) {	//Spin until goal is found
+			spinToGoal();
+		}
+		
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.END)) {
+			firstFile = false;
+			secondFile = true;
+		}
 	}
 }

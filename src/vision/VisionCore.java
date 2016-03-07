@@ -3,8 +3,6 @@ package vision;
 import config.ShooterConfig;
 import core.RobotCore;
 import util.PID;
-import util.SocketClient;
-import util.XMLParser;
 
 public class VisionCore {
 	private XMLParser xmlParser = new XMLParser();

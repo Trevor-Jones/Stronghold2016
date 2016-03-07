@@ -1,4 +1,4 @@
-package core;
+package auto;
 
 /**
  * Collection of ids for auto steps
@@ -37,6 +37,12 @@ public class Steps {
 			break;
 		case SHOOT:
 			i=6;
+			break;
+		case SPIN_GOAL:
+			i=7;
+			break;
+		case END:
+			i=8;
 			break;
 		default:
 			i = -1; 

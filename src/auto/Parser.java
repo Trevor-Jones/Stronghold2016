@@ -1,6 +1,7 @@
-package core;
+package auto;
 
 import java.io.*;
+
 import util.*;
 
 /**
@@ -16,8 +17,8 @@ public class Parser{
 	 * @return
 	 */
 	public static double[][] parse(String fileName) {
-		String fileLocation = "/home/lvuser/" + fileName + ".txt"; //TODO make this better
-		double data[][] = new double[10][3];  //TODO make this smart and not hard coded
+		String fileLocation = "/home/lvuser/" + fileName + ".txt";
+		double data[][] = new double[30][3];  //TODO make this smart and not hard coded
 		
 		for (int i = 0; i < data.length; i++) {
 			for (int j = 0; j < data[i].length; j++) {
@@ -29,7 +30,6 @@ public class Parser{
 			System.out.print("\n");
 			for (int j = 0; j < data[i].length; j++) {
 				System.out.print(data[i][j] + "\t");
-
 			}
 		}
 		
@@ -66,9 +66,11 @@ public class Parser{
 			System.out.println("File is empty");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println("IOException");
 			e.printStackTrace();
-		}				
+		} catch (Exception e) {
+			System.out.println("Exception parsing auto file");
+		}
 		return data;
 	}
 	

@@ -4,6 +4,7 @@ package core;
 import sensors.SharpIR;
 import util.Dashboard;
 import vision.VisionCore;
+import auto.Auto;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**

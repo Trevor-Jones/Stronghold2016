@@ -1,4 +1,4 @@
-package util;
+package vision;
 
 import java.io.StringReader;
 
@@ -12,8 +12,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import config.VisionConfig;
-import vision.Goal;
-import vision.VisionStruct;
 
 public class XMLParser {
 	VisionStruct vs = new VisionStruct();
