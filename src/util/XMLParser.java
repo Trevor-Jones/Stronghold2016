@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import config.VisionConfig;
 import vision.Goal;
 import vision.VisionStruct;
 
@@ -32,7 +33,12 @@ public class XMLParser {
 				vs.goals[i].update(goalElement);
 	
 			}
-			vs.frameNumber = Integer.parseInt(((Element) doc.getElementsByTagName("vision").item(0)).getAttribute("frameNumber"));
+			
+			for(int i = goalList.getLength(); i < VisionConfig.numberOfGoals; i++) {
+				vs.goals[i].update();
+			}
+			
+			vs.frameNumber = Integer.parseInt(((Element) doc.getElementsByTagName("Vision").item(0)).getAttribute("frameNumber"));
 	
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -43,8 +43,6 @@ public class Teleop {
 		robotCore.joy.update();
         dashboard.update();
         vision.update();
-        System.out.println(vision.socket.getXML());
-        System.out.println(vision.vs.goals[0].toString());
 		joyDrive();
 		joyIntake();
 		joyShooter();
@@ -82,12 +80,13 @@ public class Teleop {
 			intake.roller.setSpeed(0);
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(0.3);
+		if(robotCore.joy.getRawButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			intake.arm.setArmSpeed(1);
+			System.out.println("Woorkingadsfasjdjfalksdflksadajflkadsfjlaksdfjlasdkflksdfka");
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(-0.3);
+		if(robotCore.joy.getRawButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			intake.arm.setArmSpeed(-1);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.armStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -113,6 +112,14 @@ public class Teleop {
 		if(robotCore.joy.getButton(JoyConfig.toggleArmPosButton)) {
 			intake.arm.togglePos();
 		}
+		
+		if(robotCore.joy.getDpadLeft()) {
+			intake.arm.setPortcullisMode(false);
+		}
+		
+		if(robotCore.joy.getDpadRight()) {
+			intake.arm.setPortcullisMode(true);
+		}
 	}
 	
 	/**
@@ -122,7 +129,7 @@ public class Teleop {
 		shooter.update();
 		
 		if(robotCore.joy.getButton(JoyConfig.shootButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.shoot(); //TODO add vision capability
+			shooter.shoot(); 
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.cancelShotButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -138,7 +145,7 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.shooterStopButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.setRawSpeed(0);
+			shooter.stopShooter();
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.shooterLaunchButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {

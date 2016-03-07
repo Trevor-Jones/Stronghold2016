@@ -106,7 +106,6 @@ public class PID {
         
         prevErr = errP;
         output = (errP * kP) + (errSum * kI) + (errD * kD);
-//        System.out.println(errP + "\t" + output);
         deltaSysT = (System.currentTimeMillis() - prevSysTime) / 1000;
         prevSysTime = (deltaSysT * 1000) + prevSysTime;
     }

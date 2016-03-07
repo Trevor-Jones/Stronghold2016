@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.ChooserType;
 import vision.VisionCore;
 import config.DashboardConfig;
+import config.VisionConfig;
 
 /**
  * Controlls the smartDashboard
@@ -32,6 +33,8 @@ public class Dashboard {
 		autoGoalChooser.addObject("Middle Goal", new ChooserType(DashboardConfig.idMiddleGoal));
 		autoGoalChooser.addObject("Right Goal", new ChooserType(DashboardConfig.idRightGoal));
 		SmartDashboard.putData("Auto Goal Chooser", autoGoalChooser);
+		
+		SmartDashboard.putDouble("shooterSpeed", 0);
 	}
 	
 	/**
@@ -44,6 +47,10 @@ public class Dashboard {
 	
 	public void update() {
 		SmartDashboard.putBoolean("Connected to Jetson", vision.socket.getSocketStatus());
+		for(int i = 0; i < VisionConfig.numberOfGoals; i++){
+			SmartDashboard.putString("Goal " + i, vision.vs.goals[i].toString());
+		}
+		SmartDashboard.putString("xml:", vision.socket.getXML());
 	}
 	
 	/**
@@ -71,5 +78,13 @@ public class Dashboard {
 	 */
 	public int getGoalNumber() {
 		return ((ChooserType) autoGoalChooser.getSelected()).getId();
+	}
+	
+	public double getSpeed() {
+		return SmartDashboard.getDouble("shooterSpeed");
+	}
+	
+	public void putDouble(String key, double num) {
+		SmartDashboard.putDouble(key, num);
 	}
 }

@@ -10,23 +10,28 @@ import java.net.UnknownHostException;
 import config.VisionConfig;
 
 public class SocketClient {
-	Socket visionSocket;
+	public Socket visionSocket;
 	PrintWriter out;
 	BufferedReader in;
 	boolean lostConnection = false;
+	int updateNumber = 0;
 	
-	String xml;
+	String xml = "";
 	
 	public boolean getSocketStatus() {
-		return lostConnection ? lostConnection : visionSocket.isConnected();
+		try {
+			return lostConnection ? lostConnection : visionSocket.isConnected();			
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public void initSockets() {
 		try {
 			visionSocket = new Socket(VisionConfig.hostName, VisionConfig.port);
 			out = new PrintWriter(visionSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));
-			
+			in = new BufferedReader(new InputStreamReader(visionSocket.getInputStream()));	
+			out.println("connected");
 			
 		} catch(UnknownHostException e) {
 			e.printStackTrace();
@@ -39,15 +44,19 @@ public class SocketClient {
 	
 	public void update() {
 		try{
-			if(in.readLine() != null)
-				xml = in.readLine();	
-			else 
-				lostConnection = true;
+			out.println(updateNumber);
+			updateNumber++;
+//			if(in.readLine() != null)
+				xml = in.readLine();
+//			else 
+//				lostConnection = true;
 		} catch (IOException e) {
 			lostConnection = true;
+			System.out.println("ioexception");
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out.println("exception");
 		}
 	}
 	

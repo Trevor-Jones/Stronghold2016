@@ -31,18 +31,11 @@ public class Goal {
 	
 
 	public void update(Element n)	{
-		if(Integer.parseInt(n.getAttribute("distance")) != 0) {
+		if(Double.parseDouble(n.getAttribute("distance")) != 0) {
 			isGoal = true;
 		}
 		
-		else {
-			isGoal = false;
-			isFirst = true;
-			timer.stop();
-			timer.reset();
-		}
-		
-		if(isGoal) {
+		if(!isGoal) {
 			if(isFirst) {
 				timer.start();
 				isFirst = false;
@@ -55,13 +48,28 @@ public class Goal {
 		}
 		else {
 			try {
-				translation = Integer.parseInt(n.getAttribute("translation"));
-				rotation = Integer.parseInt(n.getAttribute("rotation"));
-				distance = Integer.parseInt(n.getAttribute("distance"));
-				area = Integer.parseInt(n.getAttribute("area"));
+				translation = Double.parseDouble(n.getAttribute("translation"));
+				rotation = Double.parseDouble(n.getAttribute("rotation"));
+				distance = Double.parseDouble(n.getAttribute("distance"));
+				area = Double.parseDouble(n.getAttribute("area"));
+				isGoal = false;
+				isFirst = true;
+				timer.stop();
+				timer.reset();
 			} catch(Exception e) {
 				//Do something here
 			}
+		}
+	}
+	
+	public void update() {
+		if(isFirst) {
+			timer.start();
+			isFirst = false;
+		}
+		
+		if(timer.get() > VisionConfig.noGoalTime) {
+			resetValues();
 		}
 	}
 	

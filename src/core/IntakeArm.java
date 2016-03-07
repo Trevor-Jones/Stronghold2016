@@ -13,6 +13,7 @@ import config.IntakeArmConfig;
 public class IntakeArm {
 	private PID pidUp = new PID(IntakeArmConfig.kPUp, IntakeArmConfig.kIUp, IntakeArmConfig.kDUp);
 	private PID pidDown = new PID(IntakeArmConfig.kPDown, IntakeArmConfig.kIDown, IntakeArmConfig.kDDown);
+	private PID pidPortcullis = new PID(1,0,0);
 	private Encoder armEnc; 
 	private double position [] = 
 	{
@@ -24,6 +25,7 @@ public class IntakeArm {
 	private double wantPos = position[posIndex];
 	private double currPos = 0;
 	private double pidOutput = 0;
+	private boolean portcullis = false;
 	
 	
 	/**
@@ -60,20 +62,23 @@ public class IntakeArm {
 	 */
 	public void update() {
 		currPos = armEnc.getDistance();
-		
-		if(wantPos - currPos <= 0) {
-			pidUp.update(currPos, wantPos);
-			pidOutput = pidUp.getOutput();
+		if(portcullis) {
+			pidPortcullis.update(currPos, wantPos);
+			pidOutput = pidPortcullis.getOutput();
 		}
-		else if(wantPos - currPos > 0) {
-			pidDown.update(currPos, wantPos);
-			pidOutput = pidDown.getOutput();
+		else {
+			if(wantPos - currPos <= 0) {
+				pidUp.update(currPos, wantPos);
+				pidOutput = pidUp.getOutput();
+			}
+			else if(wantPos - currPos > 0) {
+				pidDown.update(currPos, wantPos);
+				pidOutput = pidDown.getOutput();
+			}			
 		}
 
 		setArmSpeed(Util.limit(pidOutput, IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
 		
-//		System.out.print("Arm Encoder Distance: " + armEnc.getDistance());
-//		System.out.println("\tcurrPos: " + currPos + "\twantPos: " + wantPos + "\tPID Output: " + pidDown.getOutput());
 	}
 	
 	/**
@@ -112,6 +117,10 @@ public class IntakeArm {
 		}
 		
 		wantPos = position[posIndex];
+	}
+	
+	public void setPortcullisMode(boolean mode) {
+		portcullis = mode;
 	}
 	
 	

@@ -23,7 +23,7 @@ public class VisionStruct {
 	}
 	
 	public double getRotation(int goalNumber) {
-		return goals[goalNumber].rotation;
+		return -goals[goalNumber].rotation + VisionConfig.angleOffset;
 	}
 	
 	public double getTranslation(int goalNumber) {
@@ -35,13 +35,14 @@ public class VisionStruct {
 	}
 	
 	public int getHighestArea() {
-		int goalNumber = 0;
-		for(int i = 1; i < goals.length; i++) {
-			if(goals[i].area > goals[i-1].area){
-				goalNumber = i;
-			}
-		}
-		return goalNumber;
+//		int goalNumber = 0;
+//		for(int i = 1; i < goals.length; i++) {
+//			if(goals[i].area > goals[i-1].area){
+//				goalNumber = i;
+//			}
+//		}
+//		return goalNumber;
+		return 0;
 	}
 	
 

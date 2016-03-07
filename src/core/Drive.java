@@ -68,12 +68,14 @@ public class Drive {
         rightCimGroup.setNoRamp(right);
 	}
 	
-	
-	
-	
 	public void set(double left, double right) {
 		leftCimGroup.set(left);
 		rightCimGroup.set(right);
+	}
+	
+	public void setNoRamp(double left, double right) {
+		leftCimGroup.setNoRamp(left);
+		rightCimGroup.setNoRamp(right);
 	}
 	
 	public void toFastGear() {

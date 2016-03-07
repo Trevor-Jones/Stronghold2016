@@ -22,9 +22,9 @@ public class Robot extends IterativeRobot {
 	VisionCore vision = new VisionCore(robotCore);
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
-	Shooter shooter = new Shooter(robotCore, drive, vision);
 	Climber climber = new Climber(robotCore);
 	Dashboard dashboard = new Dashboard(vision);
+	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
 	
@@ -34,7 +34,12 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	
+    	try {
+    		vision.socket.visionSocket.close();  
+    	} catch (Exception e) {
+
+    	}
+    	vision.socket.initSockets();
     }
 
     public void autonomousInit() {
@@ -61,4 +66,7 @@ public class Robot extends IterativeRobot {
     
     }
     
+    public void disabledInit() {
+    	
+    }
 }
