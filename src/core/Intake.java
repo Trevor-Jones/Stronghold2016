@@ -71,7 +71,7 @@ public class Intake {
 					isFirst = false;
 				}
 				
-				if(timer.get() > 0.00) {
+				if(timer.get() > IntakeConfig.outSpeed) {
 					roller.setRawSpeed(0);
 					timer.stop();
 					timer.reset();

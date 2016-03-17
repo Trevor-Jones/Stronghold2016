@@ -34,4 +34,9 @@ public class DriveConfig {
 	public static final int chnBEncLeft = 5;
 	
 	public static final double encLeftDisPerPulse = 0.01133;
+	
+	public static final double kP = 0;
+	public static final double kI = 0;
+	public static final double kD = 0;
+	
 }

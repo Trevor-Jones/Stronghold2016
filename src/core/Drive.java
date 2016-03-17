@@ -5,6 +5,7 @@ import config.DriveConfig;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
+import util.PID;
 
 import java.lang.Math;
 
@@ -22,11 +23,15 @@ public class Drive {
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
 	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
+	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
+	private double lastAng;
+	private double angDiff = 0;
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
+		lastAng = robotCore.navX.getAngle(); 
 	}
 	
 	/**
@@ -37,15 +42,25 @@ public class Drive {
 	 * 
 	  */
 	public void move(double r, double theta) {
-		
 		double xPos = r*Math.cos(theta);
 		double yPos = r*Math.sin(theta);
 		
 		double x = xPos * Math.abs(xPos);
-        double y = yPos * Math.abs(yPos);
+		double y = yPos * Math.abs(yPos);
 		
-        double left = y + x;
-        double right = y - x;
+		double left = y + x;
+		double right = y - x;
+		
+		if(theta == 0) {
+			lastAng = robotCore.navX.getAngle();
+			angDiff = lastAng - robotCore.navX.getAngle();
+			if(angDiff > 300) {
+				angDiff -= 360;
+			}
+			drivePID.update(angDiff, 0);
+			right += drivePID.getOutput();
+		}
+		
         
         leftCimGroup.set(left);
         rightCimGroup.set(right);
@@ -63,6 +78,16 @@ public class Drive {
 		
         double left = y + x;
         double right = y - x;
+        
+        if(theta == 0) {
+			lastAng = robotCore.navX.getAngle();
+			angDiff = lastAng - robotCore.navX.getAngle();
+			if(angDiff > 300) {
+				angDiff -= 360;
+			}
+			drivePID.update(angDiff, 0);
+			right += drivePID.getOutput();
+		}
         
         leftCimGroup.setNoRamp(left);
         rightCimGroup.setNoRamp(right);
