@@ -35,6 +35,10 @@ public class Goal {
 			isGoal = true;
 		}
 		
+		else {
+			isGoal = false;
+		}
+		
 		if(!isGoal) {
 			if(isFirst) {
 				timer.start();
@@ -46,6 +50,7 @@ public class Goal {
 				timer.reset();
 			}
 		}
+		
 		else {
 			try {
 				translation = Double.parseDouble(n.getAttribute("translation"));

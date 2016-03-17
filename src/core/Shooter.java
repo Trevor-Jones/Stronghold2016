@@ -44,6 +44,15 @@ public class Shooter{
 	Drive drive;
 	Dashboard dash;
 	Timer timer = new Timer();
+	Timer leftTimer = new Timer();
+	Timer rightTimer = new Timer();
+	double encoderLeftDistance;
+	double encoderRightDistance;
+	double leftRate;
+	double rightRate;
+	boolean isFirstLeft = true;
+	boolean isFirstRight = true;
+	double rekt = 0;
 
 	/**
 	 * 
@@ -57,7 +66,7 @@ public class Shooter{
 		solOne = core.shooterSol;
 		speedLeft = 0;
 		speedRight = 0;
-		usingVision = true;
+		usingVision = false;
 		this.dash = dash;
 		this.vision = vision;
 		
@@ -78,24 +87,26 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-		dash.putDouble("leftMotorEnc", leftMotorEnc.getRate());
-		dash.putDouble("rightMotorEnc", rightMotorEnc.getRate());
+		updateLeftRate();
+		updateRightRate();
+		dash.putDouble("leftMotorEnc", leftRate);
+		dash.putDouble("rightMotorEnc", rightRate);
+		dash.putDouble("leftMotorDistance", leftMotorEnc.getDistance());
+		dash.putDouble("rightMotorDistance", rightMotorEnc.getDistance());
 		dash.putDouble("leftOutput", leftPID.getOutput());
 		dash.putDouble("rightOutput", rightPID.getOutput());
 		dash.putDouble("wantSpeed", shootSpeed);
 		wantGoal = vision.vs.getHighestArea();
-//		System.out.println("left shooter enc: " + leftMotorEnc.getRate() + "\tright shooter enc: " + rightMotorEnc.getRate());
+//		wantGoal = 0;
 		
 		if(!stopping) {
 			if(isFirstMotors) {
 				timerOne.start();
-				speedLeft = shootSpeed;
-				speedRight = shootSpeed;
 				isFirstMotors = false;
 			}
 			if(timerOne.get() > 0.5) {
-				leftPID.update(Util.limit(leftMotorEnc.getRate(), 0, 1), shootSpeed);
-				rightPID.update(Util.limit(rightMotorEnc.getRate(), 0, 1), shootSpeed);
+				leftPID.update(Util.limit(leftRate, 0, 1), shootSpeed);
+				rightPID.update(Util.limit(rightRate, 0, 1), shootSpeed);
 				speedLeft+=leftPID.getOutput();
 				speedRight+=rightPID.getOutput();
 			}
@@ -105,16 +116,7 @@ public class Shooter{
 		else {
 			leftMotor.ramp(0,0.05);
 			rightMotor.ramp(0,0.05);
-			timerOne.stop();
-			timerOne.reset();
-			speedLeft = 0;
-			speedRight = 0;
-			shootSpeed = 0;
-			isShooting = false;
-			isFirst = true;
-			isFirstTimer = true;
-			stopping = true;
-			vision.resetTurnPID();
+			
 		}
 		dash.putDouble("drive output", vision.getTurnPID());
 		dash.putDouble("rotation", vision.vs.getRotation(wantGoal));
@@ -130,11 +132,11 @@ public class Shooter{
 				timer.start();
 				isFirstTimer = false;
 			}
-			
+			dash.putDouble("timer", timer.get());
 //			System.out.print("timer: " + timer.get() + "\t");
 			
 			if (isMotorsFastEnough(shootSpeed) && timer.get() > ShooterConfig.turnTime){
-				solOne.set(DoubleSolenoid.Value.kForward);
+				solOne.set(DoubleSolenoid.Value.kReverse);
 				
 				if(isFirst) {
 					timer.reset();
@@ -143,11 +145,19 @@ public class Shooter{
 				}
 
 				if (timer.get() > ShooterConfig.waitTimeStop){
-					solOne.set(DoubleSolenoid.Value.kReverse);
+					solOne.set(DoubleSolenoid.Value.kForward);
+					stopping = true;timerOne.stop();
+					timerOne.reset();
+					speedLeft = 0;
+					speedRight = 0;
+					shootSpeed = 0;
+					isShooting = false;
+					isFirst = true;
+					isFirstTimer = true;
+					vision.resetTurnPID();
 				}
 			}
 		}
-//		System.out.println("Shooter Left Distance: " + leftMotorEnc.getDistance() + "\tShooter Right Distance: " + rightMotorEnc.getDistance());
 	}
 
 	/**
@@ -170,23 +180,27 @@ public class Shooter{
 	 * Starts the shooting process at a speed from vision
 	 */
 	public void shoot() {
+		isShooting = true;
 		leftPID.reset();
 		rightPID.reset();
 		leftPID.start();
 		rightPID.start();
-		isShooting = true;
 		isFirstTimer = true;
 		isFirst = true;
-		stopping = false;
 		if(usingVision) {
 //			shootSpeed = dash.getSpeed();
 			setSpeed();
 			vision.startTurnPID();
-			isFirstMotors = true;
 		}
 		else {
-			shootSpeed = ShooterConfig.constantSpeed;
+//			shootSpeed = ShooterConfig.constantSpeed;
+			shootSpeed = dash.getSpeed();
+			stopping = false;
+			shootSpeed = getVelocityDistance(vision.vs.getDistance(wantGoal));
+			speedLeft = shootSpeed;
+			speedRight = shootSpeed;
 		}
+		isFirstMotors = true;
 	}
 	
 	/**
@@ -216,6 +230,13 @@ public class Shooter{
 		leftMotor.set(speed);
 		rightMotor.set(speed);
 		shootSpeed = speed;
+		stopping = false;
+		leftPID.reset();
+		rightPID.reset();
+		leftPID.start();
+		rightPID.start();
+		isFirstTimer = true;
+		isFirst = true;
 	}
 	
 	/**
@@ -236,8 +257,8 @@ public class Shooter{
 		stopping = false;
 //		shootSpeed = dash.getSpeed();
 		shootSpeed = getVelocityDistance(vision.vs.getDistance(wantGoal));
-		speedLeft = shootSpeed * ShooterConfig.startSpeedScalar;
-		speedRight = shootSpeed * ShooterConfig.startSpeedScalar;
+		speedLeft = shootSpeed;
+		speedRight = shootSpeed;
 	}
 
 	/**
@@ -257,8 +278,9 @@ public class Shooter{
 	 */
 	public boolean isMotorsFastEnough(double motorSpeed){
 //		System.out.println("leftRate : "  + leftMotorEnc.getRate() + "\trightRate : " + rightMotorEnc.getDistance() + "\twantSpeed : " + motorSpeed);
-//		return (Util.withinThreshold(leftMotorEnc.getRate(), motorSpeed, ShooterConfig.motorSpeedTolerance) && Util.withinThreshold(rightMotorEnc.getRate(), motorSpeed, ShooterConfig.motorSpeedTolerance));
-		return leftMotorEnc.getRate() > motorSpeed; /*&& rightMotorEnc.getRate() > motorSpeed;*/
+//		return (Util.withinThreshold(leftRate, motorSpeed, ShooterConfig.motorSpeedTolerance) && Util.withinThreshold(rightRate, motorSpeed, ShooterConfig.motorSpeedTolerance));
+//		return leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed;
+		return true;
 	}
 	
 	/**
@@ -272,6 +294,38 @@ public class Shooter{
 //		else {
 			return ShooterConfig.constantSpeed;
 //		}
+	}
+	
+	public boolean getState() {
+		return isShooting;
+	}
+	
+	public void updateLeftRate() {
+		if(isFirstLeft) {
+			encoderLeftDistance = leftMotorEnc.getDistance();
+			leftTimer.start();
+			isFirstLeft = false;
+		}
+		if(leftTimer.get() > 0.1) {
+			isFirstLeft = true;
+			leftRate = (leftMotorEnc.getDistance()-encoderLeftDistance)/leftTimer.get();
+			leftTimer.stop();
+			leftTimer.reset();
+		}
+	}
+	
+	public void updateRightRate() {
+		if(isFirstRight) {
+			encoderRightDistance = rightMotorEnc.getDistance();
+			rightTimer.start();
+			isFirstRight = false;
+		}
+		if(rightTimer.get() > 0.1) {
+			isFirstRight = true;
+			rightRate = (rightMotorEnc.getDistance()-encoderRightDistance)/rightTimer.get();
+			rightTimer.stop();
+			rightTimer.reset();
+		}
 	}
 
 }

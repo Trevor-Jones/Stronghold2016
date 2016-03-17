@@ -68,7 +68,6 @@ public class Interpreter {
 	 */
 	public void next(){
 		isFirst = true;
-		System.out.println("Advancing to next step");
 		autoStep++;
 		isFirstTimer = true;
 	}
@@ -84,8 +83,6 @@ public class Interpreter {
 			robotCore.driveEncRight.reset();
 			isFirst = false;
 		}
-		
-		System.out.println("right: " + robotCore.driveEncRight.getDistance() + "\tleft: " + robotCore.driveEncLeft.getDistance());
 		
 		if(robotCore.driveEncLeft.getDistance() > leftWant && robotCore.driveEncRight.getDistance() > rightWant)  {
 			next();
@@ -128,7 +125,6 @@ public class Interpreter {
 		
 		else {
 			angChange += (currAng - prevAng);	
-			System.out.println("Added in else");
 		}
 		
 		if(Math.abs(angVelocity) < InterpConfig.notMovingThreshold) {
@@ -146,7 +142,6 @@ public class Interpreter {
 			}
 		}
 		
-		System.out.print("timer: " + timer.get() + "\tangChange: " + angChange + "\tcurrAng: " + currAng + "\twantAng: " + turnAng + "\tprevAng: " + prevAng + "\tisFirst: " + isFirst + "\terror: " + error + "\tvelocity: " + angVelocity);
 		prevAng = currAng;
 	}
 	
@@ -163,10 +158,8 @@ public class Interpreter {
 		if(timer.get() >= wantValue) {
 			timer.stop();
 			timer.reset();
-			System.out.println("ITS DONE");
 			next();
 		}
-		System.out.println("navX: " + robotCore.navX.getAngle());
 	}
 	
 	private void spinToGoal() {	
@@ -201,7 +194,6 @@ public class Interpreter {
 		
 		else {
 			angChange += (currAng - prevAng);	
-			System.out.println("Added in else");
 		}
 		
 		if((ang > 0 && angChange > ang) || ang > 0 && (angChange+360) < ang) {
@@ -212,7 +204,6 @@ public class Interpreter {
 			next();
 		}
 		
-		System.out.println("angChange: " + angChange + "\tcurrAng: " + currAng + "\tprevAng: " + prevAng + "\tisFirst: " + isFirst  + "\tnavX: " + robotCore.navX.getAngle());
 		prevAng = currAng;
 	}
 	
@@ -228,7 +219,6 @@ public class Interpreter {
 			dispatcher(commandsTwo);
 		}
 		
-		System.out.println("\tnavX: " + robotCore.navX.getAngle());
         dashboard.update();
 		intake.update();
 		shooter.update();
@@ -242,8 +232,7 @@ public class Interpreter {
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.DRIVE)){	//Drive
-			drive.moveNoRamp(commands[autoStep][1],Math.toRadians(commands[autoStep][2]));
-			System.out.println("Setting left to: " + drive.leftCimGroup.c1.get() + "Setting right to: " + drive.rightCimGroup.c1.get());
+			drive.moveNoRamp(-commands[autoStep][1],Math.toRadians(commands[autoStep][2]));
 			next();
 		}
 		
@@ -271,7 +260,14 @@ public class Interpreter {
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Shoot using vision
-			shooter.shoot();
+			if(isFirst) {
+				shooter.shoot();
+				isFirst = false;
+			}
+			
+			if(!shooter.getState()) {
+				next();
+			}
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.SPIN_GOAL)) {	//Spin until goal is found
@@ -281,6 +277,7 @@ public class Interpreter {
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.END)) {
 			firstFile = false;
 			secondFile = true;
+			autoStep = 0;
 		}
 	}
 }

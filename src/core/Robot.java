@@ -18,15 +18,16 @@ public class Robot extends IterativeRobot {
 	RobotCore robotCore = new RobotCore();
 	
 	Drive drive = new Drive(robotCore); 
-	IntakeArm arm = new IntakeArm(robotCore);
 	
 	VisionCore vision = new VisionCore(robotCore);
+	Dashboard dashboard = new Dashboard(vision);
+	IntakeArm arm = new IntakeArm(robotCore, dashboard);
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Climber climber = new Climber(robotCore);
-	Dashboard dashboard = new Dashboard(vision);
 	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
+	Test test = new Test(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
 	
 	
@@ -61,10 +62,10 @@ public class Robot extends IterativeRobot {
     }
     
     /**
-     * This function is call/ed periodically during test mode
+     * This function is cSalled periodically during test mode
      */
     public void testPeriodic() {
-    
+    	
     }
     
     public void disabledInit() {

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.ChooserType;
 import vision.VisionCore;
 import config.DashboardConfig;
+import config.ShooterConfig;
 import config.VisionConfig;
 
 /**
@@ -32,15 +33,14 @@ public class Dashboard {
 		autoChooserOne.addObject("Moat", new ChooserType(DashboardConfig.idMoat));
 		SmartDashboard.putData("Auto Mode", autoChooserOne);
 
-		autoChooserTwo.addObject("Defense One", new ChooserType(DashboardConfig.idDefenseOne));
+		autoChooserTwo.addDefault("Defense One", new ChooserType(DashboardConfig.idDefenseOne));
 		autoChooserTwo.addObject("Defense Two", new ChooserType(DashboardConfig.idDefenseTwo));
 		autoChooserTwo.addObject("Defense Three", new ChooserType(DashboardConfig.idDefenseThree));
 		autoChooserTwo.addObject("Defense Four", new ChooserType(DashboardConfig.idDefenseFour));
 		autoChooserTwo.addObject("Defense Five", new ChooserType(DashboardConfig.idDefenseFive));
+		SmartDashboard.putData("Auto Mode Two", autoChooserTwo);
 		
-		SmartDashboard.putData("Auto Mode", autoChooserTwo);
-		
-		SmartDashboard.putDouble("shooterSpeed", 0);
+		SmartDashboard.putDouble("shooterSpeed", ShooterConfig.constantSpeed);
 	}
 	
 	/**

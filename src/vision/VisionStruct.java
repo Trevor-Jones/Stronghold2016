@@ -35,14 +35,14 @@ public class VisionStruct {
 	}
 	
 	public int getHighestArea() {
-//		int goalNumber = 0;
-//		for(int i = 1; i < goals.length; i++) {
-//			if(goals[i].area > goals[i-1].area){
-//				goalNumber = i;
-//			}
-//		}
-//		return goalNumber;
-		return 0;
+		int goalNumber = 0;
+		for(int i = 1; i < goals.length; i++) {
+			if(goals[i].area > goals[i-1].area){
+				goalNumber = i;
+			}
+		}
+		return goalNumber;
+//		return 0;
 	}
 	
 

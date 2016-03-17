@@ -26,14 +26,16 @@ public class IntakeArm {
 	private double currPos = 0;
 	private double pidOutput = 0;
 	private boolean portcullis = false;
+	private Dashboard dash;
 	
 	
 	/**
 	 * 
 	 * @param core
 	 */
-	public IntakeArm( RobotCore core) {
+	public IntakeArm( RobotCore core, Dashboard dash) {
 		
+		this.dash = dash;
 		armEnc = core.armEnc;
 		armEnc.setDistancePerPulse(IntakeArmConfig.armEncDistPulse);
 		armEnc.reset();
@@ -61,6 +63,7 @@ public class IntakeArm {
 	 * Runs periodically to update PID and move arm to wantPos
 	 */
 	public void update() {
+		dash.putDouble("armEnc", armEnc.getDistance());
 		currPos = armEnc.getDistance();
 		if(portcullis) {
 			pidPortcullis.update(currPos, wantPos);
