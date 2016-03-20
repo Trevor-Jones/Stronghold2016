@@ -186,4 +186,10 @@ public class PID {
     public double getDeltaSysT(){
     	return deltaSysT;
     }
+    
+    public void updateConstants(double kP, double kI, double kD){
+    	this.kP = kP;
+    	this.kI = kI;
+    	this.kD = kD;
+    }
 }

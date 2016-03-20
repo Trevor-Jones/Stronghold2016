@@ -1,5 +1,8 @@
 package auto;
 import edu.wpi.first.wpilibj.Timer;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MoveAction;
+
 import config.*;
 import core.Drive;
 import core.Intake;
@@ -34,6 +37,9 @@ public class Interpreter {
 	private VisionCore vision;
 	private boolean firstFile = true;
 	private boolean secondFile = false;
+	private int step = 0;
+	private boolean isFirstSpin = true;
+	private int wantGoal = 0;
 	
 	/**
 	 * 
@@ -68,6 +74,7 @@ public class Interpreter {
 	 */
 	public void next(){
 		isFirst = true;
+		isFirstSpin = true;
 		autoStep++;
 		isFirstTimer = true;
 	}
@@ -145,6 +152,57 @@ public class Interpreter {
 		prevAng = currAng;
 	}
 	
+	private void turnStep(double velocity, double turnAng) {
+//		turnAng*=-1;
+		double currAng = robotCore.navX.getAngle();
+		double error = turnAng+angChange;
+		double kP = 0.015;
+		double angVelocity = kP*error;
+		
+		if(angVelocity > 1) 
+			angVelocity = 1;
+		else if(angVelocity < -1)
+			angVelocity = -1;
+		
+		angVelocity *= velocity;
+		drive.set(angVelocity, -angVelocity);
+		
+		if(isFirst){
+			prevAng = robotCore.navX.getAngle();
+			isFirst = false;
+			prevAng = currAng;
+			angChange = 0;
+		}
+		
+		if (Math.abs(prevAng - currAng) > InterpConfig.angChangeThreshold){
+			if(prevAng > 0)
+				angChange += ((currAng - prevAng) + 360);	
+			else
+				angChange += -((currAng - prevAng) - 360);	
+		}
+		
+		else {
+			angChange += (currAng - prevAng);	
+		}
+		
+		if(Math.abs(angVelocity) < InterpConfig.notMovingThreshold) {
+			if(isFirstTimer) {
+				timer.start();
+				isFirstTimer = false;
+			}
+			
+			if(timer.get() > InterpConfig.turnNextTime) {
+				if(Math.abs(angVelocity) < InterpConfig.notMovingThreshold){
+					step++;
+				}
+				timer.reset();
+				timer.stop();
+			}
+		}
+		
+		prevAng = currAng;
+	}
+	
 	/**
 	 * Waits for a specified amount of time
 	 * @param wantValue time to wait in seconds
@@ -163,12 +221,55 @@ public class Interpreter {
 	}
 	
 	private void spinToGoal() {	
-		drive.set(InterpConfig.turnSpeed, -InterpConfig.turnSpeed);
-		if(Util.withinBounds(vision.vs.getDistance(0), -InterpConfig.visionAngThreshold, InterpConfig.visionAngThreshold)) {
-			//Goal found
-			drive.set(0, 0);
-			next();
+		double startAng =  0;
+		double translate = vision.vs.getTranslation(wantGoal);
+		double encLeftCount = 0;
+		double secondTurnAng;
+		
+		if(isFirstSpin) {
+			startAng = robotCore.navX.getAngle();
+			isFirstSpin = false;
 		}
+		
+		double rotation = vision.vs.getRotation(wantGoal);
+		double turnAng;
+		if(translate > 0) {
+			turnAng = -(rotation + 90);
+			secondTurnAng = 90;
+		}
+		
+		else {
+			turnAng = -(rotation - 90);
+			secondTurnAng = -90;
+		}
+		
+		switch (step) {
+			case 0:
+				turnStep(InterpConfig.turnSpeed, turnAng);
+				encLeftCount = robotCore.driveEncLeft.getDistance();
+				break;
+	
+			case 1:
+				drive.setNoRamp(InterpConfig.driveSpeed, InterpConfig.driveSpeed);
+				if((robotCore.driveEncLeft.getDistance() - encLeftCount) > translate) {
+					drive.set(0, 0);
+					step++;
+				}
+				break;
+				
+			case 2:
+				turnStep(InterpConfig.turnSpeed, secondTurnAng);
+				break;
+			
+			case 3:
+				shooter.shoot();
+				step++;
+				break;
+			
+			default:
+				break;
+		}
+		
 	}
 	/**
 	 * Waits until the robot is at a specified angle
@@ -270,7 +371,7 @@ public class Interpreter {
 			}
 		}
 		
-		else if ((commands[autoStep][0]) == Steps.getStep(Type.SPIN_GOAL)) {	//Spin until goal is found
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.MOVE_GOAL)) {	//Spin until goal is found
 			spinToGoal();
 		}
 		

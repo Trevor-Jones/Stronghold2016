@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -11,6 +12,7 @@ import config.VisionConfig;
 
 public class SocketClient {
 	public Socket visionSocket;
+	public ServerSocket visionServer;
 	PrintWriter out;
 	BufferedReader in;
 	boolean lostConnection = false;
@@ -26,7 +28,7 @@ public class SocketClient {
 		}
 	}
 	
-	public void initSockets() {
+	public void initClient() {
 		try {
 			visionSocket = new Socket(VisionConfig.hostName, VisionConfig.port);
 			out = new PrintWriter(visionSocket.getOutputStream(), true);
@@ -42,14 +44,23 @@ public class SocketClient {
 		}
 	}
 	
+	public void initServer() {
+		try {
+			visionServer = new ServerSocket(VisionConfig.port);
+			Socket clientSocket = visionServer.accept();
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		} catch(Exception e) {
+			
+		}
+	}
+	
 	public void update() {
 		try{
 			out.println(updateNumber);
+			xml = in.readLine();
+			System.out.println(updateNumber);
 			updateNumber++;
-//			if(in.readLine() != null)
-				xml = in.readLine();
-//			else 
-//				lostConnection = true;
 		} catch (IOException e) {
 			lostConnection = true;
 			System.out.println("ioexception");

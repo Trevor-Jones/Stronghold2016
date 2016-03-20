@@ -23,15 +23,12 @@ public class Drive {
 	public TwoCimGroup leftCimGroup = new TwoCimGroup(DriveConfig.leftC1Chn, DriveConfig.leftC2Chn, DriveConfig.leftC1IsFliped, DriveConfig.leftC2IsFlipped);
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
 	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
-	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
-	private double lastAng;
-	private double angDiff = 0;
+//	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
-		lastAng = robotCore.navX.getAngle(); 
 	}
 	
 	/**
@@ -50,18 +47,7 @@ public class Drive {
 		
 		double left = y + x;
 		double right = y - x;
-		
-		if(theta == 0) {
-			lastAng = robotCore.navX.getAngle();
-			angDiff = lastAng - robotCore.navX.getAngle();
-			if(angDiff > 300) {
-				angDiff -= 360;
-			}
-			drivePID.update(angDiff, 0);
-			right += drivePID.getOutput();
-		}
-		
-        
+        System.out.println("left : " + left + "\tright : " +  right);
         leftCimGroup.set(left);
         rightCimGroup.set(right);
         
@@ -78,16 +64,6 @@ public class Drive {
 		
         double left = y + x;
         double right = y - x;
-        
-        if(theta == 0) {
-			lastAng = robotCore.navX.getAngle();
-			angDiff = lastAng - robotCore.navX.getAngle();
-			if(angDiff > 300) {
-				angDiff -= 360;
-			}
-			drivePID.update(angDiff, 0);
-			right += drivePID.getOutput();
-		}
         
         leftCimGroup.setNoRamp(left);
         rightCimGroup.setNoRamp(right);

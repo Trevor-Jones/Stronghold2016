@@ -38,7 +38,7 @@ public class Steps {
 		case SHOOT:
 			i=6;
 			break;
-		case SPIN_GOAL:
+		case MOVE_GOAL:
 			i=7;
 			break;
 		case END:

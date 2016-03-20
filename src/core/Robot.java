@@ -1,11 +1,13 @@
 
 package core;
 
-import sensors.SharpIR;
 import util.Dashboard;
 import vision.VisionCore;
 import auto.Auto;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.networktables2.type.NumberArray;
+import edu.wpi.first.wpilibj.tables.TableKeyNotDefinedException;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,7 +22,7 @@ public class Robot extends IterativeRobot {
 	Drive drive = new Drive(robotCore); 
 	
 	VisionCore vision = new VisionCore(robotCore);
-	Dashboard dashboard = new Dashboard(vision);
+	Dashboard dashboard = new Dashboard(vision, robotCore);
 	IntakeArm arm = new IntakeArm(robotCore, dashboard);
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
@@ -29,6 +31,8 @@ public class Robot extends IterativeRobot {
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Test test = new Test(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
+	int value = 0;
+//	NetworkTable table;
 	
 	
     /**
@@ -36,12 +40,6 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
-    	try {
-    		vision.socket.visionSocket.close();  
-    	} catch (Exception e) {
-
-    	}
-    	vision.socket.initSockets();
     }
 
     public void autonomousInit() {
@@ -59,16 +57,18 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         teleop.run();
+
+//		System.out.println(table.getString("value", "dang"));
+    }
+    
+    public void teleopInit() {
+    	System.out.println("teleop init");
     }
     
     /**
      * This function is cSalled periodically during test mode
      */
     public void testPeriodic() {
-    	
-    }
-    
-    public void disabledInit() {
-    	
+    	System.out.println("test works");
     }
 }

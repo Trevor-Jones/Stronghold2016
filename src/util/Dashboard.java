@@ -7,6 +7,7 @@ import vision.VisionCore;
 import config.DashboardConfig;
 import config.ShooterConfig;
 import config.VisionConfig;
+import core.RobotCore;
 
 /**
  * Controlls the smartDashboard
@@ -16,14 +17,16 @@ import config.VisionConfig;
 public class Dashboard {
 
 	VisionCore vision;
+	RobotCore robotCore;
 	private SendableChooser autoChooserOne = new SendableChooser();
 	private SendableChooser autoChooserTwo = new SendableChooser();
 	
 	/**
 	 * Creates sections of dashboard
 	 */
-	public Dashboard(VisionCore vision) {
+	public Dashboard(VisionCore vision, RobotCore robotCore) {
 		this.vision = vision;
+		this.robotCore = robotCore;
 		
 		autoChooserOne.addDefault("Do Nothing", new ChooserType(DashboardConfig.idDoNothing));
 		autoChooserOne.addObject("To Auto Zone", new ChooserType(DashboardConfig.idDriveForward));
@@ -40,7 +43,7 @@ public class Dashboard {
 		autoChooserTwo.addObject("Defense Five", new ChooserType(DashboardConfig.idDefenseFive));
 		SmartDashboard.putData("Auto Mode Two", autoChooserTwo);
 		
-		SmartDashboard.putDouble("shooterSpeed", ShooterConfig.constantSpeed);
+		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
 	}
 	
 	/**
@@ -52,11 +55,11 @@ public class Dashboard {
 	}
 	
 	public void update() {
-		SmartDashboard.putBoolean("Connected to Jetson", vision.socket.getSocketStatus());
-		for(int i = 0; i < VisionConfig.numberOfGoals; i++){
-			SmartDashboard.putString("Goal " + i, vision.vs.goals[i].toString());
-		}
-		SmartDashboard.putString("xml:", vision.socket.getXML());
+		SmartDashboard.putNumber("navX Angle", robotCore.navX.getAngle());
+		SmartDashboard.putString("Goal One", vision.vs.goals[0].toString());
+		SmartDashboard.putString("Goal Two", vision.vs.goals[1].toString());
+		SmartDashboard.putString("Goal Three", vision.vs.goals[2].toString());
+		SmartDashboard.putString("xml", vision.socket.getXML());
 	}
 	
 	/**
@@ -112,10 +115,10 @@ public class Dashboard {
 	}
 	
 	public double getSpeed() {
-		return SmartDashboard.getDouble("shooterSpeed");
+		return SmartDashboard.getNumber("shooterSpeed");
 	}
 	
 	public void putDouble(String key, double num) {
-		SmartDashboard.putDouble(key, num);
+		SmartDashboard.putNumber(key, num);
 	}
 }

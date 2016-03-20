@@ -44,7 +44,7 @@ public class Teleop {
         dashboard.update();
         vision.update();
 		joyDrive();
-		joyIntake();
+//		joyIntake();
 		joyShooter();
 		//joyClimber();
 	}

@@ -16,6 +16,14 @@ public class Goal {
 	private boolean isFirst = true;
 	
 	public Goal(){}
+	
+	public Goal(double[] values){
+		translation = values[0];
+		rotation = values[1];
+		distance = values[2];
+		area = values[3];
+	}
+	
 	public Goal(Element n){
 		try {
 			translation = Integer.parseInt(n.getAttribute("translation"));
@@ -75,6 +83,39 @@ public class Goal {
 		
 		if(timer.get() > VisionConfig.noGoalTime) {
 			resetValues();
+		}
+	}
+	
+	public void update(double[] values) {
+		if(values[2] !=0) {
+			isGoal = true;
+		}
+		
+		else {
+			isGoal = false;
+		}
+		
+		if(!isGoal) {
+			if(isFirst) {
+				timer.start();
+				isFirst = false;
+			}
+			if(timer.get() > VisionConfig.noGoalTime) {
+				resetValues();
+				timer.stop();
+				timer.reset();
+			}
+		}
+		
+		else {
+			translation = values[0];
+			rotation = values[1];
+			distance = values[2];
+			area = values[3];
+			isGoal = false;
+			isFirst = true;
+			timer.stop();
+			timer.reset();
 		}
 	}
 	
