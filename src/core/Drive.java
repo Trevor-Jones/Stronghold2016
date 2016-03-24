@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import util.PID;
+import util.Util;
 
 import java.lang.Math;
 
@@ -24,11 +25,13 @@ public class Drive {
 	public TwoCimGroup rightCimGroup = new TwoCimGroup(DriveConfig.rightC1Chn, DriveConfig.rightC2Chn, DriveConfig.rightC1IsFlipped, DriveConfig.rightC2IsFlipped);
 	public DoubleSolenoid shiftingSol = new DoubleSolenoid(DriveConfig.shiftSolPortA, DriveConfig.shiftSolPortB);
 //	private PID drivePID = new PID(DriveConfig.kP, DriveConfig.kI, DriveConfig.kD);
+	boolean lowGear = true;
 	
 	public Drive (RobotCore core) {
 		robotCore = core;
 		encLeft = core.driveEncLeft;
 		encRight = core.driveEncRight;
+		shiftingSol.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -39,6 +42,10 @@ public class Drive {
 	 * 
 	  */
 	public void move(double r, double theta) {
+		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
+			theta-=DriveConfig.driveStraightOffset;
+		}
+		
 		double xPos = r*Math.cos(theta);
 		double yPos = r*Math.sin(theta);
 		
@@ -47,7 +54,6 @@ public class Drive {
 		
 		double left = y + x;
 		double right = y - x;
-        System.out.println("left : " + left + "\tright : " +  right);
         leftCimGroup.set(left);
         rightCimGroup.set(right);
         
@@ -55,6 +61,9 @@ public class Drive {
 	}
 	
 	public void moveNoRamp(double r, double theta) {
+		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
+			theta-=DriveConfig.driveStraightOffset;
+		}
 		
 		double xPos = r*Math.cos(theta);
 		double yPos = r*Math.sin(theta);
@@ -79,13 +88,13 @@ public class Drive {
 		rightCimGroup.setNoRamp(right);
 	}
 	
-	public void toFastGear() {
+	public void toLowGear() {
 		shiftingSol.set(DoubleSolenoid.Value.kReverse);
-		System.out.println("fast");
+		lowGear = true;
 	}
 	
-	public void toSlowGear() {
+	public void toHighGear() {
 		shiftingSol.set(DoubleSolenoid.Value.kForward);
-		System.out.println("slow");
+		lowGear = false;
 	}
 }

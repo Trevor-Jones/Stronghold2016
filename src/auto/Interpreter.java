@@ -64,7 +64,7 @@ public class Interpreter {
 	public void interpInit() {
 		fileNameOne = dashboard.getFileNameOne();
 		commandsOne = Parser.parse(fileNameOne);
-
+		step = 0;
 		fileNameTwo = dashboard.getFileNameTwo();
 		commandsTwo = Parser.parse(fileNameTwo);
 	}
@@ -91,7 +91,7 @@ public class Interpreter {
 			isFirst = false;
 		}
 		
-		if(robotCore.driveEncLeft.getDistance() > leftWant && robotCore.driveEncRight.getDistance() > rightWant)  {
+		if(-robotCore.driveEncLeft.getDistance() > leftWant && -robotCore.driveEncRight.getDistance() > rightWant)  {
 			next();
 		}
 	}
@@ -218,6 +218,10 @@ public class Interpreter {
 			timer.reset();
 			next();
 		}
+	}
+	
+	public void resetAuto() {
+		step = 0;
 	}
 	
 	private void spinToGoal() {	
@@ -361,18 +365,23 @@ public class Interpreter {
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Shoot using vision
-			if(isFirst) {
+//			if(isFirst) {
 				shooter.shoot();
-				isFirst = false;
-			}
+//				isFirst = false;
+//			}
 			
-			if(!shooter.getState()) {
+//			if(!shooter.getState()) {
 				next();
-			}
+//			}
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.MOVE_GOAL)) {	//Spin until goal is found
 			spinToGoal();
+		}
+		
+		else if ((commands[autoStep][0]) == Steps.getStep(Type.ARM_TOGGLE)) {
+			intake.arm.togglePos();
+			next();
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.END)) {

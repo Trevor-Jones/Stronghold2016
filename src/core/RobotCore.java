@@ -20,19 +20,19 @@ public class RobotCore {
 	public NavX navX = new NavX();
 	public Encoder armEnc = new Encoder(IntakeArmConfig.armEncChnA, IntakeArmConfig.armEncChnB);
 	public SharpIR sharp = new SharpIR();
-	public Encoder shooterOneEnc = new Encoder(ShooterConfig.ChnAMotorOneEnc, ShooterConfig.ChnBMotorOneEnc);
-	public Encoder shooterTwoEnc = new Encoder(ShooterConfig.ChnAMotorTwoEnc, ShooterConfig.ChnBMotorTwoEnc);
+	public Encoder shooterLeftEnc = new Encoder(ShooterConfig.ChnALeftEnc, ShooterConfig.ChnBLeftEnc);
+	public Encoder shooterRightEnc = new Encoder(ShooterConfig.ChnARightEnc, ShooterConfig.ChnBRightEnc);
 	public DoubleSolenoid shooterSol = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
 	public PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
 	
 	public RobotCore(){
 		
-		shooterOneEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
-		shooterTwoEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
+		shooterLeftEnc.setDistancePerPulse(ShooterConfig.distancePerPulseLeft);
+		shooterRightEnc.setDistancePerPulse(ShooterConfig.distancePerPulseRight);
 
-		shooterOneEnc.reset();
-		shooterTwoEnc.reset();
+		shooterLeftEnc.reset();
+		shooterRightEnc.reset();
 		
 		driveEncRight.setDistancePerPulse(DriveConfig.encRightDisPerPulse);	
 		driveEncLeft.setDistancePerPulse(DriveConfig.encLeftDisPerPulse);

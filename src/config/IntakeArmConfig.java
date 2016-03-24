@@ -25,8 +25,8 @@ public class IntakeArmConfig {
 	public static final double maxArmSpeed = 0.7;
 	
 	// Distance levels
-	public static final double pickupPosition = 0;
-	public static final double homePosition = -9.7;
+	public static final double pickupPosition = 9.6;
+	public static final double homePosition = 0;
 	
 	// Distance array values
 	public static final int pickupPosArray = 0;

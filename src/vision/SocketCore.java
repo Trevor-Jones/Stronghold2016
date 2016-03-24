@@ -10,15 +10,55 @@ import java.net.UnknownHostException;
 
 import config.VisionConfig;
 
-public class SocketClient {
+public class SocketCore implements Runnable {
 	public Socket visionSocket;
 	public ServerSocket visionServer;
+	Socket clientSocket;
 	PrintWriter out;
 	BufferedReader in;
 	boolean lostConnection = false;
 	int updateNumber = 0;
+	private boolean init = false;
 	
-	String xml = "";
+	String xml = "<?xml version=\"1.0\"?><vision frameNumber = \"0\"></vision>";
+	
+	/**
+	 * Runs in separate thread to handle communication efficiently 
+	 */
+	public void run() {
+		if(!init){
+			try {
+				visionServer = new ServerSocket(VisionConfig.port);
+				clientSocket = visionServer.accept();
+				init=true;
+				out = new PrintWriter(clientSocket.getOutputStream(), true);
+				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				System.out.println("connected");
+			} catch(Exception e) {
+				System.out.println("visionServer initialization threw exception");
+			}
+		}
+		
+		try {
+			while(true) {
+				out.println(Integer.toString(updateNumber));
+				xml = in.readLine();
+				System.out.println(xml);
+				updateNumber++;
+			} 
+		} catch(Exception e) {
+			
+		}
+		init = true;
+	}
+	
+	public String getXML(){
+		return xml;
+	}
+	
+	public void setInit(boolean init) {
+		this.init = init;
+	}
 	
 	public boolean getSocketStatus() {
 		try {
@@ -55,11 +95,22 @@ public class SocketClient {
 		}
 	}
 	
+	public void connectServer () {
+		try {
+			visionServer.close();
+			visionServer = new ServerSocket(VisionConfig.port);
+			Socket clientSocket = visionServer.accept();
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+		    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+		} catch(Exception e) {
+			
+		}
+	}
+	
 	public void update() {
 		try{
-			out.println(updateNumber);
+			out.println(Integer.toString(updateNumber));
 			xml = in.readLine();
-			System.out.println(updateNumber);
 			updateNumber++;
 		} catch (IOException e) {
 			lostConnection = true;
@@ -69,9 +120,5 @@ public class SocketClient {
 			e.printStackTrace();
 			System.out.println("exception");
 		}
-	}
-	
-	public String getXML(){
-		return xml;
 	}
 }

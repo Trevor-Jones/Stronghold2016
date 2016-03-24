@@ -1,5 +1,7 @@
 package vision;
 
+import java.rmi.server.ServerCloneException;
+
 import config.ShooterConfig;
 import config.VisionConfig;
 import core.RobotCore;
@@ -12,17 +14,20 @@ public class VisionCore {
 //	public NetworkTable table;
 	public VisionStruct vs = new VisionStruct();
 //	private String emptyXML = "<?xml version=\"1.0\"?><vision frameNumber = \"0\"></vision>";
-	private String emptyXML = "dang";
-	public SocketClient socket = new SocketClient();
+	public SocketCore socket = new SocketCore();
 	
 	PID turnPID = new PID(ShooterConfig.kPDrive, ShooterConfig.kIDrive, ShooterConfig.kDDrive);
 
 	public VisionCore(RobotCore core) {	
-		socket.initServer();						
+		new Thread(socket).start();		
 	}
 	
 	public void updateTurnPID(int wantGoal){
 		turnPID.update(vs.getRotation(wantGoal), 0);
+	}
+	
+	public void updateTurnPID(double currAng, double wantAng) {
+		turnPID.update(currAng, wantAng);
 	}
 	
 	public void changePIDConstants(double kP, double kI, double kD) {
@@ -43,12 +48,16 @@ public class VisionCore {
 	}
 	
 	public void update() {
+		System.out.println(socket.getXML());
 		try{
-			socket.update();
 			vs = xmlParser.parseString(socket.getXML());
 		} catch(Exception e) {
 			
 		}
+	}
+	
+	public void initThread() {
+		new Thread(socket).start();
 	}
 	
 //	public void update() {

@@ -11,8 +11,8 @@ import util.Util;
  *
  */
 public class Intake {
-	IntakeArm arm;
-	IntakeRoller roller;
+	public IntakeArm arm;
+	public IntakeRoller roller;
 	Timer timer = new Timer();
 	private int step;
 	private boolean isFirst = true;

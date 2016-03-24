@@ -44,6 +44,9 @@ public class Steps {
 		case END:
 			i=8;
 			break;
+		case ARM_TOGGLE:
+			i=9;
+			break;
 		default:
 			i = -1; 
 			break;

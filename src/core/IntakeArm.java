@@ -65,20 +65,14 @@ public class IntakeArm {
 	public void update() {
 		dash.putDouble("armEnc", armEnc.getDistance());
 		currPos = armEnc.getDistance();
-		if(portcullis) {
-			pidPortcullis.update(currPos, wantPos);
-			pidOutput = pidPortcullis.getOutput();
+		if(wantPos - currPos <= 0) {
+			pidUp.update(currPos, wantPos);
+			pidOutput = pidUp.getOutput();
 		}
-		else {
-			if(wantPos - currPos <= 0) {
-				pidUp.update(currPos, wantPos);
-				pidOutput = pidUp.getOutput();
-			}
-			else if(wantPos - currPos > 0) {
-				pidDown.update(currPos, wantPos);
-				pidOutput = pidDown.getOutput();
-			}			
-		}
+		else if(wantPos - currPos > 0) {
+			pidDown.update(currPos, wantPos);
+			pidOutput = pidDown.getOutput();
+		}			
 
 		setArmSpeed(Util.limit(pidOutput, IntakeArmConfig.minArmSpeed, IntakeArmConfig.maxArmSpeed));
 		

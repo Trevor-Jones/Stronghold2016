@@ -39,7 +39,7 @@ public class XMLParser {
 			vs.frameNumber = Integer.parseInt(((Element) doc.getElementsByTagName("Vision").item(0)).getAttribute("frameNumber"));
 	
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 		return vs;

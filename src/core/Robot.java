@@ -3,7 +3,11 @@ package core;
 
 import util.Dashboard;
 import vision.VisionCore;
+
+import java.net.ServerSocket;
+
 import auto.Auto;
+import config.VisionConfig;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.networktables2.type.NumberArray;
@@ -27,12 +31,11 @@ public class Robot extends IterativeRobot {
 	IntakeRoller roller = new IntakeRoller(arm, robotCore.sharp);
 	Intake intake = new Intake(arm, roller);
 	Climber climber = new Climber(robotCore);
-	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard);
+	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard, intake);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Test test = new Test(robotCore, drive, intake, shooter, climber, dashboard, vision);
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
 	int value = 0;
-//	NetworkTable table;
 	
 	
     /**
@@ -40,10 +43,12 @@ public class Robot extends IterativeRobot {
      * used for any initialization code.
      */
     public void robotInit() {
+    	
     }
 
     public void autonomousInit() {
     	auto.interpreter.interpInit();
+//    	vision.initThread();
     }
     /**
      * This function is called periodically during autonomous
@@ -57,12 +62,11 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         teleop.run();
-
-//		System.out.println(table.getString("value", "dang"));
     }
     
     public void teleopInit() {
-    	System.out.println("teleop init");
+//    	vision.socket.connectServer();
+//    	vision.initThread();
     }
     
     /**

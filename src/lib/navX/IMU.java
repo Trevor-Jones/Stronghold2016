@@ -45,7 +45,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     Thread m_thread;
     protected byte update_rate_hz;
 
-    volatile float yaw;
+    public volatile float yaw;
     volatile float pitch;
     volatile float roll;
     volatile float compass_heading;
@@ -189,7 +189,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
     public float getRoll() {
         return roll;
     }
-
+    
     /**
      * Returns the current yaw value (in degrees, from -180 to 180)
      * reported by the nav6 IMU.

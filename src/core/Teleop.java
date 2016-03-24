@@ -26,6 +26,7 @@ public class Teleop {
 	 */
 	public Teleop (RobotCore robotCore, Drive drive, Intake intake, Shooter shooter, Climber climber, Dashboard dashboard, VisionCore vision)
 	{
+		System.out.println("teleop init");
 		this.robotCore = robotCore;
 		this.drive = drive;
 		this.intake = intake;
@@ -44,7 +45,7 @@ public class Teleop {
         dashboard.update();
         vision.update();
 		joyDrive();
-//		joyIntake();
+		joyIntake();
 		joyShooter();
 		//joyClimber();
 	}
@@ -57,11 +58,11 @@ public class Teleop {
 		drive.move(rTheta[0], rTheta[1]);	
 
 		if(robotCore.joy.getDpadUp()) {
-			drive.toFastGear();
+			drive.toLowGear();
 		}
 		
 		if(robotCore.joy.getDpadDown()) {
-			drive.toSlowGear();
+			drive.toHighGear();
 		}
 //		System.out.println(rTheta[0] + "\t" + (rTheta[1] * 180/Math.PI));
 	}
@@ -71,7 +72,7 @@ public class Teleop {
 	 */
 	private void joyIntake() {
 		intake.update();
-		
+//		System.out.println("hello");
 		if(robotCore.joy.getButton(JoyConfig.intakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.pickupBall();
 		}

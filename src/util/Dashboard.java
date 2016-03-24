@@ -34,13 +34,12 @@ public class Dashboard {
 		autoChooserOne.addObject("Rough Terrain", new ChooserType(DashboardConfig.idRoughTerrain));
 		autoChooserOne.addObject("Cheval de Frise", new ChooserType(DashboardConfig.idChevalDeFrise));
 		autoChooserOne.addObject("Moat", new ChooserType(DashboardConfig.idMoat));
+		autoChooserOne.addObject("Portcullis", new ChooserType(DashboardConfig.idPortcullis));
+		autoChooserOne.addObject("Ramparts", new ChooserType(DashboardConfig.idRamparts));
 		SmartDashboard.putData("Auto Mode", autoChooserOne);
 
-		autoChooserTwo.addDefault("Defense One", new ChooserType(DashboardConfig.idDefenseOne));
-		autoChooserTwo.addObject("Defense Two", new ChooserType(DashboardConfig.idDefenseTwo));
-		autoChooserTwo.addObject("Defense Three", new ChooserType(DashboardConfig.idDefenseThree));
-		autoChooserTwo.addObject("Defense Four", new ChooserType(DashboardConfig.idDefenseFour));
-		autoChooserTwo.addObject("Defense Five", new ChooserType(DashboardConfig.idDefenseFive));
+		autoChooserTwo.addDefault("Shoot", new ChooserType(DashboardConfig.idShoot));
+		autoChooserTwo.addObject("Don't Shoot", new ChooserType(DashboardConfig.idDontShoot));
 		SmartDashboard.putData("Auto Mode Two", autoChooserTwo);
 		
 		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
@@ -60,6 +59,9 @@ public class Dashboard {
 		SmartDashboard.putString("Goal Two", vision.vs.goals[1].toString());
 		SmartDashboard.putString("Goal Three", vision.vs.goals[2].toString());
 		SmartDashboard.putString("xml", vision.socket.getXML());
+		
+		SmartDashboard.putNumber("driveEncLeft", robotCore.driveEncLeft.getDistance());
+		SmartDashboard.putNumber("driveEncRight", robotCore.driveEncRight.getDistance());
 	}
 	
 	/**
@@ -85,6 +87,12 @@ public class Dashboard {
 			case 5:
 				return DashboardConfig.moatFileName;
 				
+			case 6:
+				return DashboardConfig.portcullisFileName;
+
+			case 7:
+				return DashboardConfig.rampartsFileName;
+				
 			default:
 				return DashboardConfig.doNothingFileName;
 		}
@@ -95,19 +103,10 @@ public class Dashboard {
 		
 		switch (id) {
 			case 0:
-				return DashboardConfig.defenseOneFileName;
+				return DashboardConfig.shootFileName;
 	
 			case 1:
-				return DashboardConfig.defenseTwoFileName;
-
-			case 2:
-				return DashboardConfig.defenseThreeFileName;
-
-			case 3:
-				return DashboardConfig.defenseFourFileName;
-
-			case 4:
-				return DashboardConfig.defenseFiveFileName;
+				return DashboardConfig.doNothingFileName;
 				
 			default:
 				return DashboardConfig.doNothingFileName;
