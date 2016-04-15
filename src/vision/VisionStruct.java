@@ -23,7 +23,13 @@ public class VisionStruct {
 	}
 	
 	public double getRotation(int goalNumber) {
-		return -goals[goalNumber].rotation + VisionConfig.angleOffset;
+		if(getDistance(goalNumber) != 0) {
+			return -goals[goalNumber].rotation + VisionConfig.angleOffset;			
+		}
+		
+		else {
+			return 0;
+		}
 	}
 	
 	public double getTranslation(int goalNumber) {

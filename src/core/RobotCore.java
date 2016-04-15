@@ -25,6 +25,7 @@ public class RobotCore {
 	public DoubleSolenoid shooterSol = new DoubleSolenoid(ShooterConfig.ChnSolA, ShooterConfig.ChnSolB);
 	public PowerDistributionPanel pdp = new PowerDistributionPanel();
 //	public Encoder climberEnc = new Encoder(ClimberConfig.ChnAEnc,ClimberConfig.ChnBEnc);
+//	public Encoder climberEncCIM = new Encoder(ClimberConfig.ChnAEncCIM, ClimberConfig.ChnBEncCIM);
 	
 	public RobotCore(){
 		

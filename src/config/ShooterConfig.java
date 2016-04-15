@@ -1,43 +1,42 @@
 package config;
 
-public class ShooterConfig
-{
+public class ShooterConfig {
 
-	public static final int ChnALeftEnc = 2;
-	public static final int ChnBLeftEnc = 3;
-	public static final int ChnBRightEnc = 7;
-	public static final int ChnARightEnc = 6;
+	public static final int ChnALeftEnc = 7; //7
+	public static final int ChnBLeftEnc = 6; //6
+	public static final int ChnBRightEnc = 2;
+	public static final int ChnARightEnc = 3;
 	public static final int ChnSolA = 0;
 	public static final int ChnSolB = 1;
-	public static final double distancePerPulseRight = -0.000048; //48
-	public static final double distancePerPulseLeft = 0.000048;
+	public static final double distancePerPulseRight = -0.000048; //0.000048
+	public static final double distancePerPulseLeft = 0.000048; //53
 	public static final int ChnMotorOne = 9;
 	public static final int ChnMotorTwo = 8;
 	public static final double waitTime = 0.5;
-	public static final double waitTimeStop = 1;
+	public static final double waitTimeStop = 0.5;
 	
-	public static final double kPLeft = .06;
-	public static final double kILeft = 0;
-	public static final double kDLeft = 0;
+	public static final double kPLeft = 0.009; //0.018
+	public static final double kILeft = 0.005844;
+	public static final double kDLeft = 0.003465;
 	
-	public static final double kPRight = .06;
-	public static final double kIRight = 0;
-	public static final double kDRight = 0;
+	public static final double kPRight = 0.009;  //0.018
+	public static final double kIRight = 0.005844;
+	public static final double kDRight = 0.003465;
 
-	public static final double kPDrive = 0.032;
+	public static final double kPDrive = 0.062;
 	public static final double kIDrive= 0;
 	public static final double kDDrive = 0;
 
-	public static final double kPDriveClose = 0.11;
+	public static final double kPDriveClose = 0.07;
 	public static final double kIDriveClose = 0;
 	public static final double kDDriveClose = 0;
 	
-	public static final double rotationTolerance = 6;
-	public static final double turnTime = 2;
+	public static final double rotationTolerance = 7;
+	public static final double velocitySettleTime = 0.25;
 	public static final double distanceSpeedConstant = .009;
 	
-	public static final double constantSpeed = 0.665;
-	public static final double motorSpeedTolerance = .1;
+	public static final double constantSpeed = 0.56;
+	public static final double motorSpeedTolerance = .012;
 	
 	public static final int maxDistanceVision = 100;
 	
@@ -49,5 +48,7 @@ public class ShooterConfig
 	
 	public static final double changePIDAng = 3;
 	public static final double angleTolerance = 0.254;
+	
+	public static final int movingAverageNumbers = 5;
 	
 }

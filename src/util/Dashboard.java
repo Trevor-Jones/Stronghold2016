@@ -20,6 +20,7 @@ public class Dashboard {
 	RobotCore robotCore;
 	private SendableChooser autoChooserOne = new SendableChooser();
 	private SendableChooser autoChooserTwo = new SendableChooser();
+	private SendableChooser leftRightChooser = new SendableChooser();
 	
 	/**
 	 * Creates sections of dashboard
@@ -38,11 +39,17 @@ public class Dashboard {
 		autoChooserOne.addObject("Ramparts", new ChooserType(DashboardConfig.idRamparts));
 		SmartDashboard.putData("Auto Mode", autoChooserOne);
 
-		autoChooserTwo.addDefault("Shoot", new ChooserType(DashboardConfig.idShoot));
-		autoChooserTwo.addObject("Don't Shoot", new ChooserType(DashboardConfig.idDontShoot));
+		autoChooserTwo.addDefault("Don't Shoot", new ChooserType(DashboardConfig.idDontShoot));
+		autoChooserTwo.addObject("Shoot", new ChooserType(DashboardConfig.idShoot));
 		SmartDashboard.putData("Auto Mode Two", autoChooserTwo);
 		
+		leftRightChooser.addDefault("Left", new ChooserType(0));
+		leftRightChooser.addObject("Right", new ChooserType(1));
+		SmartDashboard.putData("Left Right", leftRightChooser);
+		
 		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
+		SmartDashboard.putNumber("kPLeft", ShooterConfig.kPLeft);
+		SmartDashboard.putNumber("kPRight", ShooterConfig.kPRight);
 	}
 	
 	/**
@@ -59,6 +66,7 @@ public class Dashboard {
 		SmartDashboard.putString("Goal Two", vision.vs.goals[1].toString());
 		SmartDashboard.putString("Goal Three", vision.vs.goals[2].toString());
 		SmartDashboard.putString("xml", vision.socket.getXML());
+		SmartDashboard.putNumber("pitch", robotCore.navX.getRoll());
 		
 		SmartDashboard.putNumber("driveEncLeft", robotCore.driveEncLeft.getDistance());
 		SmartDashboard.putNumber("driveEncRight", robotCore.driveEncRight.getDistance());
@@ -113,11 +121,42 @@ public class Dashboard {
 		}
 	}
 	
+	/**
+	 * Returns true for left of goal, false for right
+	 * @return
+	 */
+	public boolean getLeftRight() {
+		int id = ((ChooserType) leftRightChooser.getSelected()).getId();
+		
+		switch (id) {
+			case 0:
+				return true;
+	
+			case 1:
+				return false;
+				
+			default:
+				return false;
+		}
+	}
+	
 	public double getSpeed() {
 		return SmartDashboard.getNumber("shooterSpeed");
 	}
 	
+	public double getPLeft() {
+		return SmartDashboard.getNumber("kPLeft");
+	}
+	
+	public double getPRight() {
+		return SmartDashboard.getNumber("kPRight");
+	}
+	
 	public void putDouble(String key, double num) {
 		SmartDashboard.putNumber(key, num);
+	}
+	
+	public void putBoolean(String key, Boolean bool) {
+		SmartDashboard.putBoolean(key, bool);
 	}
 }

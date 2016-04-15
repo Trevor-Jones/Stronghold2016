@@ -47,6 +47,12 @@ public class Steps {
 		case ARM_TOGGLE:
 			i=9;
 			break;
+		case WAIT_PITCH:
+			i=10;
+			break;
+//		case WAIT_PITCH_THRESHOLD:
+//			i=11;
+//			break;
 		default:
 			i = -1; 
 			break;

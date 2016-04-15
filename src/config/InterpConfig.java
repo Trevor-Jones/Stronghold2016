@@ -9,4 +9,5 @@ public class InterpConfig {
 	public static final double visionAngThreshold = 30;
 	public static final double kPDrive = 0.015;
 	public static final double driveSpeed = 1;
+	public static final double pitchThreshold = 2.5;
 }

@@ -42,9 +42,9 @@ public class Drive {
 	 * 
 	  */
 	public void move(double r, double theta) {
-		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
-			theta-=DriveConfig.driveStraightOffset;
-		}
+//		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
+//			theta+=DriveConfig.driveStraightOffset;
+//		}
 		
 		double xPos = r*Math.cos(theta);
 		double yPos = r*Math.sin(theta);
@@ -54,6 +54,7 @@ public class Drive {
 		
 		double left = y + x;
 		double right = y - x;
+//		System.out.println("left : " + left + "\tright : " + right);
         leftCimGroup.set(left);
         rightCimGroup.set(right);
         
@@ -61,9 +62,9 @@ public class Drive {
 	}
 	
 	public void moveNoRamp(double r, double theta) {
-		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
-			theta-=DriveConfig.driveStraightOffset;
-		}
+//		if(Util.withinThreshold(Math.abs(theta), Math.PI/2, 0.015)/* && !lowGear*/) {
+//			theta+=DriveConfig.driveStraightOffset;
+//		}
 		
 		double xPos = r*Math.cos(theta);
 		double yPos = r*Math.sin(theta);

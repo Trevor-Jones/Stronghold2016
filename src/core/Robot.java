@@ -33,7 +33,7 @@ public class Robot extends IterativeRobot {
 	Climber climber = new Climber(robotCore);
 	Shooter shooter = new Shooter(robotCore, drive, vision, dashboard, intake);
 	Teleop teleop = new Teleop(robotCore, drive, intake, shooter, climber, dashboard, vision);
-	Test test = new Test(robotCore, drive, intake, shooter, climber, dashboard, vision);
+	Test test = new Test(drive, intake, shooter);
 	Auto auto = new Auto(robotCore, drive, intake, shooter, dashboard, vision);
 	int value = 0;
 	
@@ -73,6 +73,6 @@ public class Robot extends IterativeRobot {
      * This function is cSalled periodically during test mode
      */
     public void testPeriodic() {
-    	System.out.println("test works");
+    	test.run();
     }
 }

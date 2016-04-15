@@ -45,6 +45,7 @@ public class SocketCore implements Runnable {
 				xml = in.readLine();
 				System.out.println(xml);
 				updateNumber++;
+				Thread.sleep(50);
 			} 
 		} catch(Exception e) {
 			

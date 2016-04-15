@@ -47,7 +47,7 @@ public class Teleop {
 		joyDrive();
 		joyIntake();
 		joyShooter();
-		//joyClimber();
+//		joyClimber();
 	}
 	
 	/**
@@ -83,7 +83,6 @@ public class Teleop {
 		
 		if(robotCore.joy.getRawButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.arm.setArmSpeed(1);
-			System.out.println("Woorkingadsfasjdjfalksdflksadajflkadsfjlaksdfjlasdkflksdfka");
 		}
 		
 		if(robotCore.joy.getRawButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -153,6 +152,14 @@ public class Teleop {
 			shooter.launchBall();
 		}
 		
+		if(robotCore.joy.getButton(9) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.changeShooterSpeed(-0.01);
+		}
+		
+		if(robotCore.joy.getButton(10) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			shooter.changeShooterSpeed(0.01);
+		}
+		
 //		if(robotCore.joy.getButton(JoyConfig.climbButton)) {
 //			shooter.setVisionUse(false);
 //		}
@@ -166,6 +173,10 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(JoyConfig.climbButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton))  {
 			climber.climb();
+		}
+		
+		if(robotCore.joy.getButton(JoyConfig.climbStepButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+			climber.advanceStep();
 		}
 	}
 }

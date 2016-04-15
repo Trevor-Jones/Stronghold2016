@@ -1,6 +1,7 @@
 package core;
 
 import util.PID;
+import util.Util;
 import components.CIM;
 import config.ClimberConfig;
 import edu.wpi.first.wpilibj.Encoder;
@@ -13,11 +14,13 @@ import edu.wpi.first.wpilibj.Timer;
  *
  */
 public class Climber {
-//	CIM climberMotor = new CIM(ClimberConfig.chnClimberMotor, false);
-////	Solenoid climberSol = new Solenoid(ClimberConfig.chnSol);
+//	CIM climberCIM = new CIM(ClimberConfig.chnClimberCIM, false);
+//	CIM climberDeliveryMotor = new CIM(ClimberConfig.chnClimberCIM, false);
+//	PID deliveryPID = new PID(ClimberConfig.climberP, ClimberConfig.climberI, ClimberConfig.climberD);
 //
 //	Encoder climberEnc;
-//
+//	Encoder climberEncCIM;
+//	
 //	boolean isClimb = false;
 //	int step = 0;
 //	double wantSpeed = 0;
@@ -28,7 +31,10 @@ public class Climber {
 	 */
 	public Climber(RobotCore core) {
 //		this.climberEnc = core.climberEnc;
-//		this.climberEnc.setDistancePerPulse(ClimberConfig.maxRPM);
+//		this.climberEnc.setDistancePerPulse(ClimberConfig.climberEncDistancePerPulse);
+//
+//		this.climberEncCIM = core.climberEncCIM;
+//		this.climberEncCIM.setDistancePerPulse(ClimberConfig.climberEncCIMDistancePerPulse);
 	}
 
 	/**
@@ -38,30 +44,23 @@ public class Climber {
 //		switch (step) {
 //			case 0:
 //				if (isClimb) {
-////					climberSol.set(true);
-//					climberMotor.ramp(ClimberConfig.upSpeed);
-//					climberEnc.reset();
-//					step++;
+//					deliveryPID.update(climberEnc.getDistance(), ClimberConfig.wantDistance);
+//					climberDeliveryMotor.ramp(deliveryPID.getOutput());
 //				}
 //				break;
 //	
 //			case 1:
-//				if (isClimb && (climberEnc.getDistance() > ClimberConfig.distance)) {
-//					climberMotor.ramp(ClimberConfig.downSpeed);
-////					climberSol.set(false);
-//					climberEnc.reset();
-//					step++;
+//				if (isClimb) {
+//					climberCIM.ramp(ClimberConfig.downSpeed);
+//			
+//					if (climberEncCIM.getDistance() > ClimberConfig.wantHeight) {
+//						climberCIM.set(0);
+//						step = 0;
+//						isClimb = false;
+//					}
 //				}
 //				break;
 //				
-//			case 2:
-//				if (isClimb && (climberEnc.getDistance() > ClimberConfig.distance)) {
-//					climberMotor.set(0);
-//					step = 0;
-//					isClimb = false;
-//				}
-//				break;
-//	
 //			default:
 //				break;
 //		}
@@ -71,7 +70,12 @@ public class Climber {
 	 * Starts the climbing sequence
 	 */
 	public void climb() {
+//		step = 0;
 //		isClimb = true;
 //		climberEnc.reset();
+	}
+	
+	public void advanceStep() {
+//		step++;
 	}
 }
