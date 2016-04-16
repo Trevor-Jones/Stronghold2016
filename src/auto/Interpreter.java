@@ -39,7 +39,9 @@ public class Interpreter {
 	private boolean secondFile = false;
 	private int step = 0;
 	private boolean isFirstSpin = true;
+	private boolean isFirstShoot = true;
 	private int wantGoal = 0;
+	private Timer shootTimer = new Timer();
 	
 	/**
 	 * 
@@ -62,6 +64,7 @@ public class Interpreter {
 	 * Run at auto init to get and parse script file 
 	 */
 	public void interpInit() {
+		shootTimer.start();
 		fileNameOne = dashboard.getFileNameOne();
 		commandsOne = Parser.parse(fileNameOne);
 		step = 0;
@@ -75,8 +78,11 @@ public class Interpreter {
 	public void next(){
 		isFirst = true;
 		isFirstSpin = true;
+		isFirstShoot = true;
 		autoStep++;
 		isFirstTimer = true;
+		timer.stop();
+		timer.reset();
 	}
 	
 	/**
@@ -91,9 +97,33 @@ public class Interpreter {
 			isFirst = false;
 		}
 		
-		if(-robotCore.driveEncLeft.getDistance() > leftWant && -robotCore.driveEncRight.getDistance() > rightWant)  {
+		if(Math.abs(robotCore.driveEncLeft.getDistance()) > leftWant && Math.abs(robotCore.driveEncRight.getDistance()) > rightWant)  {
 			next();
 		}
+	}
+	
+	public void waitPitch() {
+		if(Math.abs(robotCore.navX.getRoll()+3) < InterpConfig.pitchThreshold) {
+			if(isFirst) {
+				timer.start();
+				isFirst = false;
+			}
+			if(timer.get() > 0.25) {
+				next();				
+			}
+		}
+		
+		else {
+			timer.reset();
+			isFirst = true;
+		}
+	}
+	
+	public void waitPitchThreshold(double threshold) {
+		if(Math.abs(robotCore.navX.getRoll()+2.3) < threshold) {
+			next();
+		}
+		
 	}
 	
 	/**
@@ -316,6 +346,12 @@ public class Interpreter {
 	 * Run periodically to read through and execute the script
 	 */
 	public void update(){
+		if(shootTimer.get() > 14) {
+			shooter.launchBall();
+			shooter.cancelShot();
+			shootTimer.reset();
+		}
+		
 		if(firstFile) {
 			dispatcher(commandsOne);
 		}
@@ -361,18 +397,43 @@ public class Interpreter {
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.WAIT_ENCODER)) {	//Wait for encoder
-			waitEncoder(commands[autoStep][1],commands[autoStep][2]);
+			waitEncoder(0,commands[autoStep][2]);
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.SHOOT)) {	//Shoot using vision
-//			if(isFirst) {
-				shooter.shoot();
-//				isFirst = false;
-//			}
+			if(vision.vs.goals[wantGoal].distance == 0) {
+				if(isFirst) {
+					timer.reset();
+					timer.start();
+					isFirst = false;
+				}
+				if(dashboard.getLeftRight()) {
+					drive.setNoRamp(0, 0.65);
+				}
+				
+				else if(!dashboard.getLeftRight()) {
+					drive.setNoRamp(0.65, 0);
+				}
+			}
 			
-//			if(!shooter.getState()) {
-				next();
-//			}
+			else {
+				drive.setNoRamp(0, 0);
+				if(isFirstShoot) {
+					timer.reset();
+					timer.start();
+					isFirstShoot = false;
+				}
+				
+				if(timer.get() > 0.75) {
+					shooter.shoot();						
+					next();				
+				}
+			}
+
+			if(timer.get() > 0.7) {
+				drive.setNoRamp(0, 0);
+				isFirst = true;
+			}
 		}
 		
 		else if ((commands[autoStep][0]) == Steps.getStep(Type.MOVE_GOAL)) {	//Spin until goal is found
@@ -389,5 +450,13 @@ public class Interpreter {
 			secondFile = true;
 			autoStep = 0;
 		}
+		
+		else if((commands[autoStep][0]) == Steps.getStep(Type.WAIT_PITCH)) {
+			waitPitch();
+		}
+		
+//		else if((commands[autoStep][0]) == Steps.getStep(Type.WAIT_PITCH_THRESHOLD)) {
+//			waitPitchThreshold(commands[autoStep][1]);
+//		}
 	}
 }
