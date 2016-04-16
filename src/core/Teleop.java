@@ -137,15 +137,11 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.shooterConstantSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.setSpeed(ShooterConfig.constantSpeed);
+			shooter.shooterWheels.setSpeed(ShooterConfig.constantSpeed);
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.setShooterSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			shooter.setSpeed();
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.shooterStopButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.stopShooter();
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.shooterLaunchButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
