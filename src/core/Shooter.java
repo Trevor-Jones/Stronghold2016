@@ -213,7 +213,7 @@ public class Shooter{
 			if(resetTimer.get() > 0.5 && resettingShot) {
 				resettingShot = false;
 //				shoot();
-				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.52)));
+				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
 				if(wantAng-robotCore.navX.getAngle() >= 0) {
 					adjustWithLeft = true;
 				}
@@ -361,7 +361,7 @@ public class Shooter{
 		isFirstMotors = true;
 		isFirstTimer = true;
 		isFirst = true;
-		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.52)));
+		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
 		if(wantAng-robotCore.navX.getAngle() >= 0) {
 			adjustWithLeft = true;
 		}
