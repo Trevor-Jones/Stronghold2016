@@ -1,13 +1,14 @@
 package core;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import components.CIM;
 import config.IntakeArmConfig;
 import config.ShooterConfig;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.Dashboard;
@@ -35,13 +36,11 @@ public class Shooter{
 	public CIM leftMotor = new CIM(ShooterConfig.ChnMotorOne, false);
 	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, true);
 	
-	private PID leftPID;
-	private PID rightPID;
+	private PIDController leftPID;
+	private PIDController rightPID;
 	
 	private boolean isFirst;
-	private boolean stopping;
 	private boolean isFirstTimer;
-	private boolean isFirstMotors;
 	private boolean usingVision;
 	private boolean withinThreshold;
 	private boolean adjustWithLeft = false;
@@ -66,12 +65,8 @@ public class Shooter{
 	private double leftRate;
 	private double rightRate;
 	private double shootSpeed = 0;
-	private double speedLeft;
-	private double speedRight;
 	private double encoderLeftDistance;
 	private double encoderRightDistance;
-	private double wantSpeedLeft = 0;
-	private double wantSpeedRight = 0;
 	private double wantAng;
 	private double driveSpeed = 0;
 	private double rightRateFiltered = 0;
@@ -93,8 +88,6 @@ public class Shooter{
 		rightMotorEnc = core.shooterRightEnc;
 		shooterSol = core.shooterSol;
 		ballHolder = core.ballHolder;
-		speedLeft = 0;
-		speedRight = 0;
 		usingVision = true;
 		this.dash = dash;
 		this.vision = vision;
@@ -108,9 +101,60 @@ public class Shooter{
 		rightMotor.set(0);
 		isShooting = false;
 		
-		leftPID = new PID(ShooterConfig.kPLeft, ShooterConfig.kILeft, ShooterConfig.kDLeft);
-		rightPID = new PID(ShooterConfig.kPRight, ShooterConfig.kIRight, ShooterConfig.kDRight);
+		leftPID = new PIDController(ShooterConfig.kPLarge, ShooterConfig.kILarge, ShooterConfig.kDLarge, 0, new leftSource(), new leftOutput());
+		rightPID = new PIDController(ShooterConfig.kPLarge, ShooterConfig.kPLarge, ShooterConfig.kDLarge, 0, new rightSource(), new rightOutput());
+		
 		isFirst = true;
+	}
+	
+	class leftSource implements PIDSource {
+
+		@Override
+		public void setPIDSourceType(PIDSourceType pidSource) {
+		}
+
+		@Override
+		public PIDSourceType getPIDSourceType() {
+			return PIDSourceType.kRate;
+		}
+
+		@Override
+		public double pidGet() {
+			return leftMotorEnc.getRate();
+		}
+		
+	}
+	
+	class rightSource implements PIDSource {
+
+		@Override
+		public void setPIDSourceType(PIDSourceType pidSource) {
+		}
+
+		@Override
+		public PIDSourceType getPIDSourceType() {
+			return PIDSourceType.kRate;
+		}
+
+		@Override
+		public double pidGet() {
+			return rightMotorEnc.getRate();
+		}
+		
+	}
+	
+	class leftOutput implements PIDOutput{
+		@Override
+		public void pidWrite(double output) {
+			leftMotor.set(leftMotor.get()+output);
+		}
+	} 
+	
+	class rightOutput implements PIDOutput{
+		@Override
+		public void pidWrite(double output) {
+			rightMotor.set(rightMotor.get()+output);
+		}
 	}
 	
 	public void updateShooterDash() {
@@ -120,8 +164,8 @@ public class Shooter{
 		dash.putDouble("rightShooterEnc", rightRate);
 		dash.putDouble("leftShooterDistance", leftMotorEnc.getDistance());
 		dash.putDouble("rightShooterDistance", rightMotorEnc.getDistance());
-		dash.putDouble("leftShooterOutput", leftPID.getOutput());
-		dash.putDouble("rightShooterOutput", rightPID.getOutput());
+		dash.putDouble("leftShooterOutput", leftPID.get());
+		dash.putDouble("rightShooterOutput", rightPID.get());
 		dash.putDouble("shooterWantSpeed", shootSpeed);
 		dash.putDouble("shooter drive output", vision.getTurnPID());
 		dash.putDouble("rotation", vision.vs.getRotation(wantGoal));
@@ -134,51 +178,20 @@ public class Shooter{
 	}
 	
 	public void updateShooterWheels() {
-		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
-			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
+		if(Util.withinThreshold(leftMotorEnc.getRate(), shootSpeed, 0.2)) {
+			leftPID.setPID(dash.getPSmall(), dash.getISmall(), dash.getDSmall());	
 		}
 		
-		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
-			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
+		if(Util.withinThreshold(rightMotorEnc.getRate(), shootSpeed, 0.2)) {
+			rightPID.setPID(dash.getPSmall(), dash.getISmall(), dash.getDSmall());	
 		}
 		
-		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
-			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
+		if(!Util.withinThreshold(leftMotorEnc.getRate(), shootSpeed, 0.2)) {
+			leftPID.setPID(dash.getPLarge(), dash.getILarge(), dash.getDLarge());			
 		}
 		
-		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
-			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
-		}
-		
-		if(!stopping) {
-//			if(isFirstMotors) {
-//				timerOne.start();
-//				isFirstMotors = false;
-//			}
-			
-			
-			
-//			if(timerOne.get() > 2) {
-				leftPID.update(Math.abs(leftRateFiltered), shootSpeed);
-				rightPID.update(Math.abs(rightRateFiltered), shootSpeed);
-				wantSpeedLeft = Util.limit(wantSpeedLeft + leftPID.getOutput(), 0, shootSpeed * 1.5);
-				wantSpeedRight = Util.limit(wantSpeedRight + rightPID.getOutput(), 0, shootSpeed * 1.5);
-//				if(speedLeft - shootSpeed > 0.1) {
-//					speedLeft-=0.12;
-//				}
-//				
-//				if(speedRight - shootSpeed > 0.1) {
-//					speedRight-=0.12;
-//				}
-//				speedLeft = Util.limit(speedLeft, dash.getSpeed()-.1, dash.getSpeed()+.1);
-//				speedRight = Util.limit(speedRight, dash.getSpeed()-.1, dash.getSpeed()+.1);
-//			}
-			leftMotor.set(wantSpeedLeft);
-			rightMotor.set(wantSpeedRight);
-		}
-		else {
-			leftMotor.ramp(0,0.05);
-			rightMotor.ramp(0,0.05);
+		if(!Util.withinThreshold(rightMotorEnc.getRate(), shootSpeed, 0.2)) {
+			rightPID.setPID(dash.getPLarge(), dash.getILarge(), dash.getDLarge());			
 		}
 	}
 	
@@ -291,13 +304,9 @@ public class Shooter{
 	public void update(){
 		updateLeftRateFilter();
 		updateRightRateFilter();
-//		leftRate = leftMotorEnc.getRate();
-//		rightRate = rightMotorEnc.getRate();
 		dash.putBoolean("isMotorsFast", isMotorsFastEnough(shootSpeed));
 		wantGoal = vision.vs.getHighestArea();
 		updateShooterDash();
-//		leftMotor.set(0.5);
-//		rightMotor.set(0.5);
 		updateShooterWheels();
 		updateTurn();
 		checkAngle();
@@ -311,15 +320,17 @@ public class Shooter{
 			if (timer.get() > ShooterConfig.velocitySettleTime){
 				shooterSol.set(DoubleSolenoid.Value.kReverse);
 				
-				fileSaverLeft.write("SHOOT");
-				fileSaverRight.write("SHOOT");
-				
 				if(isFirst) {
 					timer.reset();
 					timer.start();
 					isFirst =  false;
 					doneShooting = true;
 					speedSet = false;
+
+					leftPID.disable();
+					rightPID.disable();
+					leftMotor.set(0);
+					rightMotor.set(0);
 				}
 			}
 		}
@@ -332,11 +343,8 @@ public class Shooter{
 			
 		if (timer.get() > ShooterConfig.waitTimeStop && doneShooting){
 			shooterSol.set(DoubleSolenoid.Value.kForward);
-			stopping = true;
 			timerOne.stop();
 			timerOne.reset();
-			speedLeft = 0;
-			speedRight = 0;
 			shootSpeed = 0;
 			isShooting = false;
 			doneShooting = false;
@@ -361,7 +369,6 @@ public class Shooter{
 		drive.toLowGear();
 		releaseBall();
 		isShooting = true;
-		isFirstMotors = true;
 		isFirstTimer = true;
 		isFirst = true;
 		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.72)));
@@ -387,11 +394,13 @@ public class Shooter{
 	public void cancelShot() {
 		isShooting = false;
 		isFirst = true;
-		isFirstMotors = true;
 		isFirstTimer = true;
 		speedSet = false;
 		shootSpeed = 0;
-		stopping = true;
+		leftPID.disable();
+		rightPID.disable();
+		leftMotor.set(0);
+		rightMotor.set(0);
 		vision.resetTurnPID();
 	}
 	
@@ -405,18 +414,12 @@ public class Shooter{
 	
 	public void stopShooter() {
 		shootSpeed = 0;
-		stopping = true;
 	}
 	
 	public void setRawSpeed(double speed) {
 		leftMotor.set(speed);
 		rightMotor.set(speed);
 		shootSpeed = speed;
-		stopping = false;
-		leftPID.reset();
-		rightPID.reset();
-		leftPID.start();
-		rightPID.start();
 		isFirstTimer = true;
 		isFirst = true;
 	}
@@ -428,28 +431,22 @@ public class Shooter{
 	public void setSpeed(double speed) {
 		shootSpeed = speed;
 		speedSet = true;
-		stopping = false;
-		leftPID.reset();
-		rightPID.reset();
-		leftPID.start();
-		rightPID.start();
-		wantSpeedLeft = 0;
-		wantSpeedRight = 0;
+		leftPID.setSetpoint(shootSpeed);
+		rightPID.setSetpoint(shootSpeed);
+		leftPID.enable();
+		rightPID.enable();
 	}
 	
 	/**
 	 * Starts the motors at a speed determined from vision
 	 */
 	public void setSpeed() {
-		stopping = false;
 		speedSet = true;
 		shootSpeed = dash.getSpeed();
-		leftPID.reset();
-		rightPID.reset();
-		leftPID.start();
-		rightPID.start();
-		wantSpeedLeft = 0;
-		wantSpeedRight = 0;
+		leftPID.setSetpoint(shootSpeed);
+		rightPID.setSetpoint(shootSpeed);
+		leftPID.enable();
+		rightPID.enable();
 	}
 
 	/**

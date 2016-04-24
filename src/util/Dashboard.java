@@ -48,14 +48,14 @@ public class Dashboard {
 		SmartDashboard.putData("Left Right", leftRightChooser);
 		
 		SmartDashboard.putNumber("shooterSpeed", ShooterConfig.constantSpeed);
-		SmartDashboard.putNumber("kPLeft", ShooterConfig.kPLeft);
-		SmartDashboard.putNumber("kPRight", ShooterConfig.kPRight);
+		SmartDashboard.putNumber("kPLarge", ShooterConfig.kPLarge);
+		SmartDashboard.putNumber("kPSmall", ShooterConfig.kPSmall);
 
-		SmartDashboard.putNumber("kILeft", ShooterConfig.kILeft);
-		SmartDashboard.putNumber("kIRight", ShooterConfig.kIRight);
+		SmartDashboard.putNumber("kILarge", ShooterConfig.kILarge);
+		SmartDashboard.putNumber("kISmall", ShooterConfig.kISmall);
 
-		SmartDashboard.putNumber("kDLeft", ShooterConfig.kDLeft);
-		SmartDashboard.putNumber("kDRight", ShooterConfig.kDRight);
+		SmartDashboard.putNumber("kDLarge", ShooterConfig.kDLarge);
+		SmartDashboard.putNumber("kDSmall", ShooterConfig.kDSmall);
 	}
 	
 	/**
@@ -150,28 +150,28 @@ public class Dashboard {
 		return SmartDashboard.getNumber("shooterSpeed");
 	}
 	
-	public double getPLeft() {
-		return SmartDashboard.getNumber("kPLeft");
+	public double getPSmall() {
+		return SmartDashboard.getNumber("kPSmall");
 	}
 	
-	public double getPRight() {
-		return SmartDashboard.getNumber("kPRight");
+	public double getPLarge() {
+		return SmartDashboard.getNumber("kPLarge");
 	}
 	
-	public double getILeft() {
-		return SmartDashboard.getNumber("kILeft");
+	public double getISmall() {
+		return SmartDashboard.getNumber("kISmall");
 	}
 	
-	public double getIRight() {
-		return SmartDashboard.getNumber("kIRight");
+	public double getILarge() {
+		return SmartDashboard.getNumber("kILarge");
 	}
 	
-	public double getDLeft() {
-		return SmartDashboard.getNumber("kDLeft");
+	public double getDSmall() {
+		return SmartDashboard.getNumber("kDSmall");
 	}
 	
-	public double getDRight() {
-		return SmartDashboard.getNumber("kDRight");
+	public double getDLarge() {
+		return SmartDashboard.getNumber("kDLarge");
 	}
 	
 	public void putDouble(String key, double num) {
