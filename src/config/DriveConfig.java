@@ -20,6 +20,8 @@ public class DriveConfig {
 	public static final boolean rightC1IsFlipped = true;
 	public static final boolean rightC2IsFlipped = true;
 	
+	public static final int shiftSolPortA = 4; //2
+	public static final int shiftSolPortB = 5; //3
 	
 	// Right Encoder
 	public static final int chnAEncRight = 0;
