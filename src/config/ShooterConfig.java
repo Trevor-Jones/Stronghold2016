@@ -8,6 +8,8 @@ public class ShooterConfig {
 	public static final int ChnARightEnc = 3;
 	public static final int ChnSolA = 0;
 	public static final int ChnSolB = 1;
+	public static final int ballHolderChnA = 3;
+	public static final int ballHolderChnB = 2;
 	public static final double distancePerPulseRight = -0.000048; //0.000048
 	public static final double distancePerPulseLeft = 0.000048; //53
 	public static final int ChnMotorOne = 9;

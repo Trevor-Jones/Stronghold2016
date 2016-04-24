@@ -75,6 +75,7 @@ public class Teleop {
 //		System.out.println("hello");
 		if(robotCore.joy.getButton(JoyConfig.intakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			intake.pickupBall();
+			shooter.releaseBall();
 		}
 		
 		if(robotCore.joy.getButton(JoyConfig.cancelIntakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
@@ -114,11 +115,11 @@ public class Teleop {
 		}
 		
 		if(robotCore.joy.getDpadLeft()) {
-			intake.arm.setPortcullisMode(false);
+			shooter.clampBall();
 		}
 		
 		if(robotCore.joy.getDpadRight()) {
-			intake.arm.setPortcullisMode(true);
+			shooter.releaseBall();
 		}
 	}
 	

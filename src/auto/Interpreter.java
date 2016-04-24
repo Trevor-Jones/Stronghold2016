@@ -63,7 +63,7 @@ public class Interpreter {
 	/**
 	 * Run at auto init to get and parse script file 
 	 */
-	public void interpInit() {
+	public void init() {
 		shootTimer.start();
 		fileNameOne = dashboard.getFileNameOne();
 		commandsOne = Parser.parse(fileNameOne);

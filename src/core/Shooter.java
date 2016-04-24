@@ -30,7 +30,8 @@ public class Shooter{
 	
 	public Encoder leftMotorEnc;
 	public Encoder rightMotorEnc;
-	public DoubleSolenoid solOne;
+	public DoubleSolenoid shooterSol;
+	public DoubleSolenoid ballHolder;
 	public CIM leftMotor = new CIM(ShooterConfig.ChnMotorOne, false);
 	public CIM rightMotor = new CIM(ShooterConfig.ChnMotorTwo, true);
 	
@@ -51,6 +52,7 @@ public class Shooter{
 	private boolean closeMode = false;
 	private boolean resettingShot = true;
 	private boolean doneShooting = false;
+	private boolean speedSet = false;
 	
 	private Timer timerOne = new Timer();
 	private Timer timer = new Timer();
@@ -89,7 +91,8 @@ public class Shooter{
 	public Shooter(RobotCore core, Drive drive, VisionCore vision, Dashboard dash, Intake intake){
 		leftMotorEnc = core.shooterLeftEnc;
 		rightMotorEnc = core.shooterRightEnc;
-		solOne = core.shooterSol;
+		shooterSol = core.shooterSol;
+		ballHolder = core.ballHolder;
 		speedLeft = 0;
 		speedRight = 0;
 		usingVision = true;
@@ -100,7 +103,7 @@ public class Shooter{
 		
 		this.drive = drive;		
 		
-		solOne.set(DoubleSolenoid.Value.kForward);
+		shooterSol.set(DoubleSolenoid.Value.kForward);
 		leftMotor.set(0);
 		rightMotor.set(0);
 		isShooting = false;
@@ -131,19 +134,19 @@ public class Shooter{
 	}
 	
 	public void updateShooterWheels() {
-		if(Util.withinThreshold(leftRate, shootSpeed, 0.2)); {
+		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
 			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
 		}
 		
-		if(Util.withinThreshold(rightRate, shootSpeed, 0.2)); {
+		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
 			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
 		}
 		
-		if(!Util.withinThreshold(leftRate, shootSpeed, 0.2)); {
+		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
 			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
 		}
 		
-		if(!Util.withinThreshold(rightRate, shootSpeed, 0.2)); {
+		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
 			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
 		}
 		
@@ -156,10 +159,10 @@ public class Shooter{
 			
 			
 //			if(timerOne.get() > 2) {
-				leftPID.update(Math.abs(leftRate), shootSpeed);
-				rightPID.update(Math.abs(rightRate), shootSpeed);
-				wantSpeedLeft+=leftPID.getOutput();
-				wantSpeedRight+=rightPID.getOutput();
+				leftPID.update(Math.abs(leftRateFiltered), shootSpeed);
+				rightPID.update(Math.abs(rightRateFiltered), shootSpeed);
+				wantSpeedLeft = Util.limit(wantSpeedLeft + leftPID.getOutput(), 0, shootSpeed * 1.5);
+				wantSpeedRight = Util.limit(wantSpeedRight + rightPID.getOutput(), 0, shootSpeed * 1.5);
 //				if(speedLeft - shootSpeed > 0.1) {
 //					speedLeft-=0.12;
 //				}
@@ -213,7 +216,7 @@ public class Shooter{
 			if(resetTimer.get() > 0.5 && resettingShot) {
 				resettingShot = false;
 //				shoot();
-				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
+				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.72)));
 				if(wantAng-robotCore.navX.getAngle() >= 0) {
 					adjustWithLeft = true;
 				}
@@ -286,13 +289,15 @@ public class Shooter{
 	 * Run periodically to control shooting process
 	 */
 	public void update(){
-//		updateLeftRate();
-//		updateRightRate();
-		leftRate = leftMotorEnc.getRate();
-		rightRate = rightMotorEnc.getRate();
+		updateLeftRateFilter();
+		updateRightRateFilter();
+//		leftRate = leftMotorEnc.getRate();
+//		rightRate = rightMotorEnc.getRate();
 		dash.putBoolean("isMotorsFast", isMotorsFastEnough(shootSpeed));
 		wantGoal = vision.vs.getHighestArea();
 		updateShooterDash();
+//		leftMotor.set(0.5);
+//		rightMotor.set(0.5);
 		updateShooterWheels();
 		updateTurn();
 		checkAngle();
@@ -304,8 +309,8 @@ public class Shooter{
 			}
 			
 			if (timer.get() > ShooterConfig.velocitySettleTime){
-				solOne.set(DoubleSolenoid.Value.kReverse);
-
+				shooterSol.set(DoubleSolenoid.Value.kReverse);
+				
 				fileSaverLeft.write("SHOOT");
 				fileSaverRight.write("SHOOT");
 				
@@ -314,6 +319,7 @@ public class Shooter{
 					timer.start();
 					isFirst =  false;
 					doneShooting = true;
+					speedSet = false;
 				}
 			}
 		}
@@ -325,7 +331,7 @@ public class Shooter{
 		}
 			
 		if (timer.get() > ShooterConfig.waitTimeStop && doneShooting){
-			solOne.set(DoubleSolenoid.Value.kForward);
+			shooterSol.set(DoubleSolenoid.Value.kForward);
 			stopping = true;
 			timerOne.stop();
 			timerOne.reset();
@@ -353,15 +359,12 @@ public class Shooter{
 		timerOne.reset();
 		intake.arm.setPos(0);
 		drive.toLowGear();
+		releaseBall();
 		isShooting = true;
-		leftPID.reset();
-		rightPID.reset();
-		leftPID.start();
-		rightPID.start();
 		isFirstMotors = true;
 		isFirstTimer = true;
 		isFirst = true;
-		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.32)));
+		wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.72)));
 		if(wantAng-robotCore.navX.getAngle() >= 0) {
 			adjustWithLeft = true;
 		}
@@ -369,11 +372,11 @@ public class Shooter{
 			adjustWithLeft = false;
 		}
 		
-		if(usingVision) {
+		if(usingVision && !speedSet) {
 			setSpeed();
 			vision.startTurnPID();
 		}
-		else {
+		else if(!speedSet){
 			setSpeed();
 		}
 	}
@@ -386,7 +389,7 @@ public class Shooter{
 		isFirst = true;
 		isFirstMotors = true;
 		isFirstTimer = true;
-		
+		speedSet = false;
 		shootSpeed = 0;
 		stopping = true;
 		vision.resetTurnPID();
@@ -424,9 +427,14 @@ public class Shooter{
 	 */
 	public void setSpeed(double speed) {
 		shootSpeed = speed;
+		speedSet = true;
 		stopping = false;
-		speedLeft = shootSpeed * ShooterConfig.startSpeedScalar;
-		speedRight = shootSpeed * ShooterConfig.startSpeedScalar;
+		leftPID.reset();
+		rightPID.reset();
+		leftPID.start();
+		rightPID.start();
+		wantSpeedLeft = 0;
+		wantSpeedRight = 0;
 	}
 	
 	/**
@@ -434,7 +442,12 @@ public class Shooter{
 	 */
 	public void setSpeed() {
 		stopping = false;
+		speedSet = true;
 		shootSpeed = dash.getSpeed();
+		leftPID.reset();
+		rightPID.reset();
+		leftPID.start();
+		rightPID.start();
 		wantSpeedLeft = 0;
 		wantSpeedRight = 0;
 	}
@@ -443,10 +456,25 @@ public class Shooter{
 	 * Actuates a solenoid to launch the ball
 	 */
 	public void launchBall() {
-		if(solOne.get() == DoubleSolenoid.Value.kReverse)
-			solOne.set(DoubleSolenoid.Value.kForward);
-		else if(solOne.get() == DoubleSolenoid.Value.kForward)
-			solOne.set(DoubleSolenoid.Value.kReverse);
+		if(shooterSol.get() == DoubleSolenoid.Value.kReverse)
+			shooterSol.set(DoubleSolenoid.Value.kForward);
+		else if(shooterSol.get() == DoubleSolenoid.Value.kForward)
+			shooterSol.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void toggleHolder() {
+		if(ballHolder.get() == DoubleSolenoid.Value.kReverse)
+			ballHolder.set(DoubleSolenoid.Value.kForward);
+		else if(ballHolder.get() == DoubleSolenoid.Value.kForward)
+			ballHolder.set(DoubleSolenoid.Value.kReverse);
+	}
+	
+	public void clampBall() {
+		ballHolder.set(DoubleSolenoid.Value.kForward);
+	}
+	
+	public void releaseBall() {
+		ballHolder.set(DoubleSolenoid.Value.kReverse);
 	}
 	
 	/**
@@ -456,7 +484,7 @@ public class Shooter{
 	 */
 	public boolean isMotorsFastEnough(double motorSpeed){
 //		System.out.println("leftRate : "  + leftMotorEnc.getRate() + "\trightRate : " + rightMotorEnc.getDistance() + "\twantSpeed : " + motorSpeed);
-		return Util.withinThreshold(Math.abs(leftRate), motorSpeed, ShooterConfig.motorSpeedTolerance) && Util.withinThreshold(Math.abs(rightRate), motorSpeed, ShooterConfig.motorSpeedTolerance);
+		return Util.withinThreshold(Math.abs(leftRateFiltered), motorSpeed, ShooterConfig.motorSpeedTolerance) && Util.withinThreshold(Math.abs(rightRateFiltered), motorSpeed, ShooterConfig.motorSpeedTolerance);
 //		return leftMotorEnc.getRate() > motorSpeed && rightMotorEnc.getRate() > motorSpeed;
 //		return true;
 	}
