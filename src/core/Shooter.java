@@ -120,7 +120,8 @@ public class Shooter{
 
 		@Override
 		public double pidGet() {
-			return leftMotorEnc.getRate();
+			System.out.println("getting rate");
+			return Math.abs(leftMotorEnc.getRate());
 		}
 		
 	}
@@ -138,7 +139,7 @@ public class Shooter{
 
 		@Override
 		public double pidGet() {
-			return rightMotorEnc.getRate();
+			return Math.abs(rightMotorEnc.getRate());
 		}
 		
 	}
@@ -146,6 +147,7 @@ public class Shooter{
 	class leftOutput implements PIDOutput{
 		@Override
 		public void pidWrite(double output) {
+			System.out.println("setting motor" + output);
 			leftMotor.set(leftMotor.get()+output);
 		}
 	} 
@@ -226,9 +228,8 @@ public class Shooter{
 				resetTimer.start();
 			}
 			
-			if(resetTimer.get() > 0.5 && resettingShot) {
+			if(resetTimer.get() > 0.25 && resettingShot) {
 				resettingShot = false;
-//				shoot();
 				wantAng = robotCore.navX.getAngle() + ((180/Math.PI)*Math.atan(vision.vs.getRotation(wantGoal)/(vision.vs.getDistance(wantGoal)*1.72)));
 				if(wantAng-robotCore.navX.getAngle() >= 0) {
 					adjustWithLeft = true;
@@ -327,10 +328,6 @@ public class Shooter{
 					doneShooting = true;
 					speedSet = false;
 
-					leftPID.disable();
-					rightPID.disable();
-					leftMotor.set(0);
-					rightMotor.set(0);
 				}
 			}
 		}
@@ -345,12 +342,7 @@ public class Shooter{
 			shooterSol.set(DoubleSolenoid.Value.kForward);
 			timerOne.stop();
 			timerOne.reset();
-			shootSpeed = 0;
-			isShooting = false;
-			doneShooting = false;
-			isFirst = true;
-			isFirstTimer = true;
-			vision.resetTurnPID();
+			cancelShot();
 		}
 	}
 	
@@ -392,16 +384,17 @@ public class Shooter{
 	 * Stops the shooting process
 	 */
 	public void cancelShot() {
+		leftPID.reset();
+		rightPID.reset();
 		isShooting = false;
 		isFirst = true;
 		isFirstTimer = true;
 		speedSet = false;
 		shootSpeed = 0;
-		leftPID.disable();
-		rightPID.disable();
 		leftMotor.set(0);
 		rightMotor.set(0);
 		vision.resetTurnPID();
+		doneShooting = false;
 	}
 	
 	/**

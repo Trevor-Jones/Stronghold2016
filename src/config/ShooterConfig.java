@@ -17,13 +17,13 @@ public class ShooterConfig {
 	public static final double waitTime = 0.5;
 	public static final double waitTimeStop = 0.5;
 	
-	public static final double kPLarge = 0.08; //0.018
-	public static final double kILarge = 0.03;
-	public static final double kDLarge = 0.022;
+	public static final double kPLarge = 0.01; //0.018
+	public static final double kILarge = 0;
+	public static final double kDLarge = 0.03;
 	
-	public static final double kPSmall = 0.003;  //0.018
+	public static final double kPSmall = 0.004;  //0.018
 	public static final double kISmall = 0;
-	public static final double kDSmall = 0;
+	public static final double kDSmall = 0.025;
 
 	public static final double kPDrive = 0.062;
 	public static final double kIDrive= 0;
