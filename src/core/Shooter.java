@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import util.Dashboard;
-import util.FileSaver;
+//import util.FileSaver;
 import util.PID;
 import util.Util;
 import vision.VisionCore;
@@ -79,8 +79,8 @@ public class Shooter{
 	private double[] rightRateValues = new double[ShooterConfig.movingAverageNumbers];
 	private double[] leftRateValues = new double[ShooterConfig.movingAverageNumbers];
 	
-	FileSaver fileSaverLeft = new FileSaver("shooterDataLeft.txt");
-	FileSaver fileSaverRight = new FileSaver("shooterDataRight.txt");
+//	FileSaver fileSaverLeft = new FileSaver("shooterDataLeft.txt");
+//	FileSaver fileSaverRight = new FileSaver("shooterDataRight.txt");
 
 	/**
 	 * 
@@ -103,13 +103,13 @@ public class Shooter{
 		
 		this.drive = drive;		
 		
-		shooterSol.set(DoubleSolenoid.Value.kForward);
+		retractShooter();
 		leftMotor.set(0);
 		rightMotor.set(0);
 		isShooting = false;
 		
 		leftPID = new PID(ShooterConfig.kPLeft, ShooterConfig.kILeft, ShooterConfig.kDLeft);
-		rightPID = new PID(ShooterConfig.kPRight, ShooterConfig.kIRight, ShooterConfig.kDRight);
+		rightPID = new PID(ShooterConfig.kPLeft, ShooterConfig.kILeft, ShooterConfig.kDLeft);
 		isFirst = true;
 	}
 	
@@ -129,24 +129,24 @@ public class Shooter{
 		dash.putDouble("leftEncCount", leftMotorEnc.get());
 		dash.putDouble("rightEncCount", rightMotorEnc.get());
 		
-		fileSaverLeft.write(Double.toString(leftMotorEnc.getRate()));
-		fileSaverRight.write(Double.toString(rightMotorEnc.getRate()));
+//		fileSaverLeft.write(Double.toString(leftMotorEnc.getRate()));
+//		fileSaverRight.write(Double.toString(rightMotorEnc.getRate()));
 	}
 	
 	public void updateShooterWheels() {
-		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
+		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
 			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
 		}
 		
-		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
+		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
 			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
 		}
 		
-		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.2)); {
+		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
 			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
 		}
 		
-		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.2)); {
+		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
 			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
 		}
 		
@@ -302,36 +302,38 @@ public class Shooter{
 		updateTurn();
 		checkAngle();
 		
-		if(isShooting && withinThreshold && isMotorsFastEnough(shootSpeed)){
-			if(isFirstTimer){
-				timer.start();
-				isFirstTimer = false;
-			}
+		if(isShooting && isMotorsFastEnough(shootSpeed)){
 			
-			if (timer.get() > ShooterConfig.velocitySettleTime){
-				shooterSol.set(DoubleSolenoid.Value.kReverse);
-				
-				fileSaverLeft.write("SHOOT");
-				fileSaverRight.write("SHOOT");
-				
-				if(isFirst) {
-					timer.reset();
+			if(withinThreshold) {	
+				if(isFirstTimer){
 					timer.start();
-					isFirst =  false;
-					doneShooting = true;
-					speedSet = false;
+					isFirstTimer = false;
 				}
+				
+				if (timer.get() > ShooterConfig.velocitySettleTime){
+					actuateShooter();
+					
+	//				fileSaverLeft.write("SHOOT");
+	//				fileSaverRight.write("SHOOT");
+					
+					if(isFirst) {
+						timer.reset();
+						timer.start();
+						isFirst =  false;
+						doneShooting = true;
+						speedSet = false;
+					}
+				}
+			}
+			else if (!doneShooting){
+				isFirstTimer = true;
+				timer.stop();
+				timer.reset();
 			}
 		}
 		
-		else if (!doneShooting){
-			isFirstTimer = true;
-			timer.stop();
-			timer.reset();
-		}
-			
 		if (timer.get() > ShooterConfig.waitTimeStop && doneShooting){
-			shooterSol.set(DoubleSolenoid.Value.kForward);
+			retractShooter();
 			stopping = true;
 			timerOne.stop();
 			timerOne.reset();
@@ -457,9 +459,19 @@ public class Shooter{
 	 */
 	public void launchBall() {
 		if(shooterSol.get() == DoubleSolenoid.Value.kReverse)
-			shooterSol.set(DoubleSolenoid.Value.kForward);
+			retractShooter();
 		else if(shooterSol.get() == DoubleSolenoid.Value.kForward)
-			shooterSol.set(DoubleSolenoid.Value.kReverse);
+			actuateShooter();
+	}
+	
+	public void actuateShooter() {
+		shooterSol.set(DoubleSolenoid.Value.kReverse);
+		dash.putBoolean("shooter solenoid", true);
+	}
+	
+	public void retractShooter() {
+		shooterSol.set(DoubleSolenoid.Value.kForward);
+		dash.putBoolean("shooter solenoid", false);
 	}
 	
 	public void toggleHolder() {
@@ -471,10 +483,12 @@ public class Shooter{
 	
 	public void clampBall() {
 		ballHolder.set(DoubleSolenoid.Value.kForward);
+		dash.putBoolean("ball holder", true);
 	}
 	
 	public void releaseBall() {
 		ballHolder.set(DoubleSolenoid.Value.kReverse);
+		dash.putBoolean("ball holder", false);
 	}
 	
 	/**
