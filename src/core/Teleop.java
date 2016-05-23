@@ -55,7 +55,13 @@ public class Teleop {
 	 */
 	private void joyDrive() {
 		double[] rTheta = robotCore.joy.getRTheta();
-		drive.move(rTheta[0], rTheta[1]);	
+		if(!dashboard.getDemoMode()) {
+			drive.move(rTheta[0], rTheta[1]);				
+		}
+		
+		else {
+			drive.move(rTheta[0]*.57, rTheta[1]);
+		}
 
 		if(robotCore.joy.getDpadUp()) {
 			drive.setReverseMode(true);
@@ -78,38 +84,6 @@ public class Teleop {
 			shooter.releaseBall();
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.cancelIntakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.roller.setSpeed(0);
-		}
-		
-		if(robotCore.joy.getRawButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(-1);
-		}
-		
-		if(robotCore.joy.getRawButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(1);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.armStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.arm.setArmSpeed(0);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.rollerInButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.roller.setSpeed(1);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.rollerOutButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.roller.setSpeed(-1);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.rollerStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.roller.setSpeed(0);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.rollerIntakeButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			intake.roller.runIntakeRoller();
-		}
-		
 		if(robotCore.joy.getButton(JoyConfig.toggleArmPosButton)) {
 			intake.arm.togglePos();
 		}
@@ -122,12 +96,47 @@ public class Teleop {
 			shooter.clampBall();
 		}
 		
-		if(robotCore.joy.getButton(9)) {
-			intake.arm.setPos(2);
-		}
 		
-		if(robotCore.joy.getButton(10)) {
-			intake.arm.resetArmEnc();
+		if(!dashboard.getDemoMode()) {
+			if(robotCore.joy.getButton(JoyConfig.cancelIntakeButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.roller.setSpeed(0);
+			}
+			
+			if(robotCore.joy.getRawButton(JoyConfig.armUpButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.arm.setArmSpeed(-1);
+			}
+			
+			if(robotCore.joy.getRawButton(JoyConfig.armDownButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.arm.setArmSpeed(1);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.armStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.arm.setArmSpeed(0);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.rollerInButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.roller.setSpeed(1);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.rollerOutButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.roller.setSpeed(-1);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.rollerStopButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.roller.setSpeed(0);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.rollerIntakeButton) && robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				intake.roller.runIntakeRoller();
+			}
+			
+			if(robotCore.joy.getButton(9)) {
+				intake.arm.setPos(2);
+			}
+			
+			if(robotCore.joy.getButton(10)) {
+				intake.arm.resetArmEnc();
+			}
 		}
 	}
 	
@@ -145,18 +154,6 @@ public class Teleop {
 			shooter.cancelShot();
 		}
 		
-		if(robotCore.joy.getButton(JoyConfig.shooterConstantSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.setSpeed(ShooterConfig.constantSpeed);
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.setShooterSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.setSpeed();
-		}
-		
-		if(robotCore.joy.getButton(JoyConfig.shooterStopButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
-			shooter.stopShooter();
-		}
-		
 		if(robotCore.joy.getButton(JoyConfig.shooterLaunchButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			shooter.launchBall();
 		}
@@ -167,6 +164,20 @@ public class Teleop {
 		
 		if(robotCore.joy.getButton(10) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
 			shooter.changeShooterSpeed(0.01);
+		}
+		
+		if(!dashboard.getDemoMode()) {
+			if(robotCore.joy.getButton(JoyConfig.shooterConstantSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				shooter.setSpeed(ShooterConfig.constantSpeed);
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.setShooterSpeedButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				shooter.setSpeed();
+			}
+			
+			if(robotCore.joy.getButton(JoyConfig.shooterStopButton) && !robotCore.joy.getRawButton(JoyConfig.manualModeButton)) {
+				shooter.stopShooter();
+			}
 		}
 		
 //		if(robotCore.joy.getButton(JoyConfig.climbButton)) {

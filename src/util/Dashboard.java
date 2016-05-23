@@ -20,6 +20,7 @@ public class Dashboard {
 	RobotCore robotCore;
 	private SendableChooser autoChooserOne = new SendableChooser();
 	private SendableChooser autoChooserTwo = new SendableChooser();
+	private SendableChooser demoMode = new SendableChooser();
 	private SendableChooser leftRightChooser = new SendableChooser();
 	
 	/**
@@ -42,6 +43,10 @@ public class Dashboard {
 		autoChooserTwo.addDefault("Don't Shoot", new ChooserType(DashboardConfig.idDontShoot));
 		autoChooserTwo.addObject("Shoot", new ChooserType(DashboardConfig.idShoot));
 		SmartDashboard.putData("Auto Mode Two", autoChooserTwo);
+		
+		demoMode.addDefault("False", new ChooserType(0));
+		demoMode.addObject("True", new ChooserType(1));
+		SmartDashboard.putData("Demo Mode", demoMode);
 		
 		leftRightChooser.addDefault("Left", new ChooserType(0));
 		leftRightChooser.addObject("Right", new ChooserType(1));
@@ -126,6 +131,22 @@ public class Dashboard {
 			default:
 				return DashboardConfig.doNothingFileName;
 		}
+	}
+	
+	public boolean getDemoMode() {
+		int id = ((ChooserType) demoMode.getSelected()).getId();
+		
+		switch (id) {
+		case 0:
+			return false;
+
+		case 1:
+			return true;
+			
+		default:
+			return false;
+		}
+		
 	}
 	
 	/**

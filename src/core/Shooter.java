@@ -95,7 +95,7 @@ public class Shooter{
 		ballHolder = core.ballHolder;
 		speedLeft = 0;
 		speedRight = 0;
-		usingVision = true;
+		usingVision = false;
 		this.dash = dash;
 		this.vision = vision;
 		this.robotCore = core;
@@ -134,21 +134,21 @@ public class Shooter{
 	}
 	
 	public void updateShooterWheels() {
-		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
-			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
-		}
-		
-		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
-			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
-		}
-		
-		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
-			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
-		}
-		
-		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
-			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
-		}
+//		if(Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
+//			leftPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());			
+//		}
+//		
+//		if(Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
+//			rightPID.updateConstants(dash.getPLeft(), dash.getILeft(), dash.getDLeft());	
+//		}
+//		
+//		if(!Util.withinThreshold(leftRateFiltered, shootSpeed, 0.05)) {
+//			leftPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
+//		}
+//		
+//		if(!Util.withinThreshold(rightRateFiltered, shootSpeed, 0.05)) {
+//			rightPID.updateConstants(dash.getPRight(), dash.getIRight(), dash.getDRight());			
+//		}
 		
 		if(!stopping) {
 //			if(isFirstMotors) {
@@ -159,10 +159,12 @@ public class Shooter{
 			
 			
 //			if(timerOne.get() > 2) {
-				leftPID.update(Math.abs(leftRateFiltered), shootSpeed);
-				rightPID.update(Math.abs(rightRateFiltered), shootSpeed);
-				wantSpeedLeft = Util.limit(wantSpeedLeft + leftPID.getOutput(), 0, shootSpeed * 1.5);
-				wantSpeedRight = Util.limit(wantSpeedRight + rightPID.getOutput(), 0, shootSpeed * 1.5);
+//				leftPID.update(Math.abs(leftRateFiltered), shootSpeed);
+//				rightPID.update(Math.abs(rightRateFiltered), shootSpeed);
+//				wantSpeedLeft = Util.limit(wantSpeedLeft + leftPID.getOutput(), 0, shootSpeed * 1.5);
+//				wantSpeedRight = Util.limit(wantSpeedRight + rightPID.getOutput(), 0, shootSpeed * 1.5);
+				wantSpeedLeft = shootSpeed;
+				wantSpeedRight = shootSpeed;
 //				if(speedLeft - shootSpeed > 0.1) {
 //					speedLeft-=0.12;
 //				}
@@ -302,7 +304,7 @@ public class Shooter{
 		updateTurn();
 		checkAngle();
 		
-		if(isShooting && isMotorsFastEnough(shootSpeed)){
+		if(isShooting/** && isMotorsFastEnough(shootSpeed)**/){
 			
 			if(withinThreshold) {	
 				if(isFirstTimer){
@@ -445,6 +447,9 @@ public class Shooter{
 	public void setSpeed() {
 		stopping = false;
 		speedSet = true;
+		if(dash.getDemoMode()) {
+			dash.putDouble("shooterSpeed", ShooterConfig.slowSpeed);
+		}
 		shootSpeed = dash.getSpeed();
 		leftPID.reset();
 		rightPID.reset();

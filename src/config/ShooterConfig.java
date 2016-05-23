@@ -13,7 +13,7 @@ public class ShooterConfig {
 	public static final double distancePerPulseRight = -0.000048; //0.000048
 	public static final double distancePerPulseLeft = 0.000048; //53
 	public static final int ChnMotorOne = 9;
-	public static final int ChnMotorTwo = 2;
+	public static final int ChnMotorTwo = 8;
 	public static final double waitTime = 0.5;
 	public static final double waitTimeStop = 0.5;
 	
@@ -34,10 +34,10 @@ public class ShooterConfig {
 	public static final double kDDriveClose = 0;
 		
 	public static final double rotationTolerance = 7;
-	public static final double velocitySettleTime = 0.25;
-	public static final double distanceSpeedConstant = .009;
-	
-	public static final double constantSpeed = 0.53;
+	public static final double velocitySettleTime = 2;
+	public static final double distanceSpeedConstant = .009;S
+	public static final double constantSpeed = 1;
+	public static final double slowSpeed = 1;
 	public static final double motorSpeedTolerance = .006;
 	
 	public static final int maxDistanceVision = 100;
